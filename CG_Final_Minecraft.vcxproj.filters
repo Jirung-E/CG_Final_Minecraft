@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{2d368374-3990-4a30-b550-c5a2f01c7c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderSource">
+      <UniqueIdentifier>{1b49d896-5cdd-4e19-b243-1b1366edc0f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{355271d4-dbf1-4474-a424-5b7c76be5702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game">
+      <UniqueIdentifier>{5639c455-a365-4548-af14-e98b1f120f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Util">
+      <UniqueIdentifier>{7ed36e38-1a9d-438e-8d6d-c1fec54f87bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{de91432d-d936-42d1-9398-f7e6de18c0df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Game\Component">
+      <UniqueIdentifier>{49adad8f-f5aa-4519-90ec-6f0bfafe2a1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Shader">
+      <UniqueIdentifier>{cf04758f-5613-4bee-b3fc-90ae73d90cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Minecraft">
+      <UniqueIdentifier>{1d869d0d-d316-49d3-a23d-40bc5087b9c0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderSource\fragment.glsl">
+      <Filter>ShaderSource</Filter>
+    </None>
+    <None Include="ShaderSource\vertex.glsl">
+      <Filter>ShaderSource</Filter>
+    </None>
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Util.cpp">
+      <Filter>src\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Line.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Plane.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Point.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vector.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Block.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Box.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entity.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Model.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Transform.cpp">
+      <Filter>src\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Component\Collider.cpp">
+      <Filter>src\Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Component\Component.cpp">
+      <Filter>src\Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Component\ComponentImpl.cpp">
+      <Filter>src\Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Component\Light.cpp">
+      <Filter>src\Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Component\Physics.cpp">
+      <Filter>src\Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EventsHandler.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Game.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ObjectManager.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Renderer.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Shader.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\TransformationStack.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader\Material.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Test.cpp">
+      <Filter>src\Minecraft</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Util\Util.h">
+      <Filter>src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Plane.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Point.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Block.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Box.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Camera.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entity.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Model.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Transform.h">
+      <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Component\Collider.h">
+      <Filter>src\Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Component\Component.h">
+      <Filter>src\Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Component\ComponentImpl.h">
+      <Filter>src\Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Component\Light.h">
+      <Filter>src\Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Component\Physics.h">
+      <Filter>src\Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EventsHandler.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Game.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ObjectManager.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Renderer.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Shader.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\TransformationStack.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader\Material.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Test.h">
+      <Filter>src\Minecraft</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MathDefines.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
