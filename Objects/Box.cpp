@@ -1,11 +1,11 @@
 #include "Box.h"
 
-#include "Model.h"
+#include "../Game/Model.h"
 
 using namespace std;
 
 
-Box::Box(const std::string& id, const Vector3& pivot, float wx, float wy, float wz) : Object { id } {
+Box::Box(const string& id, const Vector3& pivot, float wx, float wy, float wz) : Object { id } {
     wx = wx/2.0f;
     wy = wy/2.0f;
     wz = wz/2.0f;

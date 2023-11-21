@@ -142,8 +142,6 @@
     <ClCompile Include="Core\Renderer.cpp" />
     <ClCompile Include="Core\Shader.cpp" />
     <ClCompile Include="Core\TransformationStack.cpp" />
-    <ClCompile Include="Game\Block.cpp" />
-    <ClCompile Include="Game\Box.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Component\Collider.cpp" />
     <ClCompile Include="Game\Component\Component.cpp" />
@@ -153,7 +151,6 @@
     <ClCompile Include="Game\Entity.cpp" />
     <ClCompile Include="Game\Model.cpp" />
     <ClCompile Include="Game\Object.cpp" />
-    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\Transform.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Line.cpp" />
@@ -162,6 +159,9 @@
     <ClCompile Include="Math\Point.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="Minecraft\Test.cpp" />
+    <ClCompile Include="Objects\Block.cpp" />
+    <ClCompile Include="Objects\Box.cpp" />
+    <ClCompile Include="Objects\Player.cpp" />
     <ClCompile Include="Shader\Material.cpp" />
     <ClCompile Include="Util\Util.cpp" />
   </ItemGroup>
@@ -172,8 +172,6 @@
     <ClInclude Include="Core\Renderer.h" />
     <ClInclude Include="Core\Shader.h" />
     <ClInclude Include="Core\TransformationStack.h" />
-    <ClInclude Include="Game\Block.h" />
-    <ClInclude Include="Game\Box.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Component\Collider.h" />
     <ClInclude Include="Game\Component\Component.h" />
@@ -183,7 +181,6 @@
     <ClInclude Include="Game\Entity.h" />
     <ClInclude Include="Game\Model.h" />
     <ClInclude Include="Game\Object.h" />
-    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\Transform.h" />
     <ClInclude Include="Math\Line.h" />
     <ClInclude Include="Math\Math.h" />
@@ -192,6 +189,9 @@
     <ClInclude Include="Math\Point.h" />
     <ClInclude Include="Math\Vector.h" />
     <ClInclude Include="Minecraft\Test.h" />
+    <ClInclude Include="Objects\Block.h" />
+    <ClInclude Include="Objects\Box.h" />
+    <ClInclude Include="Objects\Player.h" />
     <ClInclude Include="Shader\Material.h" />
     <ClInclude Include="Util\Util.h" />
   </ItemGroup>

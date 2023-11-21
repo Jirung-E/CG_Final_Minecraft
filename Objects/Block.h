@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Box.h"
-#include "Component/Collider.h"
+#include "../Game/Component/Collider.h"
 
 
 class Block : public Box {

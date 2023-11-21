@@ -30,14 +30,11 @@ void Player::update(float dt) {
     }
 
     animation(dt);
-
-    feet->is_colliding = false;
-    hitbox->is_colliding = false;
 }
 
 void Player::jump() {
     if(feet->is_colliding) {
-        physics->force.y += 10;
+        physics->force.y += 5;
     }
 }
 
@@ -45,7 +42,6 @@ void Player::jump() {
 void Player::initComponent() {
     addComponent<Physics>();
     physics = getComponent<Physics>();
-    physics->gravity = { 0, -36, 0 };
     addComponent<AABB, Vector3, Vector3>("hitbox", { 0.5f, 1.6f, 0.5f }, { 0, 1, 0 });
     addComponent<AABB, Vector3, Vector3>("foot", { 0.4f, 0.1f, 0.4f }, { 0, 0.05f, 0 });
     feet = getComponent<AABB>("foot");

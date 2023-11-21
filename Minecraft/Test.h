@@ -3,8 +3,8 @@
 #include "../Core/Game.h"
 #include "../Core/Shader.h"
 #include "../Core/EventsHandler.h"
-#include "../Game/Player.h"
-#include "../Game/Block.h"
+#include "../Objects/Player.h"
+#include "../Objects/Block.h"
 
 
 class Test : public Game {   // singleton

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Entity.h"
+#include "../Game/Entity.h"
+#include "../Game/Component/Physics.h"
+#include "../Game/Component/Collider.h"
 #include "Box.h"
-#include "Component/Physics.h"
-#include "Component/Collider.h"
 
 
 class Player : public Entity {

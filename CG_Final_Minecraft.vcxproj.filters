@@ -28,6 +28,9 @@
     <Filter Include="src\Minecraft">
       <UniqueIdentifier>{1d869d0d-d316-49d3-a23d-40bc5087b9c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Objects">
+      <UniqueIdentifier>{34ae24f1-43ca-4a88-90c4-c7fbc6b510c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderSource\fragment.glsl">
@@ -60,12 +63,6 @@
     <ClCompile Include="Math\Vector.cpp">
       <Filter>src\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Block.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Box.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Camera.cpp">
       <Filter>src\Game</Filter>
     </ClCompile>
@@ -76,9 +73,6 @@
       <Filter>src\Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Player.cpp">
       <Filter>src\Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Transform.cpp">
@@ -123,6 +117,15 @@
     <ClCompile Include="Minecraft\Test.cpp">
       <Filter>src\Minecraft</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Block.cpp">
+      <Filter>src\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Box.cpp">
+      <Filter>src\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player.cpp">
+      <Filter>src\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util\Util.h">
@@ -143,12 +146,6 @@
     <ClInclude Include="Math\Vector.h">
       <Filter>src\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Block.h">
-      <Filter>src\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Box.h">
-      <Filter>src\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Camera.h">
       <Filter>src\Game</Filter>
     </ClInclude>
@@ -159,9 +156,6 @@
       <Filter>src\Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object.h">
-      <Filter>src\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Player.h">
       <Filter>src\Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Transform.h">
@@ -208,6 +202,15 @@
     </ClInclude>
     <ClInclude Include="Math\MathDefines.h">
       <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Block.h">
+      <Filter>src\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Box.h">
+      <Filter>src\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Player.h">
+      <Filter>src\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
