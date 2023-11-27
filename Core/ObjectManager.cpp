@@ -65,10 +65,12 @@ void ObjectManager::update(float dt) {
     for(auto& e : objects) {
         e.second->update(dt);
     }
+    // TODO: update chunks
 }
 
 void ObjectManager::update(int chunk_x, int chunk_y, int chunk_z, float dt) {
     for(auto& e : chunk_info[ChunkInfo { chunk_x, chunk_y, chunk_z }]) {
         e->update(dt);
     }
+    // TODO: update chunks
 }

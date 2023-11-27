@@ -20,6 +20,7 @@ interaction_distance { 4.0f }
     events_handler.link();
     renderer.setShader(&shader);
     renderer.camera = &camera;
+    renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
     initWorld();
 }
 
@@ -83,7 +84,7 @@ void Test::initObjects() {
     light1->transform.position = { 0, 30, 0 };
     light1->material.base_color = ColorRGB { RGB_White };
     light1->addComponent<Light>();
-    light1->getComponent<Light>()->ambient = 0.1f;
+    light1->getComponent<Light>()->ambient = 1.0f;
     objects.add("light1", light1);
 
     Box* light2 = new Box { "light2" };
