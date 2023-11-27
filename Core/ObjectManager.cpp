@@ -9,9 +9,9 @@ ChunkInfo::ChunkInfo(int x, int y, int z) : x { x }, y { y }, z { z } {
 }
 
 ChunkInfo::ChunkInfo(const Vector3& position) : ChunkInfo { 
-    int(position.x / chunk_size),
-    int(position.y / chunk_size),
-    int(position.z / chunk_size) } {
+    int(floorf(position.x / chunk_size)),
+    int(floorf(position.y / chunk_size)),
+    int(floorf(position.z / chunk_size)) } {
 
 }
 

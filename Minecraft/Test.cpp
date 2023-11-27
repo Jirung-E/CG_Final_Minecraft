@@ -55,33 +55,33 @@ void Test::initObjects() {
     Material gold { Material::metal };
     gold.base_color = ColorRGB { RGB_Yellow };
     for(auto& e : button_pos) {
-        generateBlock(e.first, 1, e.second, gold);
+        generateBlock(e.first, 2, e.second, gold);
     }
     for(int i=-10; i<10; ++i) {
         for(int k=-10; k<10; ++k) {
-            generateBlock(i, 0, k, (i+k)%2 ? Material::metal : Material::basic);
+            generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
         }
     }
     Material m { Material::basic };
     m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
-    generateBlock(1, 1, 0, m);
     generateBlock(1, 2, 0, m);
     generateBlock(1, 3, 0, m);
     generateBlock(1, 4, 0, m);
-    generateBlock(2, 4, 0, m);
-    generateBlock(3, 4, 0, m);
+    generateBlock(1, 5, 0, m);
+    generateBlock(2, 5, 0, m);
+    generateBlock(3, 5, 0, m);
+    generateBlock(4, 5, 0, m);
     generateBlock(4, 4, 0, m);
-    generateBlock(4, 3, 0, m);
+    generateBlock(5, 4, 0, m);
     generateBlock(5, 3, 0, m);
-    generateBlock(5, 2, 0, m);
+    generateBlock(6, 3, 0, m);
     generateBlock(6, 2, 0, m);
-    generateBlock(6, 1, 0, m);
-    generateBlock(7, 1, 0, m);
+    generateBlock(7, 2, 0, m);
 
     generatePlayerObject();
 
     Box* light1 = new Box { "light1" };
-    light1->transform.position = { 0, 30, 0 };
+    light1->transform.position = { 0, 20, 0 };
     light1->material.base_color = ColorRGB { RGB_White };
     light1->addComponent<Light>();
     light1->getComponent<Light>()->ambient = 1.0f;
@@ -96,6 +96,7 @@ void Test::initObjects() {
 
 void Test::generatePlayerObject() {
     player = new Player { "player" };
+    player->transform.position = { 0, 2, 0 };
     objects.add("player", player);
 }
 
@@ -132,10 +133,8 @@ void Test::update() {
     Game::update();
 
     for(auto& e : objects.get(0, 0, 0)) {
-        //Log::println(e->id);
         e->transform.position.y += dt;
     }
-    Log::println("player pos: %f, %f, %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
 
     for(auto& block : blocks) {
         if(collide(player->hitbox, block->hitbox)) {
