@@ -9,9 +9,9 @@ ChunkInfo::ChunkInfo(int x, int y, int z) : x { x }, y { y }, z { z } {
 }
 
 ChunkInfo::ChunkInfo(const Vector3& position) : ChunkInfo { 
-    int(floorf(position.x / chunk_size)),
-    int(floorf(position.y / chunk_size)),
-    int(floorf(position.z / chunk_size)) } {
+    int(position.x / (float)chunk_size),
+    int(position.y / (float)chunk_size),
+    int(position.z / (float)chunk_size) } {
 
 }
 
@@ -29,7 +29,6 @@ bool ChunkInfo::operator==(const ChunkInfo& other) const {
 
 void ObjectManager::add(const string& name, Object* object) {
     objects[name] = object;
-    chunk_info[ChunkInfo { object->transform.position }];
     chunk_info[ChunkInfo { object->transform.position }].push_back(object);
 }
 
@@ -45,7 +44,14 @@ Object* ObjectManager::get(const string& name) const {
 }
 
 vector<Object*> ObjectManager::get(int chunk_x, int chunk_y, int chunk_z) const {
+    if(chunk_info.find(ChunkInfo { chunk_x, chunk_y, chunk_z }) == chunk_info.end()) {
+        return vector<Object*> { };
+    }
     return chunk_info.at(ChunkInfo { chunk_x, chunk_y, chunk_z });
+}
+
+vector<Object*> ObjectManager::get(const ChunkInfo& chunk) const {
+    return get(chunk.x, chunk.y, chunk.z);
 }
 
 void ObjectManager::clear() {

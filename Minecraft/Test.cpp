@@ -15,7 +15,8 @@ shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
 view_mode { ViewMode::ThirdPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
-interaction_distance { 4.0f }
+interaction_distance { 4.0f },
+simulation_distance { 1 }
 {
     events_handler.link();
     renderer.setShader(&shader);
@@ -57,8 +58,9 @@ void Test::initObjects() {
     for(auto& e : button_pos) {
         generateBlock(e.first, 2, e.second, gold);
     }
-    for(int i=-10; i<10; ++i) {
-        for(int k=-10; k<10; ++k) {
+    int count = 16;
+    for(int i=-count; i<count; ++i) {
+        for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
         }
     }
@@ -96,7 +98,7 @@ void Test::initObjects() {
 
 void Test::generatePlayerObject() {
     player = new Player { "player" };
-    player->transform.position = { 0, 2, 0 };
+    player->transform.position = { 0, 3, 0 };
     objects.add("player", player);
 }
 
@@ -130,10 +132,28 @@ void Test::rotateHead(float dx, float dy) {
 
 
 void Test::update() {
-    Game::update();
+    //Game::update();
 
-    for(auto& e : objects.get(0, 0, 0)) {
-        e->transform.position.y += dt;
+    Log::log("dt: %f", dt);
+
+    player->update(dt);
+    Log::println("player position: %f, %f, %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    ChunkInfo player_chunk { player->transform.position };
+    for(int x=player_chunk.x-simulation_distance; x<=player_chunk.x+simulation_distance; ++x) {
+        for(int y=player_chunk.y-simulation_distance; y<=player_chunk.y+simulation_distance; ++y) {
+            for(int z=player_chunk.z-simulation_distance; z<=player_chunk.z+simulation_distance; ++z) {
+                //Log::log("chunk: %d %d %d", x, y, z);
+                //Log::log("size: %d", objects.get(x, y, z).size());
+                for(auto& e : objects.get(x, y, z)) {
+                    if(e == player) {
+                        //Log::log("player");
+                        continue;
+                    }
+                    e->transform.position.y += dt;
+                    e->update(dt);
+                }
+            }
+        }
     }
 
     for(auto& block : blocks) {
@@ -143,7 +163,7 @@ void Test::update() {
         if(collide(player->feet, block->hitbox)) {
             player->physics->velocity.y = 0;
             player->transform.position.y = block->top();
-            Log::log("player on block");
+            //Log::log("player on block");
         }
     }
 

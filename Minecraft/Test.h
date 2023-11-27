@@ -29,6 +29,7 @@ private:
     bool space_pressed;
 
     const float interaction_distance;
+    const int simulation_distance;
 
 public:
     Test();
@@ -41,7 +42,7 @@ private:
 
     void rotateHead(float dx, float dy);
 
-    void update();
+    virtual void update() override;
 
     // --------------------------------------------------------------------------------------------- //
 

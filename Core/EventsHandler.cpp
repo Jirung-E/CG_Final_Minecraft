@@ -6,7 +6,7 @@
 EventsHandler::EventsHandler(Game* game) : game { game }, 
     mouse_click_point { nullptr }, 
     mouse_prev_point { nullptr }, 
-    mouse_delta { 0, 0 }, timer_value { 0 } {
+    mouse_delta { 0, 0 }, timer_value { 10 } {
 
 }
 
@@ -20,7 +20,7 @@ EventsHandler& EventsHandler::getInstance(Game* game) {
 void EventsHandler::link() {
     glutDisplayFunc(drawScene);
     glutReshapeFunc(reshape);
-    glutTimerFunc(timer_value, timer, 0);
+    glutTimerFunc(timer_value, timer, timer_value);
     glutKeyboardFunc(keyboardEvent);
     glutKeyboardUpFunc(keyboardUpEvent);
     glutSpecialFunc(specialKeyEvent);
@@ -53,7 +53,7 @@ void EventsHandler::timer(int value) {
 
     handler.game->timer(value);
 
-    glutTimerFunc(handler.timer_value, timer, 0);
+    glutTimerFunc(handler.timer_value, timer, handler.timer_value);
 }
 
 void EventsHandler::keyboardEvent(unsigned char key, int x, int y) {
