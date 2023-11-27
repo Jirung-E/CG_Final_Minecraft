@@ -19,7 +19,7 @@ private:
         COUNT
     } view_mode;
 
-    float camera_distance;
+    const float camera_distance;
     Vector3 camera_direction;
     float vertical_sensitivity;
 
@@ -27,6 +27,8 @@ private:
     std::vector<Block*> blocks;
 
     bool space_pressed;
+
+    const float interaction_distance;
 
 public:
     Test();
@@ -46,6 +48,7 @@ private:
 private:
     virtual void keyboardEvent(unsigned char key) override;
     virtual void keyboardUpEvent(unsigned char key) override;
+    virtual void mouseClickEvent(int button, int state, int x, int y) override;
     virtual void mouseMotionEvent(const Vector2& delta) override;
     virtual void mouseDragEvent(const Vector2& delta) override;
 };

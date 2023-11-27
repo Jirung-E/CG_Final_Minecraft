@@ -3,6 +3,8 @@
 
 #include <ostream>
 
+#include "Math.h"
+
 
 namespace Math {
     class Point {
@@ -16,6 +18,9 @@ namespace Math {
         Point(float x, float y, float z = 0.0f);
         Point(const Point& point);
         Point();
+
+        Point(const Vector3& point);
+        operator Vector3() const;
 
         Point operator+(const Point& point) const;
 

@@ -15,15 +15,15 @@ Line::Line(Vector vector) : Line { Point {0, 0, 0}, vector } {
 
 
 bool Line::isExistPointOfContactWith(const Line& other) const {
-    if(getDistanceTo(other) == 0.0f) {
+    if(distanceTo(other) == 0.0f) {
         return true;
     }
     return false;
 }
 
-Point* Line::getPointOfContactWith(const Line& other) const {
+Point* Line::pointOfContactWith(const Line& other) const {
     if(isExistPointOfContactWith(other)) {
-        Point H { getFootOfPerpendicularFrom(other.point) };
+        Point H { footOfPerpendicularFrom(other.point) };
         float SH { distanceBetween(other.point, H) };
         float theta = angleBetween(vector, other.vector);
         if(theta == PI/2) {
@@ -61,16 +61,16 @@ Point* Line::getPointOfContactWith(const Line& other) const {
     return nullptr;
 }
 
-Point Line::getFootOfPerpendicularFrom(const Point& point) const {
-    return getFootOfPerpendicular(*this, point);
+Point Line::footOfPerpendicularFrom(const Point& point) const {
+    return footOfPerpendicular(*this, point);
 }
 
-float Line::getDistanceTo(const Point& point) const {
-    return getDistanceBetween(*this, point);
+float Line::distanceTo(const Point& point) const {
+    return distanceBetween(*this, point);
 }
 
-float Line::getDistanceTo(const Line& other) const {
-    return getDistanceBetween(*this, other);
+float Line::distanceTo(const Line& other) const {
+    return distanceBetween(*this, other);
 }
 
 bool Line::isParallelTo(const Line& other) const {
@@ -78,31 +78,31 @@ bool Line::isParallelTo(const Line& other) const {
 }
 
 
-float Line::getDistanceBetween(const Point& point, const Line& line) {
-    return getDistanceBetween(line, point);
+float Math::distanceBetween(const Point& point, const Line& line) {
+    return distanceBetween(line, point);
 }
 
-float Line::getDistanceBetween(const Line& line, const Point& point) {
+float Math::distanceBetween(const Line& line, const Point& point) {
     if(line.vector.magnitude() == 0.0f) {
         return Vector(line.point - point).magnitude();
     }
-    Point H { getFootOfPerpendicular(line, point) };
+    Point H { footOfPerpendicular(line, point) };
     Vector AH { H - point };
     return AH.magnitude();
 }
 
-float Line::getDistanceBetween(const Line& line1, const Line& line2) {
+float Math::distanceBetween(const Line& line1, const Line& line2) {
     if(line1.point == line2.point) {
         return 0.0f;
     }
     if(isParallel(line1, line2)) {
-        return getDistanceBetween(line1, line2.point);
+        return distanceBetween(line1, line2.point);
     }
     Vector start_point_to_start_point { line2.point - line1.point };
     return abs(start_point_to_start_point * line1.vector.cross(line2.vector.unit()));
 }
 
-bool Line::isParallel(const Line& line1, const Line& line2) {
+bool Math::isParallel(const Line& line1, const Line& line2) {
     if(line1.vector.magnitude() == 0.0f || line2.vector.magnitude() == 0.0f) {
         return true;
     }
@@ -112,7 +112,7 @@ bool Line::isParallel(const Line& line1, const Line& line2) {
     return false;
 }
 
-Point Line::getFootOfPerpendicular(const Line& line, const Point& point) {
+Point Math::footOfPerpendicular(const Line& line, const Point& point) {
     if(line.vector.magnitude() == 0.0f) {
         return line.point;
     }
@@ -126,8 +126,8 @@ Point Line::getFootOfPerpendicular(const Line& line, const Point& point) {
 }
 
 
-Point Line::rotate(const Point& point, const Line& axis, float radian) {
-    Point p { axis.getFootOfPerpendicularFrom(point) };
+Point Math::rotate(const Point& point, const Line& axis, float radian) {
+    Point p { axis.footOfPerpendicularFrom(point) };
     Vector v { point - p };
     Vector n { axis.vector.unit() };
     Vector result { (v*cos(radian)) + n*(1-cos(radian))*(v*n) + (n.cross(v) * sin(radian)) };

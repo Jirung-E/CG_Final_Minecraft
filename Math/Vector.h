@@ -4,6 +4,7 @@
 #include <ostream>
 
 #include "Point.h"
+#include "Math.h"
 
 
 namespace Math {
@@ -18,6 +19,9 @@ namespace Math {
         Vector(const Vector& vector);
         Vector(const Point& point);
         Vector();
+
+        Vector(const Vector3& vector);
+        operator Vector3() const;
 
         Vector operator+(const Vector& vector) const;
         Vector operator-(const Vector& vector) const;

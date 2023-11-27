@@ -3,14 +3,20 @@
 #include "../Game/Component/Light.h"
 #include "../Math/Line.h"
 
+#include <gl/freeglut.h>
+
 using namespace std;
 using namespace Math;
 
 
 Test::Test() : Game { "Test" },
-vertical_sensitivity { 0.8f },
 events_handler { EventsHandler::getInstance(this) },
-shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" } {
+shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
+view_mode { ViewMode::ThirdPerson },
+vertical_sensitivity { 0.8f },
+camera_distance { 4.0f },
+interaction_distance { 4.0f }
+{
     events_handler.link();
     renderer.setShader(&shader);
     renderer.camera = &camera;
@@ -23,10 +29,7 @@ void Test::initWorld() {
     camera.transform.position = { 0.0f, 0.0f, 4.0f };
     camera.lookAt({ 0, 0, 0 });
 
-    camera_distance = 4.0f;
     camera_direction = { -1, -1, -1 };
-
-    view_mode = ViewMode::ThirdPerson;
 
     initObjects();
 }
@@ -226,6 +229,36 @@ void Test::keyboardUpEvent(unsigned char key) {
         break;
     }
 
+}
+
+void Test::mouseClickEvent(int button, int state, int x, int y) {
+    Game::mouseClickEvent(button, state, x, y);
+
+    // 1. 가까운 오브젝트 검출
+    // 2. 블럭인 경우 오브젝트 하이라이팅
+    // 3. 좌/우 클릭에 따라 처리
+
+    // 오브젝트의 크기는 1*2*1을 넘지 않는다.(블럭: 1*1*1, 플레이어 히트박스: 0.5*1.6*0.5)
+    // 전체 월드의 오브젝트를 검사하기에는 비용이 너무 많이 드므로 오브젝트를 저장할때 청크 단위로 나눠서 저장, 
+    // 검사할시 현재 위치 기준 3*3*3 청크만 검사
+    // 청크 크기: 16*16*16
+
+    //if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    //    Vector3 ray = player->head->transform.forward();
+    //    Line line { Point { camera.transform.position }, Vector { ray } };
+    //    float min_distance = INFINITY;
+    //    Block* min_block = nullptr;
+    //    for(auto& block : blocks) {
+    //        float distance = distanceBetween(line, block->hitbox);
+    //        if(distance < min_distance) {
+    //            min_distance = distance;
+    //            min_block = block;
+    //        }
+    //    }
+    //    if(min_distance < interaction_distance) {
+    //        min_block->material.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
+    //    }
+    //}
 }
 
 void Test::mouseMotionEvent(const Vector2& delta) {

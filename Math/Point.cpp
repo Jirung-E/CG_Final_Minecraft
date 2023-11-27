@@ -18,6 +18,15 @@ Point::Point() : Point { 0, 0, 0 } {
 }
 
 
+Point::Point(const Vector3& point) : Point { point.x, point.y, point.z } {
+
+}
+
+Point::operator Vector3() const {
+    return Vector3 { x, y, z };
+}
+
+
 Point Point::operator+(const Point& point) const {
     return Point { x + point.x, y + point.y, z + point.z };
 }

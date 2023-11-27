@@ -22,6 +22,15 @@ Vector::Vector() : Vector { 0, 0, 0 } {
 }
 
 
+Vector::Vector(const Vector3& vector) : Vector { vector.x, vector.y, vector.z } {
+
+}
+
+Vector::operator Vector3() const {
+    return Vector3 { x, y, z };
+}
+
+
 Vector Vector::operator+(const Vector& vector) const {
     return Vector { x + vector.x, y + vector.y, z + vector.z };
 }
