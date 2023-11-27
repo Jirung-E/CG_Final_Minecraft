@@ -3,15 +3,16 @@
 using namespace std;
 
 
+const int ChunkInfo::chunk_size = 2;        // 테스트를 위해 2로 설정
 
 ChunkInfo::ChunkInfo(int x, int y, int z) : x { x }, y { y }, z { z } {
 
 }
 
 ChunkInfo::ChunkInfo(const Vector3& position) : ChunkInfo { 
-    int(position.x / (float)chunk_size),
-    int(position.y / (float)chunk_size),
-    int(position.z / (float)chunk_size) } {
+    int(floor(position.x / (float)chunk_size)),
+    int(floor(position.y / (float)chunk_size)),
+    int(floor(position.z / (float)chunk_size)) } {
 
 }
 
@@ -43,15 +44,15 @@ Object* ObjectManager::get(const string& name) const {
     return objects.at(name);
 }
 
-vector<Object*> ObjectManager::get(int chunk_x, int chunk_y, int chunk_z) const {
+vector<Object*> ObjectManager::getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const {
     if(chunk_info.find(ChunkInfo { chunk_x, chunk_y, chunk_z }) == chunk_info.end()) {
         return vector<Object*> { };
     }
     return chunk_info.at(ChunkInfo { chunk_x, chunk_y, chunk_z });
 }
 
-vector<Object*> ObjectManager::get(const ChunkInfo& chunk) const {
-    return get(chunk.x, chunk.y, chunk.z);
+vector<Object*> ObjectManager::getObjectsInChunk(const ChunkInfo& chunk) const {
+    return getObjectsInChunk(chunk.x, chunk.y, chunk.z);
 }
 
 void ObjectManager::clear() {

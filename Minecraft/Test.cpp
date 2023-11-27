@@ -58,7 +58,7 @@ void Test::initObjects() {
     for(auto& e : button_pos) {
         generateBlock(e.first, 2, e.second, gold);
     }
-    int count = 16;
+    int count = 10;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
@@ -132,23 +132,16 @@ void Test::rotateHead(float dx, float dy) {
 
 
 void Test::update() {
-    //Game::update();
-
     Log::log("dt: %f", dt);
 
-    player->update(dt);
-    Log::println("player position: %f, %f, %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    player->update(dt);   // ObjectManager에서 업데이트시 청크 정보도 업데이트 시키면 여기서 할 필요 없음
     ChunkInfo player_chunk { player->transform.position };
+    Log::println("player chunk: %d, %d, %d", player_chunk.x, player_chunk.y, player_chunk.z);
     for(int x=player_chunk.x-simulation_distance; x<=player_chunk.x+simulation_distance; ++x) {
         for(int y=player_chunk.y-simulation_distance; y<=player_chunk.y+simulation_distance; ++y) {
             for(int z=player_chunk.z-simulation_distance; z<=player_chunk.z+simulation_distance; ++z) {
-                //Log::log("chunk: %d %d %d", x, y, z);
-                //Log::log("size: %d", objects.get(x, y, z).size());
-                for(auto& e : objects.get(x, y, z)) {
-                    if(e == player) {
-                        //Log::log("player");
-                        continue;
-                    }
+                for(auto& e : objects.getObjectsInChunk(x, y, z)) {
+                    if(e == player) continue;
                     e->transform.position.y += dt;
                     e->update(dt);
                 }
