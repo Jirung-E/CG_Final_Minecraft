@@ -148,6 +148,10 @@ ColorHSV::ColorHSV(int h, float s, float v, float a): ColorHSV { float((h >= 0 ?
 
 }
 
+ColorHSV::ColorHSV() : ColorHSV { 0.0f, 1.0f, 1.0f } {
+
+}
+
 
 ColorRGB convertHSVToRGB(const ColorHSV& hsv) {
     float angle = hsv.h * 360;
@@ -212,22 +216,24 @@ void Log::errorLog(const string& error) {
 }
 
 void Log::print(const char* format, ...) {
-    if(!print_log) {
-        return;
-    }
     va_list args;
     va_start(args, format);
     vprintf(format, args);
     va_end(args);
 }
 
+void Log::print(const std::string& text) {
+	printf(text.c_str());
+}
+
 void Log::println(const char* format, ...) {
-    if(!print_log) {
-        return;
-    }
     va_list args;
     va_start(args, format);
     vprintf(format, args);
     putchar('\n');
     va_end(args);
+}
+
+void Log::println(const std::string& text) {
+    println(text.c_str());
 }

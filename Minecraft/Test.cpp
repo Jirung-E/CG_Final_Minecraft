@@ -80,7 +80,7 @@ void Test::initObjects() {
     generatePlayerObject();
 
     Box* light1 = new Box { "light1" };
-    light1->transform.position = { 0, 10, 0 };
+    light1->transform.position = { 0, 30, 0 };
     light1->material.base_color = ColorRGB { RGB_White };
     light1->addComponent<Light>();
     light1->getComponent<Light>()->ambient = 0.1f;
@@ -129,6 +129,12 @@ void Test::rotateHead(float dx, float dy) {
 
 void Test::update() {
     Game::update();
+
+    for(auto& e : objects.get(0, 0, 0)) {
+        //Log::println(e->id);
+        e->transform.position.y += dt;
+    }
+    Log::println("player pos: %f, %f, %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
 
     for(auto& block : blocks) {
         if(collide(player->hitbox, block->hitbox)) {

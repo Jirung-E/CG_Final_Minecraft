@@ -96,6 +96,7 @@ public:
 public:
     ColorHSV(float h, float s, float v, float a=1.0f);
     ColorHSV(int h, float s, float v, float a=1.0f);
+    ColorHSV();
 };
 
 
@@ -115,7 +116,9 @@ public:
     static void log(const char* format, ...);
     static void errorLog(const std::string& error);
     static void print(const char* format, ...);
+    static void print(const std::string& text);
     static void println(const char* format, ...);
+    static void println(const std::string& text);
 };
 
 #endif
