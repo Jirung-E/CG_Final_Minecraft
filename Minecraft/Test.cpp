@@ -143,23 +143,22 @@ void Test::update() {
     for(int x=player_chunk.x-simulation_distance; x<=player_chunk.x+simulation_distance; ++x) {
         for(int y=player_chunk.y-simulation_distance; y<=player_chunk.y+simulation_distance; ++y) {
             for(int z=player_chunk.z-simulation_distance; z<=player_chunk.z+simulation_distance; ++z) {
+                objects.update(x, y, z, dt);
+
                 for(auto& e : objects.getObjectsInChunk(x, y, z)) {
                     if(e == player) continue;
                     //e->transform.position.y += dt;
-                }
-                objects.update(x, y, z, dt);
-            }
-        }
-    }
 
-    for(auto& block : blocks) {
-        if(collide(player->hitbox, block->hitbox)) {
-            player->update(-dt);        // TODO: 여기 처리 제대로 해야함
-        }
-        if(collide(player->feet, block->hitbox)) {
-            player->physics->velocity.y = 0;
-            player->transform.position.y = block->top();
-            //Log::log("player on block");
+                    AABB* hitbox = e->getComponent<AABB>();
+                    if(collide(player->hitbox, hitbox)) {
+                        player->update(-dt);        // TODO: 여기 처리 제대로 해야함
+                    }
+                    if(collide(player->feet, hitbox)) {
+                        player->physics->velocity.y = 0;
+                        player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
+                    }
+                }
+            }
         }
     }
 
