@@ -45,11 +45,11 @@ public:
     Object* get(const std::string& name) const;
     std::vector<Object*> getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const;  // 특정 청크 안의 오브젝트들을 가져옴
     std::vector<Object*> getObjectsInChunk(const ChunkInfo& chunk) const;
+    std::vector<Object*> getObjectsInRadius(const Vector3& position, int radius) const;
     void clear();
     void deleteAll();
 
     void update(float dt);
-    void update(int chunk_x, int chunk_y, int chunk_z, float dt);          // 특정 청크만 업데이트
 
     auto begin() const { return objects.begin(); }
     auto end() const { return objects.end(); }

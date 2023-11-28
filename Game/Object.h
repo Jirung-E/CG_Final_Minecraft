@@ -58,11 +58,12 @@ public:
 
     template <class T>
     void removeComponent() {
-        // TODO: 해당되는거 다 지워지는지 확인
         static_assert(std::is_base_of<Component, T>::value, "T must be a Component");
         for(auto component : components) {
             if(dynamic_cast<T*>(component)) {
                 components.erase(component);
+                delete component;
+                break;
             }
         }
     }

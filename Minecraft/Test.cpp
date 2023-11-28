@@ -45,23 +45,16 @@ void Test::initObjects() {
     objects.clear();
     blocks.clear();
 
-    std::pair<int, int> button_pos[] = {
-        { -2, 1 },
-        { -4, 2 },
-        { -2, 3 },
-        { -4, 4 },
-        { -2, 5 },
-        { -4, 6 },
-    };
-    Material gold { Material::metal };
-    gold.base_color = ColorRGB { RGB_Yellow };
-    for(auto& e : button_pos) {
-        generateBlock(e.first, 2, e.second, gold);
-        blocks.back()->addComponent<Physics>();
-        blocks.back()->getComponent<Physics>()->velocity.x = 0.5f;
-        blocks.back()->getComponent<Physics>()->gravity = { 0, 0, 0 };
+    for(int x=-6; x<0; ++x) {
+        for(int z=1; z<7; ++z) {
+            generateBlock(x, 2, z, Material::basic);
+            blocks.back()->addComponent<Physics>();
+            blocks.back()->getComponent<Physics>()->velocity.x = 0.5f;
+            blocks.back()->getComponent<Physics>()->gravity = { 0, 0, 0 };
+            blocks.back()->removeComponent<AABB>();
+        }
     }
-    int count = 10;
+    int count = 16;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
@@ -137,28 +130,18 @@ void Test::rotateHead(float dx, float dy) {
 void Test::update() {
     Log::log("dt: %f", dt);
 
-    //player->update(dt);   // ObjectManager에서 업데이트시 청크 정보도 업데이트 시키면 여기서 할 필요 없음
-    ChunkInfo player_chunk { player->transform.position };
-    Log::println("player chunk: %d, %d, %d", player_chunk.x, player_chunk.y, player_chunk.z);
-    for(int x=player_chunk.x-simulation_distance; x<=player_chunk.x+simulation_distance; ++x) {
-        for(int y=player_chunk.y-simulation_distance; y<=player_chunk.y+simulation_distance; ++y) {
-            for(int z=player_chunk.z-simulation_distance; z<=player_chunk.z+simulation_distance; ++z) {
-                objects.update(x, y, z, dt);
-
-                for(auto& e : objects.getObjectsInChunk(x, y, z)) {
-                    if(e == player) continue;
-                    //e->transform.position.y += dt;
-
-                    AABB* hitbox = e->getComponent<AABB>();
-                    if(collide(player->hitbox, hitbox)) {
-                        player->update(-dt);        // TODO: 여기 처리 제대로 해야함
-                    }
-                    if(collide(player->feet, hitbox)) {
-                        player->physics->velocity.y = 0;
-                        player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
-                    }
-                }
-            }
+    player->update(dt);
+    auto objs = objects.getObjectsInRadius(player->transform.position, interaction_distance);
+    for(auto& e : objs) {
+        if(e == player) continue;
+        e->update(dt);
+        AABB* hitbox = e->getComponent<AABB>();
+        if(collide(player->hitbox, hitbox)) {
+            player->update(-dt);        // TODO: 여기 처리 제대로 해야함
+        }
+        if(collide(player->feet, hitbox)) {
+            player->physics->velocity.y = 0;
+            player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
         }
     }
 
@@ -259,25 +242,8 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
     // 2. 그중 가장 가까운 오브젝트 찾기
     // 3. 블럭인 경우 오브젝트 하이라이팅
     // 4. 좌/우 클릭에 따라 처리
-
     // 오브젝트의 크기는 1*2*1을 넘지 않는다.(블럭: 1*1*1, 플레이어 히트박스: 0.5*1.6*0.5)
 
-    //if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-    //    Vector3 ray = player->head->transform.forward();
-    //    Line line { Point { camera.transform.position }, Vector { ray } };
-    //    float min_distance = INFINITY;
-    //    Block* min_block = nullptr;
-    //    for(auto& block : blocks) {
-    //        float distance = distanceBetween(line, block->hitbox);
-    //        if(distance < min_distance) {
-    //            min_distance = distance;
-    //            min_block = block;
-    //        }
-    //    }
-    //    if(min_distance < interaction_distance) {
-    //        min_block->material.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
-    //    }
-    //}
 }
 
 void Test::mouseMotionEvent(const Vector2& delta) {
