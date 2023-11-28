@@ -74,17 +74,26 @@ vector<Object*> ChunkBasedObjectManager::getObjectsInChunk(int chunk_x, int chun
     return getObjectsInChunk(ChunkInfo { chunk_x, chunk_y, chunk_z });
 }
 
-vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& position, int radius) const {
+vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& position, int radius) {
     vector<Object*> result;
     ChunkInfo center_chunk { position };
     for(int x=center_chunk.x-radius; x<=center_chunk.x+radius; ++x) {
+        int dx = abs(x - center_chunk.x);
         for(int y=center_chunk.y-radius; y<=center_chunk.y+radius; ++y) {
+            int dy = abs(y - center_chunk.y);
             for(int z=center_chunk.z-radius; z<=center_chunk.z+radius; ++z) {
-                if(x*x + y*y + z*z > radius*radius) {
+                int dz = abs(z - center_chunk.z);
+                if(dx*dx + dy*dy + dz*dz > radius*radius) {
                     continue;
                 }
                 for(auto& e : getObjectsInChunk(x, y, z)) {
                     result.push_back(e);
+                    if(Block* block = dynamic_cast<Block*>(e)) {        // TODO: 최적화 필요 - 호출될때마다 dynamic_cast를 하면 비효율적
+                        blocks.push_back(block);
+                    }
+                    else if(Entity* entity = dynamic_cast<Entity*>(e)) {
+                        entities.push_back(entity);
+                    }
                 }
             }
         }
@@ -94,16 +103,35 @@ vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& posit
 
 
 void ChunkBasedObjectManager::update(float dt, int radius) {
-    vector<Object*> objs = getObjectsInRadius(player->transform.position, radius);
+    auto objs = getObjectsInRadius(player->transform.position, radius);
+    
     for(auto& e : objs) {
+        ChunkInfo chunk { e->transform.position };
+
 		e->update(dt);
-		AABB* hitbox = e->getComponent<AABB>();
-        if(collide(player->hitbox, hitbox)) {
-			player->update(-dt);        // TODO: 여기 처리 제대로 해야함
-		}
-        if(collide(player->feet, hitbox)) {
-			player->physics->velocity.y = 0;
-			player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
-		}
+
+        ChunkInfo new_chunk { e->transform.position };
+        if(chunk != new_chunk) {
+            chunk_info[new_chunk].push_back(e);
+            auto it = find(chunk_info[chunk].begin(), chunk_info[chunk].end(), e);
+            if(it != chunk_info[chunk].end()) {
+                chunk_info[chunk].erase(it);
+            }
+        }
 	}
+
+    // TODO: 최적화 필요 - blocks는 반복문을 2번 돔
+    for(auto& e : blocks) {
+        AABB* hitbox = e->getComponent<AABB>();     // 충돌체크로 보정된 위치에 가게 되면 소속된 청크가 변경될 수 있음. 
+        // 방지하기 위해서는 블럭 먼저 업데이트, 그 뒤에 엔티티 업데이트
+        // 하지만 블럭이 움직이지 않을거라 일단 이대로
+        if(collide(player->hitbox, hitbox)) {
+            player->update(-dt);        // TODO: 여기 처리 제대로 해야함
+        }
+        if(collide(player->feet, hitbox)) {
+            Log::println("player on block");
+            player->physics->velocity.y = 0;
+            player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
+        }
+    }
 }
