@@ -130,6 +130,7 @@ void Test::rotateHead(float dx, float dy) {
 void Test::update() {
     Log::log("dt: %f", dt);
 
+    // TODO: 소속 청크 정보 갱신 또 안함..
     player->update(dt);
     auto objs = objects.getObjectsInRadius(player->transform.position, interaction_distance);
     for(auto& e : objs) {

@@ -43,9 +43,9 @@ public:
     void add(const std::string& name, Object* object);
     void remove(const std::string& name);       // delete는 같이 하지 않음
     Object* get(const std::string& name) const;
-    std::vector<Object*> getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const;  // 특정 청크 안의 오브젝트들을 가져옴
     std::vector<Object*> getObjectsInChunk(const ChunkInfo& chunk) const;
-    std::vector<Object*> getObjectsInRadius(const Vector3& position, int radius) const;
+    std::vector<Object*> getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const;    // 특정 청크 안의 오브젝트들을 가져옴
+    std::vector<Object*> getObjectsInRadius(const Vector3& position, int radius) const;     // radius: 청크 단위
     void clear();
     void deleteAll();
 

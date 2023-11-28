@@ -48,15 +48,15 @@ Object* ObjectManager::get(const string& name) const {
     return objects.at(name);
 }
 
-vector<Object*> ObjectManager::getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const {
-    if(chunk_info.find(ChunkInfo { chunk_x, chunk_y, chunk_z }) == chunk_info.end()) {
+vector<Object*> ObjectManager::getObjectsInChunk(const ChunkInfo& chunk) const {
+    if(chunk_info.find(chunk) == chunk_info.end()) {
         return vector<Object*> { };
     }
-    return chunk_info.at(ChunkInfo { chunk_x, chunk_y, chunk_z });
+    return chunk_info.at(chunk);
 }
 
-vector<Object*> ObjectManager::getObjectsInChunk(const ChunkInfo& chunk) const {
-    return getObjectsInChunk(chunk.x, chunk.y, chunk.z);
+vector<Object*> ObjectManager::getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const {
+    return getObjectsInChunk(ChunkInfo { chunk_x, chunk_y, chunk_z });
 }
 
 vector<Object*> ObjectManager::getObjectsInRadius(const Vector3& position, int radius) const {
