@@ -126,6 +126,9 @@
     <ClCompile Include="Objects\Player.cpp">
       <Filter>src\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Minecraft\ChunkBasedObjectManager.cpp">
+      <Filter>src\Minecraft</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util\Util.h">
@@ -211,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="Objects\Player.h">
       <Filter>src\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\ChunkBasedObjectManager.h">
+      <Filter>src\Minecraft</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

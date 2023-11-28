@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ChunkBasedObjectManager.h"
 #include "../Core/Game.h"
 #include "../Core/Shader.h"
 #include "../Core/EventsHandler.h"
@@ -11,6 +12,7 @@ class Test : public Game {   // singleton
 private:
     EventsHandler& events_handler;
     Shader shader;
+    ChunkBasedObjectManager objects_manager;
 
     enum ViewMode {
         FirstPerson,

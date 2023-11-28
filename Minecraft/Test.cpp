@@ -1,5 +1,6 @@
 #include "Test.h"
 
+#include "ChunkBasedObjectManager.h"
 #include "../Game/Component/Light.h"
 #include "../Math/Line.h"
 
@@ -12,6 +13,7 @@ using namespace Math;
 Test::Test() : Game { "Test" },
 events_handler { EventsHandler::getInstance(this) },
 shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
+objects_manager { objects },
 view_mode { ViewMode::ThirdPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
@@ -37,12 +39,7 @@ void Test::initWorld() {
 }
 
 void Test::initObjects() {
-    for(auto& e : objects) {
-        if(e.second->parent == nullptr) {
-            delete e.second;
-        }
-    }
-    objects.clear();
+    objects_manager.deleteAll();
     blocks.clear();
 
     for(int x=-6; x<0; ++x) {
@@ -83,7 +80,7 @@ void Test::initObjects() {
     light1->material.base_color = ColorRGB { RGB_White };
     light1->addComponent<Light>();
     light1->getComponent<Light>()->ambient = 1.0f;
-    objects.add("light1", light1);
+    objects_manager.add("light1", light1);
 
     Box* light2 = new Box { "light2" };
     light2->transform.position = { 5, 5, 5 };
@@ -95,7 +92,8 @@ void Test::initObjects() {
 void Test::generatePlayerObject() {
     player = new Player { "player" };
     player->transform.position = { 0, 3, 0 };
-    objects.add("player", player);
+    objects_manager.player = player;
+    objects_manager.add("player", player);
 }
 
 void Test::generateBlock(int x, int y, int z, const Material& material) {
@@ -106,7 +104,7 @@ void Test::generateBlock(int x, int y, int z, const Material& material) {
     block->transform.position = { x+0.5f, y-0.5f, z+0.5f };
     block->material = material;
 
-    objects.add(id, block);
+    objects_manager.add(id, block);
     blocks.push_back(block);
 }
 
@@ -130,21 +128,7 @@ void Test::rotateHead(float dx, float dy) {
 void Test::update() {
     Log::log("dt: %f", dt);
 
-    // TODO: 소속 청크 정보 갱신 또 안함..
-    player->update(dt);
-    auto objs = objects.getObjectsInRadius(player->transform.position, interaction_distance);
-    for(auto& e : objs) {
-        if(e == player) continue;
-        e->update(dt);
-        AABB* hitbox = e->getComponent<AABB>();
-        if(collide(player->hitbox, hitbox)) {
-            player->update(-dt);        // TODO: 여기 처리 제대로 해야함
-        }
-        if(collide(player->feet, hitbox)) {
-            player->physics->velocity.y = 0;
-            player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
-        }
-    }
+    objects_manager.update(dt, simulation_distance);
 
     if(space_pressed) {
         player->jump();

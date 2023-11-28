@@ -158,6 +158,7 @@
     <ClCompile Include="Math\Plane.cpp" />
     <ClCompile Include="Math\Point.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
+    <ClCompile Include="Minecraft\ChunkBasedObjectManager.cpp" />
     <ClCompile Include="Minecraft\Test.cpp" />
     <ClCompile Include="Objects\Block.cpp" />
     <ClCompile Include="Objects\Box.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Math\Plane.h" />
     <ClInclude Include="Math\Point.h" />
     <ClInclude Include="Math\Vector.h" />
+    <ClInclude Include="Minecraft\ChunkBasedObjectManager.h" />
     <ClInclude Include="Minecraft\Test.h" />
     <ClInclude Include="Objects\Block.h" />
     <ClInclude Include="Objects\Box.h" />
