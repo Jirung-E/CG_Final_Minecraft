@@ -24,6 +24,10 @@ bool ChunkInfo::operator==(const ChunkInfo& other) const {
     return x == other.x && y == other.y && z == other.z;
 }
 
+bool ChunkInfo::operator!=(const ChunkInfo& other) const {
+    return !(*this == other);
+}
+
 
 // ---------------------------------------------------------------------------- //
 
@@ -70,14 +74,27 @@ void ObjectManager::deleteAll() {
 
 void ObjectManager::update(float dt) {
     for(auto& e : objects) {
+        ChunkInfo chunk { e.second->transform.position };
+
         e.second->update(dt);
+
+        ChunkInfo new_chunk { e.second->transform.position };
+        if(new_chunk != chunk) {
+            chunk_info[new_chunk].push_back(e.second);
+            chunk_info[chunk].erase(find(chunk_info[chunk].begin(), chunk_info[chunk].end(), e.second));
+        }
     }
-    // TODO: update chunks
 }
 
 void ObjectManager::update(int chunk_x, int chunk_y, int chunk_z, float dt) {
-    for(auto& e : chunk_info[ChunkInfo { chunk_x, chunk_y, chunk_z }]) {
-        e->update(dt);
+    ChunkInfo chunk { chunk_x, chunk_y, chunk_z };
+    for(auto it = chunk_info[chunk].begin(); it != chunk_info[chunk].end(); ++it) {
+        (*it)->update(dt);
+
+        ChunkInfo new_chunk { (*it)->transform.position };
+        if(new_chunk != chunk) {
+            chunk_info[new_chunk].push_back(*it);
+            chunk_info[chunk].erase(it--);
+        }
     }
-    // TODO: update chunks
 }

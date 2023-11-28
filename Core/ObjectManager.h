@@ -6,13 +6,6 @@
 #include "../Game/Object.h"
 
 
-// TODO
-// - [ ] 청크 단위로 나눠서 관리
-// - [ ] 오브젝트 id를 받으면 현재 청크 출력
-//   - [ ] 오브젝트의 위치를 계산해서 청크 리턴
-// - [x] 청크 단위로 업데이트
-
-
 class ChunkInfo {
 public:
     int x;
@@ -26,6 +19,7 @@ public:
     ChunkInfo(const ChunkInfo& other);
 
     bool operator==(const ChunkInfo& other) const;
+    bool operator!=(const ChunkInfo& other) const;
 };
 
 

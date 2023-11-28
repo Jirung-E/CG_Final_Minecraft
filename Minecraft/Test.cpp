@@ -16,7 +16,7 @@ view_mode { ViewMode::ThirdPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
-simulation_distance { 1 }
+simulation_distance { 2 }
 {
     events_handler.link();
     renderer.setShader(&shader);
@@ -57,6 +57,9 @@ void Test::initObjects() {
     gold.base_color = ColorRGB { RGB_Yellow };
     for(auto& e : button_pos) {
         generateBlock(e.first, 2, e.second, gold);
+        blocks.back()->addComponent<Physics>();
+        blocks.back()->getComponent<Physics>()->velocity.x = 0.5f;
+        blocks.back()->getComponent<Physics>()->gravity = { 0, 0, 0 };
     }
     int count = 10;
     for(int i=-count; i<count; ++i) {
@@ -134,7 +137,7 @@ void Test::rotateHead(float dx, float dy) {
 void Test::update() {
     Log::log("dt: %f", dt);
 
-    player->update(dt);   // ObjectManager에서 업데이트시 청크 정보도 업데이트 시키면 여기서 할 필요 없음
+    //player->update(dt);   // ObjectManager에서 업데이트시 청크 정보도 업데이트 시키면 여기서 할 필요 없음
     ChunkInfo player_chunk { player->transform.position };
     Log::println("player chunk: %d, %d, %d", player_chunk.x, player_chunk.y, player_chunk.z);
     for(int x=player_chunk.x-simulation_distance; x<=player_chunk.x+simulation_distance; ++x) {
@@ -142,9 +145,9 @@ void Test::update() {
             for(int z=player_chunk.z-simulation_distance; z<=player_chunk.z+simulation_distance; ++z) {
                 for(auto& e : objects.getObjectsInChunk(x, y, z)) {
                     if(e == player) continue;
-                    e->transform.position.y += dt;
-                    e->update(dt);
+                    //e->transform.position.y += dt;
                 }
+                objects.update(x, y, z, dt);
             }
         }
     }
@@ -253,14 +256,12 @@ void Test::keyboardUpEvent(unsigned char key) {
 void Test::mouseClickEvent(int button, int state, int x, int y) {
     Game::mouseClickEvent(button, state, x, y);
 
-    // 1. 가까운 오브젝트 검출
-    // 2. 블럭인 경우 오브젝트 하이라이팅
-    // 3. 좌/우 클릭에 따라 처리
+    // 1. 시선과 겹치는 오브젝트 검출
+    // 2. 그중 가장 가까운 오브젝트 찾기
+    // 3. 블럭인 경우 오브젝트 하이라이팅
+    // 4. 좌/우 클릭에 따라 처리
 
     // 오브젝트의 크기는 1*2*1을 넘지 않는다.(블럭: 1*1*1, 플레이어 히트박스: 0.5*1.6*0.5)
-    // 전체 월드의 오브젝트를 검사하기에는 비용이 너무 많이 드므로 오브젝트를 저장할때 청크 단위로 나눠서 저장, 
-    // 검사할시 현재 위치 기준 3*3*3 청크만 검사
-    // 청크 크기: 16*16*16
 
     //if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     //    Vector3 ray = player->head->transform.forward();
