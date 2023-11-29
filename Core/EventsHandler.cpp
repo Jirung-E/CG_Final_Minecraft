@@ -6,7 +6,7 @@
 EventsHandler::EventsHandler(Game* game) : game { game }, 
     mouse_click_point { nullptr }, 
     mouse_prev_point { nullptr }, 
-    mouse_delta { 0, 0 }, timer_value { 10 } {
+    mouse_delta { 0, 0 }, timer_value { 0 } {
 
 }
 

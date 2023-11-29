@@ -150,8 +150,7 @@ void Renderer::setShader(Shader* shader) {
 
 
 void Renderer::pushVertex(const Vector3& point, const Vector3& normal) {
-    glm::vec4 p { point, 1.0f };
-    vertices.push_back(p);
+    vertices.push_back(point);
     normals.push_back(normal);
 }
 

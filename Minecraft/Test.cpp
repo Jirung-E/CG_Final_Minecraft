@@ -40,18 +40,13 @@ void Test::initWorld() {
 
 void Test::initObjects() {
     objects_manager.deleteAll();
-    blocks.clear();
 
     for(int x=-6; x<0; ++x) {
         for(int z=1; z<7; ++z) {
             generateBlock(x, 2, z, Material::basic);
-            blocks.back()->addComponent<Physics>();
-            blocks.back()->getComponent<Physics>()->velocity.x = 0.5f;
-            blocks.back()->getComponent<Physics>()->gravity = { 0, 0, 0 };
-            blocks.back()->removeComponent<AABB>();
         }
     }
-    int count = 16;
+    int count = 64;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
@@ -105,7 +100,6 @@ void Test::generateBlock(int x, int y, int z, const Material& material) {
     block->material = material;
 
     objects_manager.add(id, block);
-    blocks.push_back(block);
 }
 
 
@@ -118,8 +112,8 @@ void Test::rotateHead(float dx, float dy) {
     if(angle <= 0) {
         dy = -acos(s);
     }
-    else if(angle >= M_PI) {
-        dy = static_cast<float>(M_PI - acos(s));
+    else if(angle >= PI) {
+        dy = static_cast<float>(PI - acos(s));
     }
     player->head->transform.rotateX(dy * vertical_sensitivity);
 }

@@ -26,7 +26,6 @@ private:
     float vertical_sensitivity;
 
     Player* player;
-    std::vector<Block*> blocks;
 
     bool space_pressed;
 
