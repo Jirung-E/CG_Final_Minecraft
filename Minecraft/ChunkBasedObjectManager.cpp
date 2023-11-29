@@ -103,6 +103,9 @@ vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& posit
 
 
 void ChunkBasedObjectManager::update(float dt, int radius) {
+    blocks.clear();
+    entities.clear();
+
     auto objs = getObjectsInRadius(player->transform.position, radius);
     
     for(auto& e : objs) {
@@ -129,7 +132,6 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             player->update(-dt);        // TODO: 여기 처리 제대로 해야함
         }
         if(collide(player->feet, hitbox)) {
-            Log::println("player on block");
             player->physics->velocity.y = 0;
             player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
         }
