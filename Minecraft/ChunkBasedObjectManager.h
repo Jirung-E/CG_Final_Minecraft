@@ -36,11 +36,11 @@ class ChunkBasedObjectManager {
 public:
     ObjectManager& objects;
     Player* player;
-    std::vector<Block*> blocks;     // 범위 안의 블럭 리스트
-    std::vector<Entity*> entities;  // 범위 안의 엔티티 리스트
+    std::unordered_set<Block*> blocks;     // 범위 안의 블럭 리스트
+    std::unordered_set<Entity*> entities;  // 범위 안의 엔티티 리스트
 
 protected:
-    std::unordered_map<ChunkInfo, std::vector<Object*>> chunk_info;
+    std::unordered_map<ChunkInfo, std::unordered_set<Object*>> chunk_info;
 
 public:
     ChunkBasedObjectManager(ObjectManager& objects);
@@ -52,9 +52,9 @@ public:
     void clear();
     void deleteAll();
 
-    std::vector<Object*> getObjectsInChunk(const ChunkInfo& chunk) const;
-    std::vector<Object*> getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const;    // 특정 청크 안의 오브젝트들을 가져옴
-    std::vector<Object*> getObjectsInRadius(const Vector3& position, int radius);           // radius: 청크 단위
+    std::unordered_set<Object*> getObjectsInChunk(const ChunkInfo& chunk) const;
+    std::unordered_set<Object*> getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const;    // 특정 청크 안의 오브젝트들을 가져옴
+    std::unordered_set<Object*> getObjectsInRadius(const Vector3& position, int radius);           // radius: 청크 단위
     
     void update(float dt, int radius);  // 플레이어의 위치를 기준으로 radius 청크 안의 오브젝트 업데이트
 };

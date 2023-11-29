@@ -51,7 +51,7 @@ void Test::initObjects() {
             blocks.back()->removeComponent<AABB>();
         }
     }
-    int count = 4;
+    int count = 16;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);

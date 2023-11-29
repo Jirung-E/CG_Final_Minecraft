@@ -38,7 +38,7 @@ ChunkBasedObjectManager::ChunkBasedObjectManager(ObjectManager& objects) : objec
 
 void ChunkBasedObjectManager::add(const string& name, Object* object) {
     objects.add(name, object);
-    chunk_info[ChunkInfo { object->transform.position }].push_back(object);
+    chunk_info[ChunkInfo { object->transform.position }].insert(object);
 }
 
 void ChunkBasedObjectManager::remove(const string& name) {
@@ -63,19 +63,19 @@ void ChunkBasedObjectManager::deleteAll() {
 }
 
 
-vector<Object*> ChunkBasedObjectManager::getObjectsInChunk(const ChunkInfo& chunk) const {
+unordered_set<Object*> ChunkBasedObjectManager::getObjectsInChunk(const ChunkInfo& chunk) const {
     if(chunk_info.find(chunk) == chunk_info.end()) {
-        return vector<Object*> { };
+        return unordered_set<Object*> { };
     }
     return chunk_info.at(chunk);
 }
 
-vector<Object*> ChunkBasedObjectManager::getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const {
+unordered_set<Object*> ChunkBasedObjectManager::getObjectsInChunk(int chunk_x, int chunk_y, int chunk_z) const {
     return getObjectsInChunk(ChunkInfo { chunk_x, chunk_y, chunk_z });
 }
 
-vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& position, int radius) {
-    vector<Object*> result;
+unordered_set<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& position, int radius) {
+    unordered_set<Object*> result;
     ChunkInfo center_chunk { position };
     for(int x=center_chunk.x-radius; x<=center_chunk.x+radius; ++x) {
         int dx = abs(x - center_chunk.x);
@@ -87,12 +87,12 @@ vector<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& posit
                     continue;
                 }
                 for(auto& e : getObjectsInChunk(x, y, z)) {
-                    result.push_back(e);
+                    result.insert(e);
                     if(Block* block = dynamic_cast<Block*>(e)) {        // TODO: 최적화 필요 - 호출될때마다 dynamic_cast를 하면 비효율적
-                        blocks.push_back(block);
+                        blocks.insert(block);
                     }
                     else if(Entity* entity = dynamic_cast<Entity*>(e)) {
-                        entities.push_back(entity);
+                        entities.insert(entity);
                     }
                 }
             }
@@ -112,10 +112,11 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
         ChunkInfo chunk { e->transform.position };
 
 		e->update(dt);
+        //e->transform.position.y += dt;
 
         ChunkInfo new_chunk { e->transform.position };
         if(chunk != new_chunk) {
-            chunk_info[new_chunk].push_back(e);
+            chunk_info[new_chunk].insert(e);
             auto it = find(chunk_info[chunk].begin(), chunk_info[chunk].end(), e);
             if(it != chunk_info[chunk].end()) {
                 chunk_info[chunk].erase(it);
