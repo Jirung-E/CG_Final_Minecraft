@@ -3,14 +3,15 @@
 #include "../Game/Component/Light.h"
 #include "../Shader/Material.h"
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <gl/glew.h>
+#include <gl/freeglut.h>
 
 using namespace std;
 
 
 Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_mode { Solid }, shader { shader },
     vao { 0 }, vbo { 0 },
+    background_texture_id { 0 },
     background_color { 0.0f, 0.0f, 0.0f } {
 
 }
@@ -47,18 +48,26 @@ void Renderer::renderObject(const Object* object) {
 
         unsigned int color_location = glGetUniformLocation(shader->program_id, "material.color");
         const ColorRGB& c = object->material.base_color;
-        glUniform3f(color_location, c.r, c.g, c.b);
+        glUniform4f(color_location, c.r, c.g, c.b, c.a);
         unsigned int shininess_location = glGetUniformLocation(shader->program_id, "material.shininess");
         glUniform1f(shininess_location, object->material.shininess);
         unsigned int reflectivity_location = glGetUniformLocation(shader->program_id, "material.reflectivity");
         glUniform1f(reflectivity_location, object->material.reflectivity);
+
+        unsigned int use_texture_location = glGetUniformLocation(shader->program_id, "use_texture");
+        glUniform1i(use_texture_location, object->model->texture_id.size());
 
         pushFacesToBuffer(object);
         initBuffer();
 
         switch(render_mode) {
         case Solid:
-            renderSolid();
+            for(int i=0; i<object->model->polygons.size(); ++i) {
+                if(i < object->model->texture_id.size()) {
+                    glBindTexture(GL_TEXTURE_2D, object->model->texture_id[i]);
+                }
+                glDrawArrays(GL_TRIANGLES, i*3, 3);
+            }
             break;
         case Wire:
             renderWire();
@@ -122,24 +131,23 @@ void Renderer::render() {
 void Renderer::initBuffer() {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    glGenBuffers(2, vbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), 0);
     glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * 3 * sizeof(GLfloat), normals.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)sizeof(Vector3));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)(2*sizeof(Vector3)));
+    glEnableVertexAttribArray(2);
 }
 
 void Renderer::clearBuffer() {
-    glDeleteBuffers(2, vbo);
+    glDeleteBuffers(2, &vbo);
     glDeleteVertexArrays(1, &vao);
     vertices.clear();
-    normals.clear();
 }
 
 
@@ -149,29 +157,36 @@ void Renderer::setShader(Shader* shader) {
 }
 
 
-void Renderer::pushVertex(const Vector3& point, const Vector3& normal) {
-    vertices.push_back(point);
-    normals.push_back(normal);
+void Renderer::pushVertex(const Vector3& point, const Vector3& normal, const Vector2& tex_coord) {
+    vertices.push_back(point.x);
+    vertices.push_back(point.y);
+    vertices.push_back(point.z);
+    vertices.push_back(normal.x);
+    vertices.push_back(normal.y);
+    vertices.push_back(normal.z);
+    vertices.push_back(tex_coord.x);
+    vertices.push_back(tex_coord.y);
 }
 
 void Renderer::pushFacesToBuffer(const Object* object) {
     vector<Vector3>& points = object->model->points;
     vector<Vector3>& normals = object->model->normals;
     vector<IndexedPolygon>& faces = object->model->polygons;
-    for(int i=0; i<faces.size(); i++) {
-        pushVertex(points[faces[i].v1.point], normals[faces[i].v1.normal]);
-        pushVertex(points[faces[i].v2.point], normals[faces[i].v2.normal]);
-        pushVertex(points[faces[i].v3.point], normals[faces[i].v3.normal]);
+    vector<Vector2>& tex_coords = object->model->texture_coords;
+    for(const auto& face : faces) {
+        pushVertex(points[face.v1.point], normals[face.v1.normal], tex_coords[face.v1.texture_coord]);
+        pushVertex(points[face.v2.point], normals[face.v2.normal], tex_coords[face.v2.texture_coord]);
+        pushVertex(points[face.v3.point], normals[face.v3.normal], tex_coords[face.v3.texture_coord]);
     }
 }
 
 
 void Renderer::renderSolid() const {
-    glDrawArrays(GL_TRIANGLES, 0, (int)vertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, (int)vertices.size()/8);
 }
 
 void Renderer::renderWire() const {
-    int num_of_faces = (int)vertices.size() / 3;
+    int num_of_faces = (int)vertices.size() / 24;
     for(int i=0; i<num_of_faces; ++i) {
         glDrawArrays(GL_LINE_LOOP, i*3, 3);
     }

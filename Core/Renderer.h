@@ -14,10 +14,9 @@ class Renderer {
 private:
     TransformationStack transform_stack;
 
-    GLuint vao, vbo[2];
+    GLuint vao, vbo;
 
-    std::vector<Vector3> vertices;
-    std::vector<Vector3> normals;
+    std::vector<float> vertices;
 
     std::vector<Object*> objects;
     std::vector<Object*> light_objects;
@@ -25,6 +24,7 @@ private:
 public:
     Camera* camera;
     Shader* shader;
+    int background_texture_id;
     ColorRGB background_color;
 
     enum Mode {
@@ -47,8 +47,9 @@ public:
 
     void setShader(Shader* shader);
 
+    void pushVertex(const Vector3& point, const Vector3& normal, const Vector2& tex_coord=Vector2 { 0, 0 });
+
 private:
-    void pushVertex(const Vector3& point, const Vector3& normal);
     void pushFacesToBuffer(const Object* object);
 
     void renderSolid() const;

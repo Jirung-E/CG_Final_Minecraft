@@ -195,6 +195,7 @@
     <ClInclude Include="Objects\Box.h" />
     <ClInclude Include="Objects\Player.h" />
     <ClInclude Include="Shader\Material.h" />
+    <ClInclude Include="Util\stb_image.h" />
     <ClInclude Include="Util\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

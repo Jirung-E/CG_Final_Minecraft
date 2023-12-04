@@ -4,29 +4,39 @@
 
 in vec3 frag_pos;
 in vec3 frag_normal;
+in vec2 frag_texcoord;
 out vec4 frag_color;
 
 struct Light {
-	vec3 position;
-	vec3 color;
+    vec3 position;
+    vec3 color;
     float intensity;
     float ambient;
 };
 
 struct Material {
-	vec3 color;
-	float shininess;
-	float reflectivity;
+    vec4 color;
+    float shininess;
+    float reflectivity;
 };
 
 uniform vec3 cam_pos;
 uniform int num_lights;
 uniform Light lights[MAX_LIGHTS];
 uniform Material material;
+uniform sampler2D out_texture;
+uniform bool use_texture;
 
 void main(void) {
+    vec3 material_color = material.color.rgb * material.color.a;
+
     if(num_lights == 0) {
-        frag_color = vec4(material.color, 1.0);
+        if(use_texture) {
+            frag_color = texture(out_texture, frag_texcoord);
+        }
+        else {
+            frag_color = vec4(material_color, 1.0);
+        }
         return;
     }
 
@@ -37,7 +47,7 @@ void main(void) {
         vec3 light_color = light.color * light.intensity;
 
         vec3 ambient = light.ambient * light_color * (1 - material.reflectivity*0.9);
-        
+
         vec3 normal = normalize(frag_normal);
         vec3 light_dir = normalize(light.position - frag_pos);
 
@@ -51,8 +61,11 @@ void main(void) {
         specular_light = pow(specular_light, material.shininess) * material.reflectivity;
         vec3 specular = specular_light * light_color;
 
-        result += (ambient + diffuse) * material.color + specular;
+        result += (ambient + diffuse) * material_color + specular;
     }
 
     frag_color = vec4(result, 1.0);
+    if(use_texture) {
+        frag_color = texture(out_texture, frag_texcoord) * frag_color;
+    }
 }

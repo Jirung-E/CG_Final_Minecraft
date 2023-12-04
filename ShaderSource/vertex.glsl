@@ -2,9 +2,11 @@
 
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec3 vertex_normal;
+layout(location = 2) in vec2 vertex_texcoord;
 
 out vec3 frag_pos;
 out vec3 frag_normal;
+out vec2 frag_texcoord;
 
 uniform mat4 model_transform;
 uniform mat4 view_transform;
@@ -16,4 +18,6 @@ void main(void) {
     frag_pos = vec3(model_transform * vec4(vertex_position, 1.0));
     mat4 normal_transform = transpose(inverse(model_transform));
     frag_normal = vec3(normal_transform * vec4(vertex_normal, 1.0));
+
+    frag_texcoord = vertex_texcoord;
 }

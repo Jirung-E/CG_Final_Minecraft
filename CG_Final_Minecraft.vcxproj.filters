@@ -218,5 +218,8 @@
     <ClInclude Include="Minecraft\ChunkBasedObjectManager.h">
       <Filter>src\Minecraft</Filter>
     </ClInclude>
+    <ClInclude Include="Util\stb_image.h">
+      <Filter>src\Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

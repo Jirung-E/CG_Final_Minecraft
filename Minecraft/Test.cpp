@@ -46,7 +46,7 @@ void Test::initObjects() {
             generateBlock(x, 2, z, Material::basic);
         }
     }
-    int count = 64;
+    int count = 32;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
