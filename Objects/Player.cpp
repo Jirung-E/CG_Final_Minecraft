@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include "../Game/Texture.h"
+
 using namespace std;
 
 
@@ -57,63 +59,72 @@ void Player::initModel() {
 
     // Ű 1.8m
     float size = 1.8f/32;
-    ColorRGB skin_color { 255, 227, 184 };
 
-    head = new Box { "head", { 0, -4*size, 0 }, 8*size, 8*size, 8*size };
+    // texture 64*64
+    unsigned int texture_id = Texture::get("Resource/Textures/steve.png").getID();
+    float size_4 = 4.0f/64;
+    float size_8 = 8.0f/64;
+    float size_12 = 12.0f/64;
+
+    head = new Box { "head", { 0, 0, 0 }, 8*size, 8*size, 8*size };
+    head->model->texture_coords.clear();
+    head->model->texture_coords.push_back({ size_8, 1.0f-size_8*2 });
+    head->model->texture_coords.push_back({ size_8*2.0f, 1.0f-size_8*2 });
+    head->model->texture_coords.push_back({ size_8, 1.0f-size_8 });
+    head->model->texture_coords.push_back({ size_8*2.0f, 1.0f-size_8 });
+    head->model->texture_coords.push_back({ size_8*3.0f, 1.0f-size_8*2 });
+    head->model->texture_coords.push_back({ size_8*4.0f, 1.0f-size_8*2 });
+    head->model->texture_coords.push_back({ size_8*3.0f, 1.0f-size_8 });
+    head->model->texture_coords.push_back({ size_8*4.0f, 1.0f-size_8 });
+    // front
+    head->model->polygons[4].v1.texture_coord = 0;
+    head->model->polygons[4].v2.texture_coord = 1;
+    head->model->polygons[4].v3.texture_coord = 3;
+    head->model->polygons[5].v1.texture_coord = 3;
+    head->model->polygons[5].v2.texture_coord = 2;
+    head->model->polygons[5].v3.texture_coord = 0;
+    // back
+    head->model->polygons[8].v1.texture_coord = 4;
+    head->model->polygons[8].v2.texture_coord = 5;
+    head->model->polygons[8].v3.texture_coord = 7;
+    head->model->polygons[9].v1.texture_coord = 7;
+    head->model->polygons[9].v2.texture_coord = 6;
+    head->model->polygons[9].v3.texture_coord = 4;
+
+    head->model->texture_id.push_back(texture_id);
     head->transform.position = Vector3 { 0, 24, 0 } * size;
     head->material = material;
-    head->material.base_color = skin_color;
     addChild(head);
 
-    Object* nose = new Box { "nose", Vector3 { 0, -0.5f*size, -0.5f } *size, 2*size, 1*size, 1*size };
-    nose->transform.position = Vector3 { 0, 3, 4 } * size;
-    nose->material = material;
-    nose->material.base_color = skin_color | ColorRGB { RGB_Black, 0.2f };
-    head->addChild(nose);
-
-    Object* right_eye = new Box { "right_eye", Vector3 { 0, -0.5f, -0.5f } *size, 2*size, 1*size, 1*size };
-    right_eye->transform.position = Vector3 { -2, 4, 3 } * size;
-    right_eye->transform.scale.z = 1.01f;
-    right_eye->material = material;
-    right_eye->material.base_color = RGB_Black;
-    head->addChild(right_eye);
-
-    Object* left_eye = new Box { "left_eye", Vector3 { 0, -0.5f, -0.5f } *size, 2*size, 1*size, 1*size };
-    left_eye->transform.position = Vector3 { 2, 4, 3 } * size;
-    left_eye->transform.scale.z = 1.01f;
-    left_eye->material = material;
-    left_eye->material.base_color = RGB_Black;
-    head->addChild(left_eye);
-
-    body = new Box { "body", { 0, -6, 0 }, 8, 12, 4 };
+    body = new Box { "body", { 0, 0, 0 }, 8, 12, 4 };
+    body->model->texture_id.push_back(texture_id);
     body->transform.position = Vector3 { 0, 12, 0 } * size;
     body->transform.scale *= size;
     body->material = material;
-    body->material.base_color = RGB_Yellow;
     addChild(body);
 
-    left_arm = new Box { "left_arm", { 0, 4, 0 }, 4, 12, 4 };
+    left_arm = new Box { "left_arm", { 0, 10, 0 }, 4, 12, 4 };
+    left_arm->model->texture_id.push_back(texture_id);
     left_arm->transform.position = { 6, 10, 0 };
     left_arm->material = material;
-    left_arm->material.base_color = skin_color;
     left_arm->setParent(body);
 
-    right_arm = new Box { "right_arm", { 0, 4, 0 }, 4, 12, 4 };
+    right_arm = new Box { "right_arm", { 0, 10, 0 }, 4, 12, 4 };
+    right_arm->model->texture_id.push_back(texture_id);
     right_arm->transform.position = { -6, 10, 0 };
     right_arm->material = material;
-    right_arm->material.base_color = skin_color;
     right_arm->setParent(body);
 
-    left_leg = new Box { "left_leg", { 0, 6, 0 }, 4, 12, 4 };
+    left_leg = new Box { "left_leg", { 0, 12, 0 }, 4, 12, 4 };
+    left_leg->model->texture_id.push_back(texture_id);
     left_leg->transform.position = { 2, 0, 0 };
     left_leg->material = material;
-    left_leg->material.base_color = RGB_Blue | ColorRGB { RGB_Black, 0.4f };
     left_leg->setParent(body);
 
-    right_leg = new Box { "right_leg", { 0, 6, 0 }, 4, 12, 4 };
+    right_leg = new Box { "right_leg", { 0, 12, 0 }, 4, 12, 4 };
+    right_leg->model->texture_id.push_back(texture_id);
     right_leg->transform.position = { -2, 0, 0 };
     right_leg->material = material;
-    right_leg->material.base_color = RGB_Blue | ColorRGB { RGB_Black, 0.4f };
     right_leg->setParent(body);
 }
 

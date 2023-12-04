@@ -9,7 +9,7 @@ Object::Object(const string& id) :
     model { nullptr },
     parent { nullptr }, 
     render { true }, 
-    material { Material::basic } {
+    material { Material::base } {
 
 }
 

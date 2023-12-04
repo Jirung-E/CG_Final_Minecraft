@@ -134,7 +134,7 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
         }
         if(collide(player->feet, hitbox)) {
             player->physics->velocity.y = 0;
-            player->transform.position.y = hitbox->size.y/2.0f + e->transform.position.y;
+            player->transform.position.y = hitbox->size.y + e->transform.position.y;
         }
     }
 }
