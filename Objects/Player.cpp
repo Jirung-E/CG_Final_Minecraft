@@ -97,6 +97,81 @@ void Player::initModel() {
     addChild(head);
 
     body = new Box { "body", { 0, 0, 0 }, 8, 12, 4 };
+    body->model->texture_coords.clear();
+    // front
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*5 });
+    // back
+    body->model->texture_coords.push_back({ size_4*8, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*10, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*8, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*10, 1.0f-size_4*5 });
+    // top
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_4*4 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*4 });
+    // bottom
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*9, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*4 });
+    body->model->texture_coords.push_back({ size_4*9, 1.0f-size_4*4 });
+    // left
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*8, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*7, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*8, 1.0f-size_4*5 });
+    // right
+    body->model->texture_coords.push_back({ size_4*4, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_8*4 });
+    body->model->texture_coords.push_back({ size_4*4, 1.0f-size_4*5 });
+    body->model->texture_coords.push_back({ size_4*5, 1.0f-size_4*5 });
+
+    // front
+    body->model->polygons[4].v1.texture_coord = 0;
+    body->model->polygons[4].v2.texture_coord = 1;
+    body->model->polygons[4].v3.texture_coord = 3;
+    body->model->polygons[5].v1.texture_coord = 3;
+    body->model->polygons[5].v2.texture_coord = 2;
+    body->model->polygons[5].v3.texture_coord = 0;
+    // back
+    body->model->polygons[8].v1.texture_coord = 4;
+    body->model->polygons[8].v2.texture_coord = 5;
+    body->model->polygons[8].v3.texture_coord = 7;
+    body->model->polygons[9].v1.texture_coord = 7;
+    body->model->polygons[9].v2.texture_coord = 6;
+    body->model->polygons[9].v3.texture_coord = 4;
+    // top
+    body->model->polygons[2].v1.texture_coord = 8;
+    body->model->polygons[2].v2.texture_coord = 9;
+    body->model->polygons[2].v3.texture_coord = 11;
+    body->model->polygons[3].v1.texture_coord = 11;
+    body->model->polygons[3].v2.texture_coord = 10;
+    body->model->polygons[3].v3.texture_coord = 8;
+    // bottom
+    body->model->polygons[0].v1.texture_coord = 12;
+    body->model->polygons[0].v2.texture_coord = 13;
+    body->model->polygons[0].v3.texture_coord = 15;
+    body->model->polygons[1].v1.texture_coord = 15;
+    body->model->polygons[1].v2.texture_coord = 14;
+    body->model->polygons[1].v3.texture_coord = 12;
+    // left
+    body->model->polygons[6].v1.texture_coord = 16;
+    body->model->polygons[6].v2.texture_coord = 17;
+    body->model->polygons[6].v3.texture_coord = 19;
+    body->model->polygons[7].v1.texture_coord = 19;
+    body->model->polygons[7].v2.texture_coord = 18;
+    body->model->polygons[7].v3.texture_coord = 16;
+    // right
+    body->model->polygons[10].v1.texture_coord = 20;
+    body->model->polygons[10].v2.texture_coord = 21;
+    body->model->polygons[10].v3.texture_coord = 23;
+    body->model->polygons[11].v1.texture_coord = 23;
+    body->model->polygons[11].v2.texture_coord = 22;
+    body->model->polygons[11].v3.texture_coord = 20;
+
     body->model->texture_id.push_back(texture_id);
     body->transform.position = Vector3 { 0, 12, 0 } * size;
     body->transform.scale *= size;
