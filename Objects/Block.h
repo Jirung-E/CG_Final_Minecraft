@@ -1,27 +1,13 @@
 #pragma once
 
-#include "Box.h"
 #include "../Game/Component/Collider.h"
+#include "Box.h"
 
 
 class Block : public Box {
-private:
-    float width;
-    float height;
-    float depth;
-
 public:
     AABB* hitbox;
 
 public:
-    Block(float width, float height, float depth);
-    Block();
-
-public:
-    float top() const;
-    float bottom() const;
-    float left() const;
-    float right() const;
-    float front() const;
-    float back() const;
+    Block(const std::string& id);
 };

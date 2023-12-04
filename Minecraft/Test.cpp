@@ -2,6 +2,7 @@
 
 #include "ChunkBasedObjectManager.h"
 #include "../Game/Component/Light.h"
+#include "../Game/Texture.h"
 #include "../Math/Line.h"
 
 #include <gl/freeglut.h>
@@ -43,7 +44,7 @@ void Test::initObjects() {
 
     for(int x=-6; x<0; ++x) {
         for(int z=1; z<7; ++z) {
-            generateBlock(x, 2, z, Material::basic);
+            generateBlock(x, 2, z, Material::base);
         }
     }
     int count = 32;
@@ -95,9 +96,10 @@ void Test::generateBlock(int x, int y, int z, const Material& material) {
     static int count = 1;
     string id = "block_" + to_string(count++);
 
-    Block* block = new Block { };
+    Block* block = new Block { id };
     block->transform.position = { x+0.5f, y-0.5f, z+0.5f };
     block->material = material;
+    block->model->texture_id.push_back(Texture::get("Resource/Textures/stone.png").getID());
 
     objects_manager.add(id, block);
 }

@@ -151,6 +151,7 @@
     <ClCompile Include="Game\Entity.cpp" />
     <ClCompile Include="Game\Model.cpp" />
     <ClCompile Include="Game\Object.cpp" />
+    <ClCompile Include="Game\Texture.cpp" />
     <ClCompile Include="Game\Transform.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Line.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Game\Entity.h" />
     <ClInclude Include="Game\Model.h" />
     <ClInclude Include="Game\Object.h" />
+    <ClInclude Include="Game\Texture.h" />
     <ClInclude Include="Game\Transform.h" />
     <ClInclude Include="Math\Line.h" />
     <ClInclude Include="Math\Math.h" />

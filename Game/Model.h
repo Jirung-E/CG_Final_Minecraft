@@ -33,11 +33,18 @@ public:
     std::vector<Vector3> uvs;
     std::vector<Vector2> texture_coords;
     std::vector<IndexedPolygon> polygons;
-    std::vector<int> texture_id;
+    std::vector<unsigned int> texture_id;
 
 public:
+    Model(const std::string& file_name, float size=1.0f);
     Model();
 
 public:
     void move(const Vector3& vector);       // 벡터 방향으로 버텍스 밀기(피벗변경)
+
+private:
+    void load(const std::string& file_name, float size);
+
+public:
+    static const Model box;
 };
