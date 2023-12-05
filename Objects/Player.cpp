@@ -179,12 +179,162 @@ void Player::initModel() {
     addChild(body);
 
     left_arm = new Box { "left_arm", { 0, 10, 0 }, 4, 12, 4 };
+    left_arm->model->texture_coords.clear();
+    // front
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*5 });
+    // back
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*14, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*14, 1.0f-size_4*5 });
+    // top
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_4*4 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*4 });
+    // bottom
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*4 });
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_4*4 });
+    // left
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*12, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*13, 1.0f-size_4*5 });
+    // right
+    left_arm->model->texture_coords.push_back({ size_4*10, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_8*4 });
+    left_arm->model->texture_coords.push_back({ size_4*10, 1.0f-size_4*5 });
+    left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_4*5 });
+
+    // front
+    left_arm->model->polygons[4].v1.texture_coord = 0;
+    left_arm->model->polygons[4].v2.texture_coord = 1;
+    left_arm->model->polygons[4].v3.texture_coord = 3;
+    left_arm->model->polygons[5].v1.texture_coord = 3;
+    left_arm->model->polygons[5].v2.texture_coord = 2;
+    left_arm->model->polygons[5].v3.texture_coord = 0;
+    // back
+    left_arm->model->polygons[8].v1.texture_coord = 4;
+    left_arm->model->polygons[8].v2.texture_coord = 5;
+    left_arm->model->polygons[8].v3.texture_coord = 7;
+    left_arm->model->polygons[9].v1.texture_coord = 7;
+    left_arm->model->polygons[9].v2.texture_coord = 6;
+    left_arm->model->polygons[9].v3.texture_coord = 4;
+    // top
+    left_arm->model->polygons[2].v1.texture_coord = 8;
+    left_arm->model->polygons[2].v2.texture_coord = 9;
+    left_arm->model->polygons[2].v3.texture_coord = 11;
+    left_arm->model->polygons[3].v1.texture_coord = 11;
+    left_arm->model->polygons[3].v2.texture_coord = 10;
+    left_arm->model->polygons[3].v3.texture_coord = 8;
+    // bottom
+    left_arm->model->polygons[0].v1.texture_coord = 12;
+    left_arm->model->polygons[0].v2.texture_coord = 13;
+    left_arm->model->polygons[0].v3.texture_coord = 15;
+    left_arm->model->polygons[1].v1.texture_coord = 15;
+    left_arm->model->polygons[1].v2.texture_coord = 14;
+    left_arm->model->polygons[1].v3.texture_coord = 12;
+    // left
+    left_arm->model->polygons[6].v1.texture_coord = 16;
+    left_arm->model->polygons[6].v2.texture_coord = 17;
+    left_arm->model->polygons[6].v3.texture_coord = 19;
+    left_arm->model->polygons[7].v1.texture_coord = 19;
+    left_arm->model->polygons[7].v2.texture_coord = 18;
+    left_arm->model->polygons[7].v3.texture_coord = 16;
+    // right
+    left_arm->model->polygons[10].v1.texture_coord = 20;
+    left_arm->model->polygons[10].v2.texture_coord = 21;
+    left_arm->model->polygons[10].v3.texture_coord = 23;
+    left_arm->model->polygons[11].v1.texture_coord = 23;
+    left_arm->model->polygons[11].v2.texture_coord = 22;
+    left_arm->model->polygons[11].v3.texture_coord = 20;
+
     left_arm->model->texture_id.push_back(texture_id);
     left_arm->transform.position = { 6, 10, 0 };
     left_arm->material = material;
     left_arm->setParent(body);
 
     right_arm = new Box { "right_arm", { 0, 10, 0 }, 4, 12, 4 };
+    right_arm->model->texture_coords.clear();
+    // front
+    right_arm->model->texture_coords.push_back({ size_4*9, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*10, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*9, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*10,size_12 });
+    // back
+    right_arm->model->texture_coords.push_back({ size_4*11, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*12, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*11, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*12, size_12 });
+    // top
+    right_arm->model->texture_coords.push_back({ size_4*9, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*10, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*9, size_12+size_4 });
+    right_arm->model->texture_coords.push_back({ size_4*10, size_12+size_4 });
+    // bottom
+    right_arm->model->texture_coords.push_back({ size_4*10, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*11, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*10, size_12+size_4 });
+    right_arm->model->texture_coords.push_back({ size_4*11, size_12+size_4 });
+    // left
+    right_arm->model->texture_coords.push_back({ size_4*10, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*11, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*10, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*11, size_12 });
+    // right
+    right_arm->model->texture_coords.push_back({ size_4*8, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*9, 0 });
+    right_arm->model->texture_coords.push_back({ size_4*8, size_12 });
+    right_arm->model->texture_coords.push_back({ size_4*9, size_12 });
+
+    // front
+    right_arm->model->polygons[4].v1.texture_coord = 0;
+    right_arm->model->polygons[4].v2.texture_coord = 1;
+    right_arm->model->polygons[4].v3.texture_coord = 3;
+    right_arm->model->polygons[5].v1.texture_coord = 3;
+    right_arm->model->polygons[5].v2.texture_coord = 2;
+    right_arm->model->polygons[5].v3.texture_coord = 0;
+    // back
+    right_arm->model->polygons[8].v1.texture_coord = 4;
+    right_arm->model->polygons[8].v2.texture_coord = 5;
+    right_arm->model->polygons[8].v3.texture_coord = 7;
+    right_arm->model->polygons[9].v1.texture_coord = 7;
+    right_arm->model->polygons[9].v2.texture_coord = 6;
+    right_arm->model->polygons[9].v3.texture_coord = 4;
+    // top
+    right_arm->model->polygons[2].v1.texture_coord = 8;
+    right_arm->model->polygons[2].v2.texture_coord = 9;
+    right_arm->model->polygons[2].v3.texture_coord = 11;
+    right_arm->model->polygons[3].v1.texture_coord = 11;
+    right_arm->model->polygons[3].v2.texture_coord = 10;
+    right_arm->model->polygons[3].v3.texture_coord = 8;
+    // bottom
+    right_arm->model->polygons[0].v1.texture_coord = 12;
+    right_arm->model->polygons[0].v2.texture_coord = 13;
+    right_arm->model->polygons[0].v3.texture_coord = 15;
+    right_arm->model->polygons[1].v1.texture_coord = 15;
+    right_arm->model->polygons[1].v2.texture_coord = 14;
+    right_arm->model->polygons[1].v3.texture_coord = 12;
+    // left
+    right_arm->model->polygons[6].v1.texture_coord = 16;
+    right_arm->model->polygons[6].v2.texture_coord = 17;
+    right_arm->model->polygons[6].v3.texture_coord = 19;
+    right_arm->model->polygons[7].v1.texture_coord = 19;
+    right_arm->model->polygons[7].v2.texture_coord = 18;
+    right_arm->model->polygons[7].v3.texture_coord = 16;
+    // right
+    right_arm->model->polygons[10].v1.texture_coord = 20;
+    right_arm->model->polygons[10].v2.texture_coord = 21;
+    right_arm->model->polygons[10].v3.texture_coord = 23;
+    right_arm->model->polygons[11].v1.texture_coord = 23;
+    right_arm->model->polygons[11].v2.texture_coord = 22;
+    right_arm->model->polygons[11].v3.texture_coord = 20;
+
     right_arm->model->texture_id.push_back(texture_id);
     right_arm->transform.position = { -6, 10, 0 };
     right_arm->material = material;
