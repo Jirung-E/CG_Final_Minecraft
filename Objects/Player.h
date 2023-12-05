@@ -34,6 +34,8 @@ public:
 private:
     void initComponent();
     void initModel();
+    void initUV(Object* part, const float& start_x, const float& start_y, const float& width, const float& height, const float& depth);
+    void initTextureCoord(Object* part);
     void initAnimation();
     void animation(float dt);
 };

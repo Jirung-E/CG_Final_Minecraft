@@ -129,48 +129,7 @@ void Player::initModel() {
     body->model->texture_coords.push_back({ size_4*4, 1.0f-size_4*5 });
     body->model->texture_coords.push_back({ size_4*5, 1.0f-size_4*5 });
 
-    // front
-    body->model->polygons[4].v1.texture_coord = 0;
-    body->model->polygons[4].v2.texture_coord = 1;
-    body->model->polygons[4].v3.texture_coord = 3;
-    body->model->polygons[5].v1.texture_coord = 3;
-    body->model->polygons[5].v2.texture_coord = 2;
-    body->model->polygons[5].v3.texture_coord = 0;
-    // back
-    body->model->polygons[8].v1.texture_coord = 4;
-    body->model->polygons[8].v2.texture_coord = 5;
-    body->model->polygons[8].v3.texture_coord = 7;
-    body->model->polygons[9].v1.texture_coord = 7;
-    body->model->polygons[9].v2.texture_coord = 6;
-    body->model->polygons[9].v3.texture_coord = 4;
-    // top
-    body->model->polygons[2].v1.texture_coord = 8;
-    body->model->polygons[2].v2.texture_coord = 9;
-    body->model->polygons[2].v3.texture_coord = 11;
-    body->model->polygons[3].v1.texture_coord = 11;
-    body->model->polygons[3].v2.texture_coord = 10;
-    body->model->polygons[3].v3.texture_coord = 8;
-    // bottom
-    body->model->polygons[0].v1.texture_coord = 12;
-    body->model->polygons[0].v2.texture_coord = 13;
-    body->model->polygons[0].v3.texture_coord = 15;
-    body->model->polygons[1].v1.texture_coord = 15;
-    body->model->polygons[1].v2.texture_coord = 14;
-    body->model->polygons[1].v3.texture_coord = 12;
-    // left
-    body->model->polygons[6].v1.texture_coord = 16;
-    body->model->polygons[6].v2.texture_coord = 17;
-    body->model->polygons[6].v3.texture_coord = 19;
-    body->model->polygons[7].v1.texture_coord = 19;
-    body->model->polygons[7].v2.texture_coord = 18;
-    body->model->polygons[7].v3.texture_coord = 16;
-    // right
-    body->model->polygons[10].v1.texture_coord = 20;
-    body->model->polygons[10].v2.texture_coord = 21;
-    body->model->polygons[10].v3.texture_coord = 23;
-    body->model->polygons[11].v1.texture_coord = 23;
-    body->model->polygons[11].v2.texture_coord = 22;
-    body->model->polygons[11].v3.texture_coord = 20;
+    initTextureCoord(body);
 
     body->model->texture_id.push_back(texture_id);
     body->transform.position = Vector3 { 0, 12, 0 } * size;
@@ -211,48 +170,7 @@ void Player::initModel() {
     left_arm->model->texture_coords.push_back({ size_4*10, 1.0f-size_4*5 });
     left_arm->model->texture_coords.push_back({ size_4*11, 1.0f-size_4*5 });
 
-    // front
-    left_arm->model->polygons[4].v1.texture_coord = 0;
-    left_arm->model->polygons[4].v2.texture_coord = 1;
-    left_arm->model->polygons[4].v3.texture_coord = 3;
-    left_arm->model->polygons[5].v1.texture_coord = 3;
-    left_arm->model->polygons[5].v2.texture_coord = 2;
-    left_arm->model->polygons[5].v3.texture_coord = 0;
-    // back
-    left_arm->model->polygons[8].v1.texture_coord = 4;
-    left_arm->model->polygons[8].v2.texture_coord = 5;
-    left_arm->model->polygons[8].v3.texture_coord = 7;
-    left_arm->model->polygons[9].v1.texture_coord = 7;
-    left_arm->model->polygons[9].v2.texture_coord = 6;
-    left_arm->model->polygons[9].v3.texture_coord = 4;
-    // top
-    left_arm->model->polygons[2].v1.texture_coord = 8;
-    left_arm->model->polygons[2].v2.texture_coord = 9;
-    left_arm->model->polygons[2].v3.texture_coord = 11;
-    left_arm->model->polygons[3].v1.texture_coord = 11;
-    left_arm->model->polygons[3].v2.texture_coord = 10;
-    left_arm->model->polygons[3].v3.texture_coord = 8;
-    // bottom
-    left_arm->model->polygons[0].v1.texture_coord = 12;
-    left_arm->model->polygons[0].v2.texture_coord = 13;
-    left_arm->model->polygons[0].v3.texture_coord = 15;
-    left_arm->model->polygons[1].v1.texture_coord = 15;
-    left_arm->model->polygons[1].v2.texture_coord = 14;
-    left_arm->model->polygons[1].v3.texture_coord = 12;
-    // left
-    left_arm->model->polygons[6].v1.texture_coord = 16;
-    left_arm->model->polygons[6].v2.texture_coord = 17;
-    left_arm->model->polygons[6].v3.texture_coord = 19;
-    left_arm->model->polygons[7].v1.texture_coord = 19;
-    left_arm->model->polygons[7].v2.texture_coord = 18;
-    left_arm->model->polygons[7].v3.texture_coord = 16;
-    // right
-    left_arm->model->polygons[10].v1.texture_coord = 20;
-    left_arm->model->polygons[10].v2.texture_coord = 21;
-    left_arm->model->polygons[10].v3.texture_coord = 23;
-    left_arm->model->polygons[11].v1.texture_coord = 23;
-    left_arm->model->polygons[11].v2.texture_coord = 22;
-    left_arm->model->polygons[11].v3.texture_coord = 20;
+    initTextureCoord(left_arm);
 
     left_arm->model->texture_id.push_back(texture_id);
     left_arm->transform.position = { 6, 10, 0 };
@@ -292,48 +210,7 @@ void Player::initModel() {
     right_arm->model->texture_coords.push_back({ size_4*8, size_12 });
     right_arm->model->texture_coords.push_back({ size_4*9, size_12 });
 
-    // front
-    right_arm->model->polygons[4].v1.texture_coord = 0;
-    right_arm->model->polygons[4].v2.texture_coord = 1;
-    right_arm->model->polygons[4].v3.texture_coord = 3;
-    right_arm->model->polygons[5].v1.texture_coord = 3;
-    right_arm->model->polygons[5].v2.texture_coord = 2;
-    right_arm->model->polygons[5].v3.texture_coord = 0;
-    // back
-    right_arm->model->polygons[8].v1.texture_coord = 4;
-    right_arm->model->polygons[8].v2.texture_coord = 5;
-    right_arm->model->polygons[8].v3.texture_coord = 7;
-    right_arm->model->polygons[9].v1.texture_coord = 7;
-    right_arm->model->polygons[9].v2.texture_coord = 6;
-    right_arm->model->polygons[9].v3.texture_coord = 4;
-    // top
-    right_arm->model->polygons[2].v1.texture_coord = 8;
-    right_arm->model->polygons[2].v2.texture_coord = 9;
-    right_arm->model->polygons[2].v3.texture_coord = 11;
-    right_arm->model->polygons[3].v1.texture_coord = 11;
-    right_arm->model->polygons[3].v2.texture_coord = 10;
-    right_arm->model->polygons[3].v3.texture_coord = 8;
-    // bottom
-    right_arm->model->polygons[0].v1.texture_coord = 12;
-    right_arm->model->polygons[0].v2.texture_coord = 13;
-    right_arm->model->polygons[0].v3.texture_coord = 15;
-    right_arm->model->polygons[1].v1.texture_coord = 15;
-    right_arm->model->polygons[1].v2.texture_coord = 14;
-    right_arm->model->polygons[1].v3.texture_coord = 12;
-    // left
-    right_arm->model->polygons[6].v1.texture_coord = 16;
-    right_arm->model->polygons[6].v2.texture_coord = 17;
-    right_arm->model->polygons[6].v3.texture_coord = 19;
-    right_arm->model->polygons[7].v1.texture_coord = 19;
-    right_arm->model->polygons[7].v2.texture_coord = 18;
-    right_arm->model->polygons[7].v3.texture_coord = 16;
-    // right
-    right_arm->model->polygons[10].v1.texture_coord = 20;
-    right_arm->model->polygons[10].v2.texture_coord = 21;
-    right_arm->model->polygons[10].v3.texture_coord = 23;
-    right_arm->model->polygons[11].v1.texture_coord = 23;
-    right_arm->model->polygons[11].v2.texture_coord = 22;
-    right_arm->model->polygons[11].v3.texture_coord = 20;
+    initTextureCoord(right_arm);
 
     right_arm->model->texture_id.push_back(texture_id);
     right_arm->transform.position = { -6, 10, 0 };
@@ -341,16 +218,148 @@ void Player::initModel() {
     right_arm->setParent(body);
 
     left_leg = new Box { "left_leg", { 0, 12, 0 }, 4, 12, 4 };
+    left_leg->model->texture_coords.clear();
+    // front
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*5 });
+    // back
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*4, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*4, 1.0f-size_4*5 });
+    // top
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_4*4 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*4 });
+    // bottom
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*4 });
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_4*4 });
+    // left
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*2, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*3, 1.0f-size_4*5 });
+    // right
+    left_leg->model->texture_coords.push_back({ size_4*0, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_8*4 });
+    left_leg->model->texture_coords.push_back({ size_4*0, 1.0f-size_4*5 });
+    left_leg->model->texture_coords.push_back({ size_4*1, 1.0f-size_4*5 });
+
+    initTextureCoord(left_leg);
     left_leg->model->texture_id.push_back(texture_id);
     left_leg->transform.position = { 2, 0, 0 };
     left_leg->material = material;
     left_leg->setParent(body);
 
     right_leg = new Box { "right_leg", { 0, 12, 0 }, 4, 12, 4 };
+    initUV(right_leg, 0, 1.0f-size_8*4, size_4, size_12, size_4);
+    initTextureCoord(right_leg);
     right_leg->model->texture_id.push_back(texture_id);
     right_leg->transform.position = { -2, 0, 0 };
     right_leg->material = material;
     right_leg->setParent(body);
+}
+
+void Player::initUV(Object* part, const float& start_x, const float& start_y, const float& width, const float& height, const float& depth) {
+    part->model->texture_coords.clear();
+
+    const float right_start_x = start_x;
+    const float right_end_x = start_x+depth;
+    const float front_start_x = right_end_x;
+    const float front_end_x = front_start_x+width;
+    const float left_start_x = front_end_x;
+    const float left_end_x = left_start_x+depth;
+    const float back_start_x = left_end_x;
+    const float back_end_x = back_start_x+width;
+    const float lfrb_start_y = start_y;
+    const float lfrb_end_y = lfrb_start_y+height;
+    // front
+    part->model->texture_coords.push_back({ front_start_x, start_y });
+    part->model->texture_coords.push_back({ front_end_x,   start_y });
+    part->model->texture_coords.push_back({ front_start_x, lfrb_end_y });
+    part->model->texture_coords.push_back({ front_end_x,   lfrb_end_y });
+    // back
+    part->model->texture_coords.push_back({ back_start_x, start_y });
+    part->model->texture_coords.push_back({ back_end_x,   start_y });
+    part->model->texture_coords.push_back({ back_start_x, lfrb_end_y });
+    part->model->texture_coords.push_back({ back_end_x,   lfrb_end_y });
+    // left
+    part->model->texture_coords.push_back({ left_start_x, start_y });
+    part->model->texture_coords.push_back({ left_end_x,   start_y });
+    part->model->texture_coords.push_back({ left_start_x, lfrb_end_y });
+    part->model->texture_coords.push_back({ left_end_x,   lfrb_end_y });
+    // right
+    part->model->texture_coords.push_back({ right_start_x, start_y });
+    part->model->texture_coords.push_back({ right_end_x,   start_y });
+    part->model->texture_coords.push_back({ right_start_x, lfrb_end_y });
+    part->model->texture_coords.push_back({ right_end_x,   lfrb_end_y });
+
+    const float top_start_x = front_start_x;
+    const float top_end_x = front_end_x;
+    const float bottom_start_x = top_end_x;
+    const float bottom_end_x = bottom_start_x+width;
+    const float tb_start_y = lfrb_end_y;
+    const float tb_end_y = tb_start_y+depth;
+    // top
+    part->model->texture_coords.push_back({ top_start_x, tb_start_y });
+    part->model->texture_coords.push_back({ top_end_x,   tb_start_y });
+    part->model->texture_coords.push_back({ top_start_x, tb_end_y });
+    part->model->texture_coords.push_back({ top_end_x,   tb_end_y });
+    // bottom
+    part->model->texture_coords.push_back({ bottom_start_x, tb_start_y });
+    part->model->texture_coords.push_back({ bottom_end_x,   tb_start_y });
+    part->model->texture_coords.push_back({ bottom_start_x, tb_end_y });
+    part->model->texture_coords.push_back({ bottom_end_x,   tb_end_y });
+}
+
+void Player::initTextureCoord(Object* part) {
+    // front
+    part->model->polygons[4].v1.texture_coord = 0;
+    part->model->polygons[4].v2.texture_coord = 1;
+    part->model->polygons[4].v3.texture_coord = 3;
+    part->model->polygons[5].v1.texture_coord = 3;
+    part->model->polygons[5].v2.texture_coord = 2;
+    part->model->polygons[5].v3.texture_coord = 0;
+    // back
+    part->model->polygons[8].v1.texture_coord = 4;
+    part->model->polygons[8].v2.texture_coord = 5;
+    part->model->polygons[8].v3.texture_coord = 7;
+    part->model->polygons[9].v1.texture_coord = 7;
+    part->model->polygons[9].v2.texture_coord = 6;
+    part->model->polygons[9].v3.texture_coord = 4;
+    // top
+    part->model->polygons[2].v1.texture_coord = 8;
+    part->model->polygons[2].v2.texture_coord = 9;
+    part->model->polygons[2].v3.texture_coord = 11;
+    part->model->polygons[3].v1.texture_coord = 11;
+    part->model->polygons[3].v2.texture_coord = 10;
+    part->model->polygons[3].v3.texture_coord = 8;
+    // bottom
+    part->model->polygons[0].v1.texture_coord = 12;
+    part->model->polygons[0].v2.texture_coord = 13;
+    part->model->polygons[0].v3.texture_coord = 15;
+    part->model->polygons[1].v1.texture_coord = 15;
+    part->model->polygons[1].v2.texture_coord = 14;
+    part->model->polygons[1].v3.texture_coord = 12;
+    // left
+    part->model->polygons[6].v1.texture_coord = 16;
+    part->model->polygons[6].v2.texture_coord = 17;
+    part->model->polygons[6].v3.texture_coord = 19;
+    part->model->polygons[7].v1.texture_coord = 19;
+    part->model->polygons[7].v2.texture_coord = 18;
+    part->model->polygons[7].v3.texture_coord = 16;
+    // right
+    part->model->polygons[10].v1.texture_coord = 20;
+    part->model->polygons[10].v2.texture_coord = 21;
+    part->model->polygons[10].v3.texture_coord = 23;
+    part->model->polygons[11].v1.texture_coord = 23;
+    part->model->polygons[11].v2.texture_coord = 22;
+    part->model->polygons[11].v3.texture_coord = 20;
 }
 
 void Player::initAnimation() {
