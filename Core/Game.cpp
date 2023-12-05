@@ -14,7 +14,8 @@ Game::Game(const std::string& title) : title { title },
     dt { 0.0f },
     sensitivity { 0.1f },
     fix_cursor_when_motion { false },
-    fix_cursor_when_drag { false } {
+    fix_cursor_when_drag { false }, 
+    hide_cursor { false } {
     initialize();
     setup();
 }
@@ -73,6 +74,13 @@ void Game::drawScene() {
         }
     }
     renderer.render();
+    renderer.renderCrosshair();
+    if(hide_cursor) {
+        glutSetCursor(GLUT_CURSOR_NONE);
+    }
+    else {
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    }
 }
 
 void Game::reshape(int w, int h) {

@@ -24,6 +24,7 @@ protected:
     float sensitivity;
     bool fix_cursor_when_motion;
     bool fix_cursor_when_drag;
+    bool hide_cursor;
 
     float dt;
 

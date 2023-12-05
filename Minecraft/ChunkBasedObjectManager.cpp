@@ -3,7 +3,7 @@
 using namespace std;
 
 
-const int ChunkInfo::chunk_size = 2;        // 테스트를 위해 2로 설정
+const int ChunkInfo::chunk_size = 16;
 
 ChunkInfo::ChunkInfo(int x, int y, int z) : x { x }, y { y }, z { z } {
 

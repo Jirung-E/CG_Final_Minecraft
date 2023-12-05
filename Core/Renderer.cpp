@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include "../Game/Component/Light.h"
+#include "../Game/Texture.h"
 #include "../Shader/Material.h"
 
 #include <gl/glew.h>
@@ -11,7 +12,7 @@ using namespace std;
 
 Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_mode { Solid }, shader { shader },
     vao { 0 }, vbo { 0 },
-    background_texture_id { 0 },
+    icons_texture_id { 0 },
     background_color { 0.0f, 0.0f, 0.0f } {
 
 }
@@ -125,6 +126,66 @@ void Renderer::render() {
 	
     objects.clear();
     light_objects.clear();
+}
+
+void Renderer::renderCrosshair() {
+    const float crosshair_size = 0.05f;
+    const float texture_start_x = 0.0f;
+    const float texture_start_y = 1.0 - 15.0f / 256.0f;
+    const float texture_end_x = 15.0f / 256.0f;
+    const float texture_end_y = 1.0f;
+
+    Object* crosshair = new Object { "crosshair" };
+    crosshair->transform.position = { 0, 0, -1 };
+    crosshair->transform.scale = { crosshair_size/camera->aspect, crosshair_size, 1.0f };
+    crosshair->model = new Model { };
+    crosshair->model->points = {
+        { -1.0f, -1.0f, 0.0f },
+        { 1.0f, -1.0f, 0.0f },
+        { 1.0f, 1.0f, 0.0f },
+        { -1.0f, 1.0f, 0.0f }
+    };
+    crosshair->model->normals = {
+        { 0.0f, 0.0f, 1.0f }
+    };
+    crosshair->model->texture_coords = {
+        { texture_start_x, texture_start_y },
+        { texture_end_x,   texture_start_y },
+        { texture_end_x,   texture_end_y },
+        { texture_start_x, texture_end_y }
+    };
+    crosshair->model->polygons = {
+        { { 0, 0, 0 }, { 1, 0, 1 }, { 2, 0, 2 } },
+        { { 0, 0, 0 }, { 2, 0, 2 }, { 3, 0, 3 } }
+    };
+    crosshair->material = Material::base;
+
+    unsigned int view_location = glGetUniformLocation(shader->program_id, "view_transform");
+    glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(Matrix4 { 1.0f }));
+
+    unsigned int proj_location = glGetUniformLocation(shader->program_id, "projection_transform");
+    glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(Matrix4 { 1.0f }));
+
+    unsigned int cam_pos = glGetUniformLocation(shader->program_id, "cam_pos");
+    glUniform3fv(cam_pos, 1, glm::value_ptr(Matrix4 { 1.0f }));
+
+    unsigned int trans_location = glGetUniformLocation(shader->program_id, "model_transform");
+    glUniformMatrix4fv(trans_location, 1, GL_FALSE, glm::value_ptr(crosshair->transform.matrix()));
+
+    unsigned int num_lights_location = glGetUniformLocation(shader->program_id, "num_lights");
+    glUniform1i(num_lights_location, 0);
+
+    unsigned int use_texture_location = glGetUniformLocation(shader->program_id, "use_texture");
+    glUniform1i(use_texture_location, icons_texture_id);
+
+    pushFacesToBuffer(crosshair);
+    initBuffer();
+
+    glBindTexture(GL_TEXTURE_2D, icons_texture_id);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    clearBuffer();
+    delete crosshair;
 }
 
 

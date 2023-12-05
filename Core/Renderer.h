@@ -24,8 +24,8 @@ private:
 public:
     Camera* camera;
     Shader* shader;
-    int background_texture_id;
     ColorRGB background_color;
+    unsigned int icons_texture_id;
 
     enum Mode {
         Solid, Wire
@@ -41,6 +41,7 @@ public:
     void pushObject(Object* object);
     void pushLightObject(Object* object);
     void render();
+    void renderCrosshair();
 
     void initBuffer();
     void clearBuffer();

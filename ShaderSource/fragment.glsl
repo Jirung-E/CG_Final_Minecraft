@@ -32,7 +32,12 @@ void main(void) {
 
     if(num_lights == 0) {
         if(use_texture) {
-            frag_color = texture(out_texture, frag_texcoord);
+            if(texture(out_texture, frag_texcoord) == vec4(0, 0, 0, 1)) {
+                discard;
+            }
+            else {
+                frag_color = texture(out_texture, frag_texcoord);
+            }
         }
         else {
             frag_color = vec4(material_color, 1.0);

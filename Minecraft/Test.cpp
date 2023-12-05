@@ -15,12 +15,14 @@ Test::Test() : Game { "Test" },
 events_handler { EventsHandler::getInstance(this) },
 shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
 objects_manager { objects },
-view_mode { ViewMode::ThirdPerson },
+view_mode { ViewMode::FirstPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 }
 {
+    hide_cursor = true;
+    renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     events_handler.link();
     renderer.setShader(&shader);
     renderer.camera = &camera;
@@ -218,6 +220,8 @@ void Test::keyboardUpEvent(unsigned char key) {
 
 void Test::mouseClickEvent(int button, int state, int x, int y) {
     Game::mouseClickEvent(button, state, x, y);
+
+    
 
     // 1. 시선과 겹치는 오브젝트 검출
     // 2. 그중 가장 가까운 오브젝트 찾기
