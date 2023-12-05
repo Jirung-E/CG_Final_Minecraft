@@ -99,7 +99,7 @@ void Test::generateBlock(int x, int y, int z, const Material& material) {
     string id = "block_" + to_string(count++);
 
     Block* block = new Block { id };
-    block->transform.position = { x+0.5f, y-0.5f, z+0.5f };
+    block->transform.position = { x+0.5f, y, z+0.5f };
     block->material = material;
     block->model->texture_id.push_back(Texture::get("Resource/Textures/stone.png").getID());
 
@@ -125,7 +125,7 @@ void Test::rotateHead(float dx, float dy) {
 
 void Test::update() {
     //Log::log("dt: %f", dt);
-    //Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
 
     objects_manager.update(dt, simulation_distance);
 

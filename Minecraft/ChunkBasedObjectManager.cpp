@@ -205,7 +205,7 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
                 }
             }
 
-            entity->previus_transform = entity->transform;
+            //entity->previus_transform = entity->transform;
 
             delete hitbox;
         }
