@@ -23,12 +23,8 @@ public:
 
 public:
     AxisAlignedBoxCollider(Object* object, const std::string& id, const Vector3& size={ 1, 1, 1 }, const Vector3& center={ 0, 0, 0 });
-
-public:
-    static bool isColliding(const AxisAlignedBoxCollider& collider1, const AxisAlignedBoxCollider& collider2);
 };
 using AABB = AxisAlignedBoxCollider;
 
 
 bool collide(Collider* collider1, Collider* collider2);
-

@@ -1,5 +1,6 @@
 #include "Collider.h"
 
+
 using namespace std;
 
 
@@ -19,10 +20,6 @@ void Collider::update(float dt) {
 AxisAlignedBoxCollider::AxisAlignedBoxCollider(Object* object, const string& id, const Vector3& size, const Vector3& center) : Collider { object, id },
 size { size }, center { center } {
 
-}
-
-bool AxisAlignedBoxCollider::isColliding(const AxisAlignedBoxCollider& collider1, const AxisAlignedBoxCollider& collider2) {
-    return false;
 }
 
 // -------------------------------------------------------------------------------------------- //

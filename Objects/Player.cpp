@@ -44,10 +44,10 @@ void Player::jump() {
 void Player::initComponent() {
     addComponent<Physics>();
     physics = getComponent<Physics>();
-    addComponent<AABB, Vector3, Vector3>("hitbox", { 0.5f, 1.6f, 0.5f }, { 0, 1, 0 });
     addComponent<AABB, Vector3, Vector3>("foot", { 0.4f, 0.1f, 0.4f }, { 0, 0.05f, 0 });
     feet = getComponent<AABB>("foot");
-    hitbox = getComponent<AABB>("hitbox");
+    hitbox->center = { 0, 1, 0 };
+    hitbox->size = { 0.5f, 1.6f, 0.5f };
 }
 
 void Player::initModel() {

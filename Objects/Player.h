@@ -16,7 +16,6 @@ public:
     Box* right_leg;
 
     Physics* physics;
-    AABB* hitbox;
     AABB* feet;
 
     float player_arm_rotate_angle;
