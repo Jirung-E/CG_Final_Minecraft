@@ -140,6 +140,7 @@ void Test::update() {
             camera.transform.position = cam_pos;
             Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
             camera.lookAt(cam_pos + cam_rot);
+            player->render = false;
         }
         break;
         case SecondPerson: {
@@ -147,6 +148,7 @@ void Test::update() {
             camera.transform.position = cam_pos;
             Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
             camera.lookAt(cam_pos - cam_rot);
+            player->render = true;
         }
         break;
         case ThirdPerson: {
@@ -154,6 +156,7 @@ void Test::update() {
             camera.transform.position = cam_pos;
             Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
             camera.lookAt(cam_pos + cam_rot);
+            player->render = true;
         }
         break;
     }
