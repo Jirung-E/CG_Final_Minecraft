@@ -9,9 +9,9 @@ Physics::Physics(Object* object, const std::string& id) : ComponentImpl { object
 
 
 void Physics::update(float dt) {
+    object->transform.position += velocity * dt;
     velocity += acceleration * dt;
     velocity += gravity * dt;
     velocity += force;
     force = { 0, 0, 0 };
-    object->transform.position += velocity * dt;
 }

@@ -21,7 +21,7 @@ Player::~Player() {
 void Player::update(float dt) {
     Entity::update(dt);
 
-    physics->update(dt);
+    //physics->update(dt);
 
     Vector2 d = move_direction;
     if(d.x != 0) {      // 옆으로 이동시
@@ -36,7 +36,7 @@ void Player::update(float dt) {
 
 void Player::jump() {
     if(feet->is_colliding) {
-        physics->velocity.y = 5;
+        physics->velocity.y = 8;
         feet->is_colliding = false;
     }
 }
@@ -45,6 +45,7 @@ void Player::jump() {
 void Player::initComponent() {
     addComponent<Physics>();
     physics = getComponent<Physics>();
+    physics->gravity = { 0, -30, 0 };
     addComponent<AABB, Vector3, Vector3>("foot", { 0.4f, 0.1f, 0.4f }, { 0, 0.05f, 0 });
     feet = getComponent<AABB>("foot");
     hitbox->center = { 0, 0.9f, 0 };
