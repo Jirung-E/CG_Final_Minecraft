@@ -138,22 +138,33 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             AABB* hitbox = new AABB { nullptr, entity->hitbox->id+"_clone", entity->hitbox->size, entity->hitbox->center };
             
             auto mat = prev_transform.translationMatrix() * prev_transform.scaleMatrix();
-            Vector3 center1 = { mat * Vector4 { hitbox->center, 1 } };
-            Vector3 size1 = mat * Vector4 { hitbox->size, 0 };
+            Vector3 prev_center = { mat * Vector4 { hitbox->center, 1 } };
+            Vector3 size = mat * Vector4 { hitbox->size, 0 };
+
+            mat = entity->transform.translationMatrix() * entity->transform.scaleMatrix();
+            Vector3 curr_center = { mat * Vector4 { hitbox->center, 1 } };
 
             mat = e->transform.translationMatrix() * e->transform.scaleMatrix();
             Vector3 block_center = { mat * Vector4 { block->center, 1 } };
             Vector3 block_size = mat * Vector4 { block->size, 0 };
 
-            float wx1 = size1.x / 2.0f;
-            float wy1 = size1.y / 2.0f;
-            float wz1 = size1.z / 2.0f;
-            float top1 = center1.y + wy1;
-            float bottom1 = center1.y - wy1;
-            float left1 = center1.x - wx1;
-            float right1 = center1.x + wx1;
-            float front1 = center1.z + wz1;
-            float back1 = center1.z - wz1;
+            float wx = size.x / 2.0f;
+            float wy = size.y / 2.0f;
+            float wz = size.z / 2.0f;
+
+            float prev_top = prev_center.y + wy;
+            float prev_bottom = prev_center.y - wy;
+            float prev_left = prev_center.x - wx;
+            float prev_right = prev_center.x + wx;
+            float prev_front = prev_center.z + wz;
+            float prev_back = prev_center.z - wz;
+
+            float curr_top = curr_center.y + wy;
+            float curr_bottom = curr_center.y - wy;
+            float curr_left = curr_center.x - wx;
+            float curr_right = curr_center.x + wx;
+            float curr_front = curr_center.z + wz;
+            float curr_back = curr_center.z - wz;
 
             float block_wx = block_size.x / 2.0f;
             float block_wy = block_size.y / 2.0f;
@@ -169,24 +180,24 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
 
             float t_dy = INFINITY;
             if(dir.y != 0) {
-                float t_dy1 = (block_bottom - top1) / dir.y;
-                float t_dy2 = (bottom1 - block_top) / dir.y;
+                float t_dy1 = (block_bottom - prev_top) / dir.y;
+                float t_dy2 = (prev_bottom - block_top) / dir.y;
                 if(t_dy1 >= 0 && t_dy2 >= 0) {
                     t_dy = fminf(t_dy1, t_dy2);
                 }
             }
             float t_dx = INFINITY;
             if(dir.x != 0) {
-                float t_dx1 = (block_left - right1) / dir.x;
-                float t_dx2 = (left1 - block_right) / dir.x;
+                float t_dx1 = (block_left - prev_right) / dir.x;
+                float t_dx2 = (prev_left - block_right) / dir.x;
                 if(t_dx1 >= 0 && t_dx2 >= 0) {
                     t_dx = fminf(t_dx1, t_dx2);
                 }
             }
             float t_dz = INFINITY;
             if(dir.z != 0) {
-                float t_dz1 = (block_back - front1) / dir.z;
-                float t_dz2 = (back1 - block_front) / dir.z;
+                float t_dz1 = (block_back - prev_front) / dir.z;
+                float t_dz2 = (prev_back - block_front) / dir.z;
                 if(t_dz1 >= 0 && t_dz2 >= 0) {
                     t_dz = fminf(t_dz1, t_dz2);
                 }
