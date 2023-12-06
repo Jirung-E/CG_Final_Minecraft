@@ -137,7 +137,7 @@ void Test::update() {
     switch(view_mode) {
         case FirstPerson: {
             Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 0, 0, 1 } };
-            cam_pos.y += 0.5f;
+            cam_pos.y += 0.2f;
             camera.transform.position = cam_pos;
             Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
             camera.lookAt(cam_pos + cam_rot);
