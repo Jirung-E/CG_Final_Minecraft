@@ -142,8 +142,8 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             Vector3 size1 = mat * Vector4 { hitbox->size, 0 };
 
             mat = e->transform.translationMatrix() * e->transform.scaleMatrix();
-            Vector3 center2 = { mat * Vector4 { block->center, 1 } };
-            Vector3 size2 = mat * Vector4 { block->size, 0 };
+            Vector3 block_center = { mat * Vector4 { block->center, 1 } };
+            Vector3 block_size = mat * Vector4 { block->size, 0 };
 
             float wx1 = size1.x / 2.0f;
             float wy1 = size1.y / 2.0f;
@@ -155,51 +155,52 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             float front1 = center1.z + wz1;
             float back1 = center1.z - wz1;
 
-            float wx2 = size2.x / 2.0f;
-            float wy2 = size2.y / 2.0f;
-            float wz2 = size2.z / 2.0f;
-            float top2 = center2.y + wy2;
-            float bottom2 = center2.y - wy2;
-            float left2 = center2.x - wx2;
-            float right2 = center2.x + wx2;
-            float front2 = center2.z + wz2;
-            float back2 = center2.z - wz2;
+            float block_wx = block_size.x / 2.0f;
+            float block_wy = block_size.y / 2.0f;
+            float block_wz = block_size.z / 2.0f;
+            float block_top = block_center.y + block_wy;
+            float block_bottom = block_center.y - block_wy;
+            float block_left = block_center.x - block_wx;
+            float block_right = block_center.x + block_wx;
+            float block_front = block_center.z + block_wz;
+            float block_back = block_center.z - block_wz;
 
-            Vector3 velocity = entity->transform.position - prev_transform.position;
+            Vector3 dir = entity->transform.position - prev_transform.position;
 
             float t_dy = dt;
-            if(velocity.y != 0) {
-                float t_dy1 = (top1 - bottom2) / -velocity.y;
-                float t_dy2 = (top2 - bottom1) / velocity.y;
+            if(dir.y != 0) {
+                // top_prev -> top_curr 가 bottom2와 만나는지
+                // bottom_prev -> bottom_curr 가 top2와 만나는지
+                float t_dy1 = (top1 - block_bottom) / -dir.y;
+                float t_dy2 = (block_top - bottom1) / -dir.y;
                 t_dy = fminf(fmaxf(t_dy1, 0), fmaxf(t_dy2, 0));
             }
             float t_dx = dt;
-            if(velocity.x != 0) {
-                float t_dx1 = (right1 - left2) / -velocity.x;
-                float t_dx2 = (right2 - left1) / velocity.x;
+            if(dir.x != 0) {
+                float t_dx1 = (right1 - block_left) / -dir.x;
+                float t_dx2 = (block_right - left1) / -dir.x;
                 t_dx = fminf(fmaxf(t_dx1, 0), fmaxf(t_dx2, 0));
             }
             float t_dz = dt;
-            if(velocity.z != 0) {
-                float t_dz1 = (front1 - back2) / -velocity.z;
-                float t_dz2 = (front2 - back1) / velocity.z;
+            if(dir.z != 0) {
+                float t_dz1 = (front1 - block_back) / -dir.z;
+                float t_dz2 = (block_front - back1) / -dir.z;
                 t_dz = fminf(fmaxf(t_dz1, 0), fmaxf(t_dz2, 0));
             }
-            float t_min = fminf(t_dy, fminf(t_dx, t_dz));
 
-            if(t_min < dt) {
+            if(t_dx <= dt && t_dy <= dt && t_dz <= dt) {
+                float t_min = fminf(t_dy, fminf(t_dx, t_dz));
+
                 Log::log("t_min: %f", t_min);
-                Log::log("velocity * t_min: %f %f %f\n", velocity.x * t_min, velocity.y * t_min, velocity.z * t_min);
-                entity->transform.position -= velocity * (dt-t_min);
+                Log::log("dir * t_min: %f %f %f\n", dir.x * t_min, dir.y * t_min, dir.z * t_min);
+                entity->transform.position -= dir * (dt-t_min);
                 Physics* physics = entity->getComponent<Physics>();
                 if(physics != nullptr) {
                     if(t_min == t_dy) {
                         physics->velocity.y = 0;
-                    }
-                    else if(t_min == t_dx) {
+                    } else if(t_min == t_dx) {
                         physics->velocity.x = 0;
-                    }
-                    else if(t_min == t_dz) {
+                    } else if(t_min == t_dz) {
                         physics->velocity.z = 0;
                     }
                 }

@@ -49,7 +49,7 @@ void Test::initObjects() {
             generateBlock(x, 2, z, Material::base);
         }
     }
-    int count = 32;
+    int count = 20;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
