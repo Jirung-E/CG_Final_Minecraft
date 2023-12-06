@@ -176,95 +176,133 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             float block_front = block_center.z + block_wz;
             float block_back = block_center.z - block_wz;
 
-            Vector3 dir = (entity->transform.position - prev_transform.position) / dt;
+            Vector3 vel = (curr_center - prev_center) / dt;
+            
+            float tx = INFINITY;    // x축이 충돌한 시간
+            float ty = INFINITY;
+            float tz = INFINITY;
+            bool already_collide_x = false;
+            bool already_collide_y = false;
+            bool already_collide_z = false;
 
-            float t_dy = INFINITY;
-            if(block_bottom <= prev_top && prev_top <= block_top) {
-                t_dy = 0;
+            // x축 충돌
+            if(block_left <= curr_left && curr_left <= block_right) {
+                tx = 0;
+                already_collide_x = true;
             }
-            else if(block_bottom <= prev_bottom && prev_bottom <= block_top) {
-                t_dy = 0;
+            else if(block_left <= curr_right && curr_right <= block_right) {
+                tx = 0;
+                already_collide_x = true;
             }
-            else if(dir.y != 0) {
-                if(block_bottom >= prev_top && dir.y > 0) {
-                    t_dy = (block_bottom - prev_top) / dir.y;
-                }
-                else if(prev_bottom >= block_top && dir.y < 0) {
-					t_dy = (prev_bottom - block_top) / -dir.y;
-				}
-            }
-            float t_dx = INFINITY;
-            if(block_left <= prev_right && prev_right <= block_right) {
-                t_dx = 0;
-            }
-            else if(block_left <= prev_left && prev_left <= block_right) {
-                t_dx = 0;
-            }
-            else if(dir.x != 0) {
-                if(block_left >= prev_right && dir.x > 0) {
-					t_dx = (block_left - prev_right) / dir.x;
-				}
-                else if(prev_left >= block_right && dir.x < 0) {
-                    t_dx = (prev_left - block_right) / -dir.x;
+            if(vel.x > 0) {
+                if(prev_right <= block_left && block_left <= curr_right) {
+                    tx = (block_left - prev_right) / vel.x;
+                    already_collide_x = false;
                 }
             }
-            float t_dz = INFINITY;
-            if(block_back <= prev_front && prev_front <= block_front) {
-                t_dz = 0;
-            }
-            else if(block_back <= prev_back && prev_back <= block_front) {
-                t_dz = 0;
-            }
-            else if(dir.z != 0) {
-                if(block_back >= prev_front && dir.z > 0) {
-					t_dz = (block_back - prev_front) / dir.z;
-				}
-                else if(prev_back >= block_front && dir.z < 0) {
-					t_dz = (prev_back - block_front) / -dir.z;
-				}
-            }
-
-            // 보간되는 구간 사이에 충돌이 있는지 체크
-            if(t_dx < dt && t_dy < dt && t_dz < dt) {
-                Log::log("t_dx: %f", t_dx);
-                Log::log("t_dy: %f", t_dy);
-                Log::log("t_dz: %f", t_dz);
-                float t_max = fmaxf(t_dy, fmaxf(t_dx, t_dz));
-                    // t_max에서 정말 충돌이 일어나는지
-                    // ...
-
-                    entity->transform.position = entity->previus_transform.position + dir * t_max;
-                    entity->move(t_max);
-                if(t_max > 0) {
-                    Physics* physics = entity->getComponent<Physics>();
-                    if(physics != nullptr) {
-                        //if(0 <= t_dx && t_dx <= dt) {
-                        //    physics->velocity.x = 0;
-                        //} 
-                        //if(0 <= t_dy && t_dy <= dt) {
-                        //    physics->velocity.y = 0;
-                        //} 
-                        //if(0 <= t_dz && t_dz <= dt) {
-                        //    physics->velocity.z = 0;
-                        //}
-                        if(t_dx == t_max) {
-                            physics->velocity.x = 0;
-						}
-                        if(t_dy == t_max) {
-							physics->velocity.y = 0;
-                        }
-                        if(t_dz == t_max) {
-                            physics->velocity.z = 0;
-                        }
-                    }
-
-                    entity->previus_transform = entity->transform;
+            else if(vel.x < 0) {
+                if(curr_left <= block_right && block_right <= prev_left) {
+                    tx = (block_right - prev_left) / vel.x;
+                    already_collide_x = false;
                 }
-
-                Log::log("dt: %f", dt);
-                Log::log("t_max: %f", t_max);
+            }
+            // y
+            if(block_bottom <= curr_bottom && curr_bottom <= block_top) {
+                ty = 0;
+                already_collide_y = true;
+            }
+            else if(block_bottom <= curr_top && curr_top <= block_top) {
+                ty = 0;
+                already_collide_y = true;
+            }
+            if(vel.y > 0) {
+                if(prev_top <= block_bottom && block_bottom <= curr_top) {
+                    ty = (block_bottom - prev_top) / vel.y;
+                    already_collide_y = false;
+                }
+            }
+            else if(vel.y < 0) {
+                if(curr_bottom <= block_top && block_top <= prev_bottom) {
+                    ty = (block_top - prev_bottom) / vel.y;
+                    already_collide_y = false;
+                }
+            }
+            // z
+            if(block_back <= curr_back && curr_back <= block_front) {
+                tz = 0;
+                already_collide_z = true;
+            }
+            else if(block_back <= curr_front && curr_front <= block_front) {
+                tz = 0;
+                already_collide_z = true;
+            }
+            if(vel.z > 0) {
+                if(prev_front <= block_back && block_back <= curr_front) {
+                    tz = (block_back - prev_front) / vel.z;
+                    already_collide_z = false;
+                }
+            }
+            else if(vel.z < 0) {
+                if(curr_back <= block_front && block_front <= prev_back) {
+                    tz = (block_front - prev_back) / vel.z;
+                    already_collide_z = false;
+                }
             }
 
+
+            if(tx > dt || tx < 0 || ty > dt || ty < 0 || tz > dt || tz < 0) {
+                continue;
+            }
+
+            float t = std::max(tx, std::max(ty, tz));
+
+            Vector3 hit_point = prev_center + vel * t;
+            float hit_left = hit_point.x - wx;
+            float hit_right = hit_point.x + wx;
+            float hit_top = hit_point.y + wy;
+            float hit_bottom = hit_point.y - wy;
+            float hit_front = hit_point.z + wz;
+            float hit_back = hit_point.z - wz;
+            if(hit_left > block_right || hit_right < block_left || 
+                hit_top < block_bottom || hit_bottom > block_top || 
+                hit_front < block_back || hit_back > block_front) {
+                continue;
+            }
+
+            entity->transform.position = hit_point;
+            entity->transform.position.y -= wy;
+            Log::log("tx: %f", tx);
+            Log::log("ty: %f", ty);
+            Log::log("tz: %f", tz);
+            Log::log("player position: %f %f %f", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
+            
+            Physics* physics = entity->getComponent<Physics>();
+            Vector3 d = curr_center - hit_point;
+            if(tx == t && !already_collide_x) {
+                Log::log("x 충돌");
+                d.x = 0;
+                if(physics != nullptr) {
+                    physics->velocity.x = 0;
+                }
+            }
+            if(ty == t && !already_collide_y) {
+                Log::log("y 충돌");
+                d.y = 0;
+                if(physics != nullptr) {
+                    physics->velocity.y = 0;
+                }
+            }
+            if(tz == t && !already_collide_z) {
+                Log::log("z 충돌");
+                d.z = 0;
+                if(physics != nullptr) {
+                    physics->velocity.z = 0;
+                }
+            }
+
+            entity->transform.position += d;
+
+            Log::log("\n");
         }
 
         if(collide(player->feet, block)) {
