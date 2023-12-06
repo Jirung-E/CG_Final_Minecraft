@@ -135,7 +135,7 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
         for(auto& entity : entities) {
             // 1. 이전 프레임과 현재 프레임 보간해서 그 사이에 충돌지점을 찾음
             Transform& prev_transform = entity->previus_transform;
-            AABB* hitbox = new AABB { nullptr, entity->hitbox->id+"_clone", entity->hitbox->size, entity->hitbox->center };
+            AABB* hitbox = entity->hitbox;
             
             auto mat = prev_transform.translationMatrix() * prev_transform.scaleMatrix();
             Vector3 prev_center = { mat * Vector4 { hitbox->center, 1 } };
@@ -179,64 +179,73 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             Vector3 dir = (entity->transform.position - prev_transform.position) / dt;
 
             float t_dy = INFINITY;
-            if(dir.y != 0) {
+            if(block_bottom <= prev_top && prev_top <= block_top) {
+                t_dy = 0;
+            }
+            else if(block_bottom <= prev_bottom && prev_bottom <= block_top) {
+                t_dy = 0;
+            }
+            else if(dir.y != 0) {
                 float t_dy1 = (block_bottom - prev_top) / dir.y;
                 float t_dy2 = (prev_bottom - block_top) / dir.y;
-                if(t_dy1 >= 0 && t_dy2 >= 0) {
-                    t_dy = fminf(t_dy1, t_dy2);
-                }
+                t_dy = fminf(t_dy1, t_dy2);
             }
             float t_dx = INFINITY;
-            if(dir.x != 0) {
+            if(block_left <= prev_right && prev_right <= block_right) {
+                t_dx = 0;
+            }
+            else if(block_left <= prev_left && prev_left <= block_right) {
+                t_dx = 0;
+            }
+            else if(dir.x != 0) {
                 float t_dx1 = (block_left - prev_right) / dir.x;
                 float t_dx2 = (prev_left - block_right) / dir.x;
-                if(t_dx1 >= 0 && t_dx2 >= 0) {
-                    t_dx = fminf(t_dx1, t_dx2);
-                }
+                t_dx = fminf(t_dx1, t_dx2);
             }
             float t_dz = INFINITY;
-            if(dir.z != 0) {
+            if(block_back <= prev_front && prev_front <= block_front) {
+                t_dz = 0;
+            }
+            else if(block_back <= prev_back && prev_back <= block_front) {
+                t_dz = 0;
+            }
+            else if(dir.z != 0) {
                 float t_dz1 = (block_back - prev_front) / dir.z;
                 float t_dz2 = (prev_back - block_front) / dir.z;
-                if(t_dz1 >= 0 && t_dz2 >= 0) {
-                    t_dz = fminf(t_dz1, t_dz2);
-                }
+                t_dz = fminf(t_dz1, t_dz2);
             }
 
             // 보간되는 구간 사이에 충돌이 있는지 체크
-            if(t_dx <= dt || t_dy <= dt || t_dz <= dt) {
-                float t_min = fminf(t_dy, fminf(t_dx, t_dz));
-
-                // t_min에서 충돌하는지 체크
-                // ...
+            if(t_dx < dt && t_dy < dt && t_dz < dt) {
+                float t_min = fmaxf(t_dy, fmaxf(t_dx, t_dz));
+                if(t_min > 0) {
+                    entity->transform.position = entity->previus_transform.position + dir * t_min;
+                    entity->move(t_min);
+                    Physics* physics = entity->getComponent<Physics>();
+                    if(physics != nullptr) {
+                        if(0 < t_dx && t_dx <= dt) {
+                            physics->velocity.x = 0;
+                        } 
+                        if(0 < t_dy && t_dy <= dt) {
+                            physics->velocity.y = 0;
+                        } 
+                        if(0 < t_dz && t_dz <= dt) {
+                            physics->velocity.z = 0;
+                        }
+                    }
+                }
 
                 Log::log("dt: %f", dt);
                 Log::log("t_min: %f", t_min);
                 Log::log("dir * t_min: %f %f %f\n", dir.x * t_min, dir.y * t_min, dir.z * t_min);
-                entity->transform.position = entity->previus_transform.position + dir * t_min;
-                entity->move(t_min);
-                Physics* physics = entity->getComponent<Physics>();
-                if(physics != nullptr) {
-                    if(t_dx <= dt) {
-                        physics->velocity.x = 0;
-                    } 
-                    if(t_dy <= dt) {
-                        physics->velocity.y = 0;
-                    } 
-                    if(t_dz <= dt) {
-                        physics->velocity.z = 0;
-                    }
-                }
             }
 
-            //entity->previus_transform = entity->transform;
-
-            delete hitbox;
+            entity->previus_transform = entity->transform;
         }
 
         if(collide(player->feet, block)) {
             player->physics->velocity.y = 0;
-            player->transform.position.y = block->size.y + e->transform.position.y;
+            //player->transform.position.y = block->size.y + e->transform.position.y;
         }
     }
 }
