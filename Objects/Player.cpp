@@ -36,7 +36,8 @@ void Player::update(float dt) {
 
 void Player::jump() {
     if(feet->is_colliding) {
-        physics->force.y += 5;
+        physics->velocity.y = 5;
+        feet->is_colliding = false;
     }
 }
 
@@ -46,8 +47,8 @@ void Player::initComponent() {
     physics = getComponent<Physics>();
     addComponent<AABB, Vector3, Vector3>("foot", { 0.4f, 0.1f, 0.4f }, { 0, 0.05f, 0 });
     feet = getComponent<AABB>("foot");
-    hitbox->center = { 0, 1, 0 };
-    hitbox->size = { 0.5f, 1.6f, 0.5f };
+    hitbox->center = { 0, 0.9f, 0 };
+    hitbox->size = { 0.5f, 1.8f, 0.5f };
 }
 
 void Player::initModel() {
