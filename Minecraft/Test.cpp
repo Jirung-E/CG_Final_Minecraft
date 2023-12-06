@@ -125,7 +125,7 @@ void Test::rotateHead(float dx, float dy) {
 
 void Test::update() {
     //Log::log("dt: %f", dt);
-    Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    //Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
 
     objects_manager.update(dt, simulation_distance);
 

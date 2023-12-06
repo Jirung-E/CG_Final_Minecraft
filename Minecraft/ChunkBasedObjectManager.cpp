@@ -169,10 +169,8 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
 
             float t_dy = INFINITY;
             if(dir.y != 0) {
-                // top_prev -> top_curr 가 bottom2와 만나는지
-                // bottom_prev -> bottom_curr 가 top2와 만나는지
                 float t_dy1 = (block_bottom - top1) / dir.y;
-                float t_dy2 = (block_top - bottom1) / dir.y;
+                float t_dy2 = (bottom1 - block_top) / dir.y;
                 if(t_dy1 >= 0 && t_dy2 >= 0) {
                     t_dy = fminf(t_dy1, t_dy2);
                 }
@@ -180,7 +178,7 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             float t_dx = INFINITY;
             if(dir.x != 0) {
                 float t_dx1 = (block_left - right1) / dir.x;
-                float t_dx2 = (block_right - left1) / dir.x;
+                float t_dx2 = (left1 - block_right) / dir.x;
                 if(t_dx1 >= 0 && t_dx2 >= 0) {
                     t_dx = fminf(t_dx1, t_dx2);
                 }
@@ -188,20 +186,18 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             float t_dz = INFINITY;
             if(dir.z != 0) {
                 float t_dz1 = (block_back - front1) / dir.z;
-                float t_dz2 = (block_front - back1) / dir.z;
+                float t_dz2 = (back1 - block_front) / dir.z;
                 if(t_dz1 >= 0 && t_dz2 >= 0) {
                     t_dz = fminf(t_dz1, t_dz2);
                 }
             }
 
-            float t_min = fminf(t_dy, fminf(t_dx, t_dz));
-
-            Log::log("dt: %f", dt);
-            Log::log("t_min: %f", t_min);
-            Log::log("dir * t_min: %f %f %f\n", dir.x * t_min, dir.y * t_min, dir.z * t_min);
-
-            if(t_dx <= dt && t_dy <= dt && t_dz <= dt) {
+            // 보간되는 구간 사이에 충돌이 있는지 체크
+            if(t_dx <= dt || t_dy <= dt || t_dz <= dt) {
                 float t_min = fminf(t_dy, fminf(t_dx, t_dz));
+
+                // t_min에서 충돌하는지 체크
+                // ...
 
                 Log::log("dt: %f", dt);
                 Log::log("t_min: %f", t_min);
@@ -210,19 +206,19 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
                 entity->move(t_min);
                 Physics* physics = entity->getComponent<Physics>();
                 if(physics != nullptr) {
-                    if(abs(t_min-t_dy) <= 0.00001f) {
-                        physics->velocity.y = 0;
-                    } 
-                    if(abs(t_min-t_dx) <= 0.00001f) {
+                    if(t_dx <= dt) {
                         physics->velocity.x = 0;
                     } 
-                    if(abs(t_min-t_dz) <= 0.00001f) {
+                    if(t_dy <= dt) {
+                        physics->velocity.y = 0;
+                    } 
+                    if(t_dz <= dt) {
                         physics->velocity.z = 0;
                     }
                 }
             }
 
-            ////entity->previus_transform = entity->transform;
+            //entity->previus_transform = entity->transform;
 
             delete hitbox;
         }
