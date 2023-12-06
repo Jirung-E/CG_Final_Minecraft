@@ -12,7 +12,6 @@ public:
     const std::string title;
 
 private:
-    int timer_value;
     std::chrono::system_clock::time_point prev_update_time;
 
 protected:

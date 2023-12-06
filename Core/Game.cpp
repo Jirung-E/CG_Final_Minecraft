@@ -10,7 +10,6 @@ using namespace chrono;
 
 
 Game::Game(const std::string& title) : title { title }, 
-    timer_value { 0 },
     dt { 0.0f },
     sensitivity { 0.1f },
     fix_cursor_when_motion { false },
