@@ -165,54 +165,69 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             float block_front = block_center.z + block_wz;
             float block_back = block_center.z - block_wz;
 
-            Vector3 dir = entity->transform.position - prev_transform.position;
+            Vector3 dir = (entity->transform.position - prev_transform.position) / dt;
 
-            float t_dy = dt;
+            float t_dy = INFINITY;
             if(dir.y != 0) {
                 // top_prev -> top_curr 가 bottom2와 만나는지
                 // bottom_prev -> bottom_curr 가 top2와 만나는지
-                float t_dy1 = (top1 - block_bottom) / -dir.y;
-                float t_dy2 = (block_top - bottom1) / -dir.y;
-                t_dy = fminf(fmaxf(t_dy1, 0), fmaxf(t_dy2, 0));
+                float t_dy1 = (block_bottom - top1) / dir.y;
+                float t_dy2 = (block_top - bottom1) / dir.y;
+                if(t_dy1 >= 0 && t_dy2 >= 0) {
+                    t_dy = fminf(t_dy1, t_dy2);
+                }
             }
-            float t_dx = dt;
+            float t_dx = INFINITY;
             if(dir.x != 0) {
-                float t_dx1 = (right1 - block_left) / -dir.x;
-                float t_dx2 = (block_right - left1) / -dir.x;
-                t_dx = fminf(fmaxf(t_dx1, 0), fmaxf(t_dx2, 0));
+                float t_dx1 = (block_left - right1) / dir.x;
+                float t_dx2 = (block_right - left1) / dir.x;
+                if(t_dx1 >= 0 && t_dx2 >= 0) {
+                    t_dx = fminf(t_dx1, t_dx2);
+                }
             }
-            float t_dz = dt;
+            float t_dz = INFINITY;
             if(dir.z != 0) {
-                float t_dz1 = (front1 - block_back) / -dir.z;
-                float t_dz2 = (block_front - back1) / -dir.z;
-                t_dz = fminf(fmaxf(t_dz1, 0), fmaxf(t_dz2, 0));
+                float t_dz1 = (block_back - front1) / dir.z;
+                float t_dz2 = (block_front - back1) / dir.z;
+                if(t_dz1 >= 0 && t_dz2 >= 0) {
+                    t_dz = fminf(t_dz1, t_dz2);
+                }
             }
+
+            float t_min = fminf(t_dy, fminf(t_dx, t_dz));
+
+            Log::log("dt: %f", dt);
+            Log::log("t_min: %f", t_min);
+            Log::log("dir * t_min: %f %f %f\n", dir.x * t_min, dir.y * t_min, dir.z * t_min);
 
             if(t_dx <= dt && t_dy <= dt && t_dz <= dt) {
                 float t_min = fminf(t_dy, fminf(t_dx, t_dz));
 
+                Log::log("dt: %f", dt);
                 Log::log("t_min: %f", t_min);
                 Log::log("dir * t_min: %f %f %f\n", dir.x * t_min, dir.y * t_min, dir.z * t_min);
-                entity->transform.position -= dir * (dt-t_min);
+                entity->transform.position = entity->previus_transform.position + dir * t_min;
+                entity->move(t_min);
                 Physics* physics = entity->getComponent<Physics>();
                 if(physics != nullptr) {
-                    if(t_min == t_dy) {
+                    if(abs(t_min-t_dy) <= 0.00001f) {
                         physics->velocity.y = 0;
-                    } else if(t_min == t_dx) {
+                    } 
+                    if(abs(t_min-t_dx) <= 0.00001f) {
                         physics->velocity.x = 0;
-                    } else if(t_min == t_dz) {
+                    } 
+                    if(abs(t_min-t_dz) <= 0.00001f) {
                         physics->velocity.z = 0;
                     }
                 }
             }
 
-            //entity->previus_transform = entity->transform;
+            ////entity->previus_transform = entity->transform;
 
             delete hitbox;
         }
 
         if(collide(player->feet, block)) {
-            Log::log("collide\n");
             player->physics->velocity.y = 0;
             player->transform.position.y = block->size.y + e->transform.position.y;
         }

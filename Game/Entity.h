@@ -18,4 +18,5 @@ public:
 
 public:
     virtual void update(float dt) override;
+    void move(float dt);
 };

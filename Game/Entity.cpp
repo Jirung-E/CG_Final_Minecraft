@@ -21,6 +21,10 @@ void Entity::update(float dt) {
 
     Object::update(dt);
 
+    move(dt);
+}
+
+void Entity::move(float dt) {
     Vector2 d = move_direction;
     if(d.x != 0) {      // 옆으로 이동시
         if(d.y != 0) {  // 대각선 이동시
