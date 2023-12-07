@@ -184,66 +184,129 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             bool already_collide_x = false;
             bool already_collide_y = false;
             bool already_collide_z = false;
+            bool contact_x = false;
+            bool contact_y = false;
+            bool contact_z = false;
 
             // x축 충돌
-            if(block_left <= curr_left && curr_left <= block_right) {
+            if(block_left < curr_left && curr_left < block_right) {
                 tx = 0;
                 already_collide_x = true;
+                if(block_left == curr_left || block_right == curr_left) {
+                    contact_x = true;
+                }
             }
-            else if(block_left <= curr_right && curr_right <= block_right) {
+            else if(block_left < curr_right && curr_right < block_right) {
                 tx = 0;
                 already_collide_x = true;
+                if(block_left == curr_right || block_right == curr_right) {
+                    contact_x = true;
+                }
+            }
+            if(block_left < prev_left && prev_left < block_right) {
+                tx = 0;
+                already_collide_x = true;
+                if(block_left == prev_left || block_right == prev_left) {
+                    contact_x = true;
+                }
+            }
+            else if(block_left < prev_right && prev_right < block_right) {
+                tx = 0;
+                already_collide_x = true;
+                if(block_left == prev_right || block_right == prev_right) {
+                    contact_x = true;
+                }
             }
             if(vel.x > 0) {
-                if(prev_right <= block_left && block_left <= curr_right) {
+                if(prev_right < block_left && block_left < curr_right) {
                     tx = (block_left - prev_right) / vel.x;
                     already_collide_x = false;
                 }
             }
             else if(vel.x < 0) {
-                if(curr_left <= block_right && block_right <= prev_left) {
+                if(curr_left < block_right && block_right < prev_left) {
                     tx = (block_right - prev_left) / vel.x;
                     already_collide_x = false;
                 }
             }
             // y
-            if(block_bottom <= curr_bottom && curr_bottom <= block_top) {
+            if(block_bottom < curr_bottom && curr_bottom < block_top) {
                 ty = 0;
                 already_collide_y = true;
+                if(block_bottom == curr_bottom || block_top == curr_bottom) {
+                    contact_y = true;
+                }
             }
-            else if(block_bottom <= curr_top && curr_top <= block_top) {
+            else if(block_bottom < curr_top && curr_top < block_top) {
                 ty = 0;
                 already_collide_y = true;
+                if(block_bottom == curr_top || block_top == curr_top) {
+                    contact_y = true;
+                }
+            }
+            if(block_bottom < prev_bottom && prev_bottom < block_top) {
+                ty = 0;
+                already_collide_y = true;
+                if(block_bottom == prev_bottom || block_top == prev_bottom) {
+                    contact_y = true;
+                }
+            }
+            else if(block_bottom < prev_top && prev_top < block_top) {
+                ty = 0;
+                already_collide_y = true;
+                if(block_bottom == prev_top || block_top == prev_top) {
+                    contact_y = true;
+                }
             }
             if(vel.y > 0) {
-                if(prev_top <= block_bottom && block_bottom <= curr_top) {
+                if(prev_top < block_bottom && block_bottom < curr_top) {
                     ty = (block_bottom - prev_top) / vel.y;
                     already_collide_y = false;
                 }
             }
             else if(vel.y < 0) {
-                if(curr_bottom <= block_top && block_top <= prev_bottom) {
+                if(curr_bottom < block_top && block_top < prev_bottom) {
                     ty = (block_top - prev_bottom) / vel.y;
                     already_collide_y = false;
                 }
             }
             // z
-            if(block_back <= curr_back && curr_back <= block_front) {
+            if(block_back < curr_back && curr_back < block_front) {
                 tz = 0;
                 already_collide_z = true;
+                if(block_back == curr_back || block_front == curr_back) {
+                    contact_z = true;
+                }
             }
-            else if(block_back <= curr_front && curr_front <= block_front) {
+            else if(block_back < curr_front && curr_front < block_front) {
                 tz = 0;
                 already_collide_z = true;
+                if(block_back == curr_front || block_front == curr_front) {
+                    contact_z = true;
+                }
+            }
+            if(block_back < prev_back && prev_back < block_front) {
+                tz = 0;
+                already_collide_z = true;
+                if(block_back == prev_back || block_front == prev_back) {
+                    contact_z = true;
+                }
+            }
+            else if(block_back < prev_front && prev_front < block_front) {
+                tz = 0;
+                already_collide_z = true;
+                if(block_back == prev_front || block_front == prev_front) {
+                    contact_z = true;
+                }
             }
             if(vel.z > 0) {
-                if(prev_front <= block_back && block_back <= curr_front) {
+                if(prev_front < block_back && block_back < curr_front) {
                     tz = (block_back - prev_front) / vel.z;
                     already_collide_z = false;
                 }
             }
             else if(vel.z < 0) {
-                if(curr_back <= block_front && block_front <= prev_back) {
+                if(curr_back < block_front && block_front < prev_back) {
                     tz = (block_front - prev_back) / vel.z;
                     already_collide_z = false;
                 }
@@ -269,6 +332,13 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
                 continue;
             }
 
+            bool contact_left = hit_left == block_right;
+            bool contact_right = hit_right == block_left;
+            bool contact_top = hit_top == block_bottom;
+            bool contact_bottom = hit_bottom == block_top;
+            bool contact_front = hit_front == block_back;
+            bool contact_back = hit_back == block_front;
+            
             entity->transform.position = hit_point;
             entity->transform.position.y -= wy;
             Log::log("tx: %f", tx);
@@ -278,21 +348,21 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             
             Physics* physics = entity->getComponent<Physics>();
             Vector3 d = curr_center - hit_point;
-            if(tx == t && !already_collide_x) {
+            if(contact_left || contact_right) {
                 Log::log("x 충돌");
                 d.x = 0;
                 if(physics != nullptr) {
                     physics->velocity.x = 0;
                 }
             }
-            if(ty == t && !already_collide_y) {
+            if(contact_top || contact_bottom) {
                 Log::log("y 충돌");
                 d.y = 0;
                 if(physics != nullptr) {
                     physics->velocity.y = 0;
                 }
             }
-            if(tz == t && !already_collide_z) {
+            if(contact_back || contact_front) {
                 Log::log("z 충돌");
                 d.z = 0;
                 if(physics != nullptr) {
