@@ -184,38 +184,39 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             bool already_collide_x = false;
             bool already_collide_y = false;
             bool already_collide_z = false;
-            bool contact_x = false;
-            bool contact_y = false;
-            bool contact_z = false;
 
             // x√‡ √Êµπ
             if(block_left < curr_left && curr_left < block_right) {
                 tx = 0;
                 already_collide_x = true;
-                if(block_left == curr_left || block_right == curr_left) {
-                    contact_x = true;
-                }
             }
             else if(block_left < curr_right && curr_right < block_right) {
                 tx = 0;
                 already_collide_x = true;
-                if(block_left == curr_right || block_right == curr_right) {
-                    contact_x = true;
-                }
             }
             if(block_left < prev_left && prev_left < block_right) {
                 tx = 0;
                 already_collide_x = true;
-                if(block_left == prev_left || block_right == prev_left) {
-                    contact_x = true;
-                }
             }
             else if(block_left < prev_right && prev_right < block_right) {
                 tx = 0;
                 already_collide_x = true;
-                if(block_left == prev_right || block_right == prev_right) {
-                    contact_x = true;
-                }
+            }
+            if(prev_left < block_right && block_right < prev_right) {
+                tx = 0;
+                already_collide_x = true;
+            }
+            else if(prev_left < block_left && block_left < prev_right) {
+                tx = 0;
+                already_collide_x = true;
+            }
+            if(curr_left < block_right && block_right < curr_right) {
+                tx = 0;
+                already_collide_x = true;
+            }
+            else if(curr_left < block_left && block_left < curr_right) {
+                tx = 0;
+                already_collide_x = true;
             }
             if(vel.x > 0) {
                 if(prev_right < block_left && block_left < curr_right) {
@@ -233,30 +234,34 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             if(block_bottom < curr_bottom && curr_bottom < block_top) {
                 ty = 0;
                 already_collide_y = true;
-                if(block_bottom == curr_bottom || block_top == curr_bottom) {
-                    contact_y = true;
-                }
             }
             else if(block_bottom < curr_top && curr_top < block_top) {
                 ty = 0;
                 already_collide_y = true;
-                if(block_bottom == curr_top || block_top == curr_top) {
-                    contact_y = true;
-                }
             }
             if(block_bottom < prev_bottom && prev_bottom < block_top) {
                 ty = 0;
                 already_collide_y = true;
-                if(block_bottom == prev_bottom || block_top == prev_bottom) {
-                    contact_y = true;
-                }
             }
             else if(block_bottom < prev_top && prev_top < block_top) {
                 ty = 0;
                 already_collide_y = true;
-                if(block_bottom == prev_top || block_top == prev_top) {
-                    contact_y = true;
-                }
+            }
+            if(prev_bottom < block_top && block_top < prev_top) {
+                ty = 0;
+                already_collide_y = true;
+            }
+            else if(prev_bottom < block_bottom && block_bottom < prev_top) {
+                ty = 0;
+                already_collide_y = true;
+            }
+            if(curr_bottom < block_top && block_top < curr_top) {
+                ty = 0;
+                already_collide_y = true;
+            }
+            else if(curr_bottom < block_bottom && block_bottom < curr_top) {
+                ty = 0;
+                already_collide_y = true;
             }
             if(vel.y > 0) {
                 if(prev_top < block_bottom && block_bottom < curr_top) {
@@ -274,30 +279,34 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             if(block_back < curr_back && curr_back < block_front) {
                 tz = 0;
                 already_collide_z = true;
-                if(block_back == curr_back || block_front == curr_back) {
-                    contact_z = true;
-                }
             }
             else if(block_back < curr_front && curr_front < block_front) {
                 tz = 0;
                 already_collide_z = true;
-                if(block_back == curr_front || block_front == curr_front) {
-                    contact_z = true;
-                }
             }
             if(block_back < prev_back && prev_back < block_front) {
                 tz = 0;
                 already_collide_z = true;
-                if(block_back == prev_back || block_front == prev_back) {
-                    contact_z = true;
-                }
             }
             else if(block_back < prev_front && prev_front < block_front) {
                 tz = 0;
                 already_collide_z = true;
-                if(block_back == prev_front || block_front == prev_front) {
-                    contact_z = true;
-                }
+            }
+            if(prev_back < block_front && block_front < prev_front) {
+                tz = 0;
+                already_collide_z = true;
+            }
+            else if(prev_back < block_back && block_back < prev_front) {
+                tz = 0;
+                already_collide_z = true;
+            }
+            if(curr_back < block_front && block_front < curr_front) {
+                tz = 0;
+                already_collide_z = true;
+            }
+            else if(curr_back < block_back && block_back < curr_front) {
+                tz = 0;
+                already_collide_z = true;
             }
             if(vel.z > 0) {
                 if(prev_front < block_back && block_back < curr_front) {
