@@ -32,6 +32,12 @@ private:
     const float interaction_distance;
     const int simulation_distance;
 
+    enum Face {
+        Left, Right, Top, Bottom, Front, Back
+    } focus_face;     // 만약 각 면에 정확히 동시에 닿는다면 x, y, z 순으로
+    Block* focus_block;
+    Entity* focus_entity;
+
 public:
     Test();
 

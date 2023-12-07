@@ -3,7 +3,7 @@
 using namespace std;
 
 
-const int ChunkInfo::chunk_size = 2;
+const int ChunkInfo::chunk_size = 8;
 
 ChunkInfo::ChunkInfo(int x, int y, int z) : x { x }, y { y }, z { z } {
 
@@ -43,9 +43,9 @@ void ChunkBasedObjectManager::add(const string& name, Object* object) {
 
 void ChunkBasedObjectManager::remove(const string& name) {
     Object* object = objects.get(name);
-    objects.remove(name);
     auto& chunk_objects = chunk_info[ChunkInfo { object->transform.position }];
     chunk_objects.erase(find(chunk_objects.begin(), chunk_objects.end(), object));
+    objects.remove(name);
 }
 
 Object* ChunkBasedObjectManager::get(const string& name) const {
@@ -321,7 +321,6 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
                 }
             }
 
-
             if(tx > dt || tx < 0 || ty > dt || ty < 0 || tz > dt || tz < 0) {
                 continue;
             }
@@ -350,29 +349,22 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             
             entity->transform.position = hit_point;
             entity->transform.position.y -= wy;
-            Log::log("tx: %f", tx);
-            Log::log("ty: %f", ty);
-            Log::log("tz: %f", tz);
-            Log::log("player position: %f %f %f", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
-            
+
             Physics* physics = entity->getComponent<Physics>();
             Vector3 d = curr_center - hit_point;
             if(contact_left || contact_right) {
-                Log::log("x 충돌");
                 d.x = 0;
                 if(physics != nullptr) {
                     physics->velocity.x = 0;
                 }
             }
             if(contact_top || contact_bottom) {
-                Log::log("y 충돌");
                 d.y = 0;
                 if(physics != nullptr) {
                     physics->velocity.y = 0;
                 }
             }
             if(contact_back || contact_front) {
-                Log::log("z 충돌");
                 d.z = 0;
                 if(physics != nullptr) {
                     physics->velocity.z = 0;
@@ -380,8 +372,6 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
             }
 
             entity->transform.position += d;
-
-            Log::log("\n");
         }
 
         if(collide(player->feet, block)) {
