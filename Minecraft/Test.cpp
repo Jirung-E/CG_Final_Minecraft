@@ -278,18 +278,87 @@ void Test::update() {
             continue;
         }
     }
-    if(focus_block != nullptr) {
-        Log::log("hit_block: %s", focus_block->id.c_str());
-        focus_block->material.base_color = ColorRGB { RGB_Red };
-    }
-    else {
-        Log::log("hit_block: nullptr");
-        focus_block = nullptr;
-    }
 
     min_distance = interaction_distance;
     for(const auto& entity : objects_manager.entities) {
+        mat = entity->absoluteTransformMatrix();
+        AABB* collider = entity->getComponent<AABB>();
+        Vector3 block_center { mat * Vector4 { collider->center, 1 } };
+        Vector3 block_size { mat * Vector4 { collider->size, 0 } };
 
+        float block_wx = block_size.x / 2.0f;
+        float block_wy = block_size.y / 2.0f;
+        float block_wz = block_size.z / 2.0f;
+        float block_top = block_center.y + block_wy;
+        float block_bottom = block_center.y - block_wy;
+        float block_left = block_center.x - block_wx;
+        float block_right = block_center.x + block_wx;
+        float block_front = block_center.z + block_wz;
+        float block_back = block_center.z - block_wz;
+
+        float tx = INFINITY;    // x축이 충돌한 시간
+        float ty = INFINITY;
+        float tz = INFINITY;
+
+        // x
+        if(ray_direction.x != 0) {
+            float t1 = (block_left - ray_origin.x) / ray_direction.x;
+            float t2 = (block_right - ray_origin.x) / ray_direction.x;
+            tx = std::min(t1, t2);
+            if(tx < 0) {
+                tx = std::max(t1, t2);
+            }
+        }
+        if(block_left <= ray_origin.x && ray_origin.x <= block_right) {
+            if(block_left <= ray_end.x && ray_end.x <= block_right) {
+                tx = 0;
+            }
+        }
+        // y
+        if(ray_direction.y != 0) {
+            float t1 = (block_bottom - ray_origin.y) / ray_direction.y;
+            float t2 = (block_top - ray_origin.y) / ray_direction.y;
+            ty = std::min(t1, t2);
+            if(ty < 0) {
+                ty = std::max(t1, t2);
+            }
+        }
+        if(block_bottom <= ray_origin.y && ray_origin.y <= block_top) {
+            if(block_bottom <= ray_end.y && ray_end.y <= block_top) {
+                ty = 0;
+            }
+        }
+        // z
+        if(ray_direction.z != 0) {
+            float t1 = (block_back - ray_origin.z) / ray_direction.z;
+            float t2 = (block_front - ray_origin.z) / ray_direction.z;
+            tz = std::min(t1, t2);
+            if(tz < 0) {
+                tz = std::max(t1, t2);
+            }
+        }
+        if(block_back <= ray_origin.z && ray_origin.z <= block_front) {
+            if(block_back <= ray_end.z && ray_end.z <= block_front) {
+                tz = 0;
+            }
+        }
+
+        if(tx >= min_distance || tx < 0 || ty >= min_distance || ty < 0 || tz >= min_distance || tz < 0) {
+            Log::log("tx: %f, ty: %f, tz: %f", tx, ty, tz);
+            continue;
+        }
+
+        float t = std::max(tx, std::max(ty, tz));
+
+        Vector3 hit_point = ray_origin + ray_direction * t;
+        if(hit_point.x < block_left || block_right < hit_point.x ||
+            hit_point.y < block_bottom || block_top < hit_point.y ||
+            hit_point.z < block_back || block_front < hit_point.z) {
+            continue;
+        }
+
+        focus_entity = entity;
+        min_distance = t;
     }
 }
 
@@ -369,6 +438,35 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
             break;
         case GLUT_RIGHT_BUTTON:
             // generateBlock(좌표, 종류);
+            if(focus_block == nullptr) {
+                break;
+            }
+            else {
+                Vector3 pos = focus_block->transform.position;
+                pos.x -= 0.5f;
+                pos.z -= 0.5f;
+                switch(focus_face) {
+                case Face::Left:
+                    pos.x -= 1;
+                    break;
+                case Face::Right:
+                    pos.x += 1;
+                    break;
+                case Face::Top:
+                    pos.y += 1;
+                    break;
+                case Face::Bottom:
+                    pos.y -= 1;
+                    break;
+                case Face::Front:
+                    pos.z += 1;
+                    break;
+                case Face::Back:
+                    pos.z -= 1;
+                    break;
+                }
+                generateBlock(pos.x, pos.y, pos.z, Material::base);
+            }
             break;
         }
         break;
