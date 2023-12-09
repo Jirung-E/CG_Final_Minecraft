@@ -16,8 +16,8 @@ private:
 
     enum ViewMode {
         FirstPerson,
-        SecondPerson,
         ThirdPerson,
+        SecondPerson,
         COUNT
     } view_mode;
 

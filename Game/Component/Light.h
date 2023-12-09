@@ -7,6 +7,8 @@ class Light : public ComponentImpl {
 public:
     Vector3 position;
     float ambient;
+    float c1;
+    float c2;
     
 public:
     Light(Object* object, const std::string& id);

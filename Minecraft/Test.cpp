@@ -86,8 +86,12 @@ void Test::initObjects() {
 
     Box* light2 = new Box { "light2" };
     light2->transform.position = { 5, 5, 5 };
-    light2->material.base_color = ColorRGB { RGB_Red | ColorRGB { RGB_White, 0.7f }, 0.4f };
+    light2->material.base_color = ColorRGB { RGB_Red | ColorRGB { RGB_White, 0.5f }, 0.8f };
     light2->addComponent<Light>();
+    Light* l2 = light2->getComponent<Light>();
+    l2->ambient = 0.5f;
+    l2->c1 = 0.01f;
+    l2->c2 = 0.01f;
     objects.add("light2", light2);
 }
 

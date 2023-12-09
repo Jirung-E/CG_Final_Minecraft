@@ -12,6 +12,8 @@ struct Light {
     vec3 color;
     float intensity;
     float ambient;
+    float c1;
+    float c2;
 };
 
 struct Material {
@@ -29,27 +31,33 @@ uniform bool use_texture;
 
 void main(void) {
     vec3 material_color = material.color.rgb * material.color.a;
+    vec4 result = vec4(material_color, 1);
+
+    if(use_texture) {
+        result = texture(out_texture, frag_texcoord);
+        result.rgb *= material_color;
+    }
+
+    if(result == vec4(0, 0, 0, 1)) {
+        discard;
+    }
 
     if(num_lights == 0) {
-        if(use_texture) {
-            if(texture(out_texture, frag_texcoord) == vec4(0, 0, 0, 1)) {
-                discard;
-            }
-            else {
-                frag_color = texture(out_texture, frag_texcoord);
-            }
-        }
-        else {
-            frag_color = vec4(material_color, 1.0);
-        }
+        frag_color = result;
         return;
     }
 
-    vec3 result = vec3(0, 0, 0);
+    frag_color = vec4(0, 0, 0, 1);
 
     for(int i=0; i<num_lights; ++i) {
         Light light = lights[i];
+        float distance = length(light.position - frag_pos);
+        float attenuation = 1.0 / (1.0 + light.c1 * distance + light.c2 * distance * distance);
+        if(attenuation < 0.01) {
+            continue;
+        }
         vec3 light_color = light.color * light.intensity;
+        light_color *= attenuation;
 
         vec3 ambient = light.ambient * light_color * (1 - material.reflectivity*0.9);
 
@@ -66,11 +74,10 @@ void main(void) {
         specular_light = pow(specular_light, material.shininess) * material.reflectivity;
         vec3 specular = specular_light * light_color;
 
-        result += (ambient + diffuse) * material_color + specular;
-    }
-
-    frag_color = vec4(result, 1.0);
-    if(use_texture) {
-        frag_color = texture(out_texture, frag_texcoord) * frag_color;
+        vec3 ad = ambient + diffuse;
+        if(length(ad) > 2.0) {          // sqrt(3) ¹Ý¿Ã¸² -> 2
+            ad = normalize(ad) * 2;
+        }
+        frag_color += vec4(ad, 1) * result + vec4(specular, 1);
     }
 }

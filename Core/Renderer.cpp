@@ -118,6 +118,10 @@ void Renderer::render() {
         glUniform1f(lights_location, color.a);
         lights_location = glGetUniformLocation(shader->program_id, (light_name+".ambient").c_str());
         glUniform1f(lights_location, light->ambient);
+        lights_location = glGetUniformLocation(shader->program_id, (light_name+".c1").c_str());
+        glUniform1f(lights_location, light->c1);
+        lights_location = glGetUniformLocation(shader->program_id, (light_name+".c2").c_str());
+        glUniform1f(lights_location, light->c2);
     }
 
     for(auto& e : objects) {
