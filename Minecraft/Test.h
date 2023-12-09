@@ -38,6 +38,10 @@ private:
     Block* focus_block;
     Entity* focus_entity;
 
+    enum BlockID {
+        AIR, GRASS, DIRT, STONE, BRICK, IRON_BLOCK, BEDROCK
+    };
+
 public:
     Test();
 
@@ -45,7 +49,7 @@ private:
     void initWorld();
     void initObjects();
     void generatePlayerObject();
-    void generateBlock(int x, int y, int z, const Material& material);
+    void generateBlock(const BlockID& block_id, int x, int y, int z);
 
     void rotateHead(float dx, float dy);
 

@@ -31,6 +31,9 @@
     <Filter Include="src\Objects">
       <UniqueIdentifier>{34ae24f1-43ca-4a88-90c4-c7fbc6b510c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Minecraft\Blocks">
+      <UniqueIdentifier>{e6bdf169-df30-4333-99e5-adfc2f8d7219}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderSource\fragment.glsl">
@@ -132,6 +135,27 @@
     <ClCompile Include="Game\Texture.cpp">
       <Filter>src\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Brick.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\CobbleStone.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Dirt.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Grass.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Stone.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Bedrock.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\IronBlock.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util\Util.h">
@@ -226,6 +250,30 @@
     </ClInclude>
     <ClInclude Include="Game\Texture.h">
       <Filter>src\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Brick.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\CobbleStone.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Dirt.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Grass.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Stone.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Blocks.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Bedrock.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\IronBlock.h">
+      <Filter>src\Minecraft\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "../Game/Component/Light.h"
 #include "../Game/Texture.h"
 #include "../Math/Line.h"
+#include "Blocks/Blocks.h"
 
 #include <gl/freeglut.h>
 
@@ -50,30 +51,31 @@ void Test::initObjects() {
 
     for(int x=-6; x<0; ++x) {
         for(int z=1; z<7; ++z) {
-            generateBlock(x, 2, z, Material::base);
+            generateBlock(GRASS, x, 2, z);
         }
     }
     int count = 20;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
-            generateBlock(i, 1, k, (i+k)%2 ? Material::metal : Material::basic);
+            generateBlock(DIRT, i, 1, k);
+            generateBlock(STONE, i, 0, k);
         }
     }
     Material m { Material::basic };
     m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
-    generateBlock(1, 2, 0, m);
-    generateBlock(1, 3, 0, m);
-    generateBlock(1, 4, 0, m);
-    generateBlock(1, 5, 0, m);
-    generateBlock(2, 5, 0, m);
-    generateBlock(3, 5, 0, m);
-    generateBlock(4, 5, 0, m);
-    generateBlock(4, 4, 0, m);
-    generateBlock(5, 4, 0, m);
-    generateBlock(5, 3, 0, m);
-    generateBlock(6, 3, 0, m);
-    generateBlock(6, 2, 0, m);
-    generateBlock(7, 2, 0, m);
+    generateBlock(IRON_BLOCK, 1, 2, 0);
+    generateBlock(IRON_BLOCK, 1, 3, 0);
+    generateBlock(IRON_BLOCK, 1, 4, 0);
+    generateBlock(IRON_BLOCK, 1, 5, 0);
+    generateBlock(IRON_BLOCK, 2, 5, 0);
+    generateBlock(IRON_BLOCK, 3, 5, 0);
+    generateBlock(IRON_BLOCK, 4, 5, 0);
+    generateBlock(IRON_BLOCK, 4, 4, 0);
+    generateBlock(IRON_BLOCK, 5, 4, 0);
+    generateBlock(IRON_BLOCK, 5, 3, 0);
+    generateBlock(IRON_BLOCK, 6, 3, 0);
+    generateBlock(IRON_BLOCK, 6, 2, 0);
+    generateBlock(IRON_BLOCK, 7, 2, 0);
 
     generatePlayerObject();
 
@@ -102,14 +104,32 @@ void Test::generatePlayerObject() {
     objects_manager.add("player", player);
 }
 
-void Test::generateBlock(int x, int y, int z, const Material& material) {
+void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
     static int count = 1;
     string id = "block_" + to_string(count++);
 
-    Block* block = new Block { id };
+    Block* block = nullptr;
+    switch(block_id) {
+    case AIR:
+        block = new Block { id };
+        break;
+    case STONE:
+        block = new Stone { id };
+        break;
+    case BRICK:
+        block = new Brick { id };
+        break;
+    case DIRT:
+        block = new Dirt { id };
+        break;
+    case GRASS:
+        block = new Grass { id };
+        break;
+    case IRON_BLOCK:
+        block = new IronBlock { id };
+        break;
+    }
     block->transform.position = { x+0.5f, y, z+0.5f };
-    block->material = material;
-    block->model->texture_id.push_back(Texture::get("Resource/Textures/stone.png").getID());
 
     objects_manager.add(id, block);
 }
@@ -178,7 +198,7 @@ void Test::update() {
     Vector3 ray_direction { mat * Vector4 { 0, 0, 1, 0 } };
     Vector3 ray_end = ray_origin + ray_direction * interaction_distance;
 
-    float interaction2 = interaction_distance * interaction_distance;
+    float interaction2 = pow(interaction_distance+2, 2);
     float min_distance = interaction_distance;
 
     focus_block = nullptr;
@@ -475,7 +495,7 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
                     pos.z -= 1;
                     break;
                 }
-                generateBlock(pos.x, pos.y, pos.z, Material::base);
+                generateBlock(BRICK, pos.x, pos.y, pos.z);
             }
             break;
         }
