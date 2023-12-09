@@ -177,6 +177,8 @@ void Test::update() {
     float interaction2 = interaction_distance * interaction_distance;
     float min_distance = interaction_distance;
 
+    focus_block = nullptr;
+
     for(const auto& block : objects_manager.blocks) {
         if(distance2(block->transform.position, player->transform.position) > interaction2) {
             continue;
@@ -245,7 +247,6 @@ void Test::update() {
         }
 
         if(tx >= min_distance || tx < 0 || ty >= min_distance || ty < 0 || tz >= min_distance || tz < 0) {
-            Log::log("tx: %f, ty: %f, tz: %f", tx, ty, tz);
             continue;
         }
 
@@ -284,6 +285,7 @@ void Test::update() {
         }
     }
 
+    focus_entity = nullptr;
     min_distance = interaction_distance;
     for(const auto& entity : objects_manager.entities) {
         if(distance2(entity->transform.position, player->transform.position) > interaction2) {
@@ -353,7 +355,6 @@ void Test::update() {
         }
 
         if(tx >= min_distance || tx < 0 || ty >= min_distance || ty < 0 || tz >= min_distance || tz < 0) {
-            Log::log("tx: %f, ty: %f, tz: %f", tx, ty, tz);
             continue;
         }
 
