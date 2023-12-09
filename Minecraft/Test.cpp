@@ -171,12 +171,17 @@ void Test::update() {
     auto mat = player->head->absoluteTransformMatrix();
     Vector3 ray_origin { mat * Vector4 { 0, 0, 0, 1 } };
     ray_origin.y += 0.2f;
-    Vector3 ray_direction { camera.forward() };
+    Vector3 ray_direction { mat * Vector4 { 0, 0, 1, 0 } };
     Vector3 ray_end = ray_origin + ray_direction * interaction_distance;
 
+    float interaction2 = interaction_distance * interaction_distance;
     float min_distance = interaction_distance;
 
     for(const auto& block : objects_manager.blocks) {
+        if(distance2(block->transform.position, player->transform.position) > interaction2) {
+            continue;
+        }
+
         mat = block->absoluteTransformMatrix();
         AABB* collider = block->getComponent<AABB>();
         Vector3 block_center { mat * Vector4 { collider->center, 1 } };
@@ -281,6 +286,10 @@ void Test::update() {
 
     min_distance = interaction_distance;
     for(const auto& entity : objects_manager.entities) {
+        if(distance2(entity->transform.position, player->transform.position) > interaction2) {
+            continue;
+        }
+
         mat = entity->absoluteTransformMatrix();
         AABB* collider = entity->getComponent<AABB>();
         Vector3 block_center { mat * Vector4 { collider->center, 1 } };
@@ -437,11 +446,7 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
             }
             break;
         case GLUT_RIGHT_BUTTON:
-            // generateBlock(ÁÂÇ¥, Á¾·ù);
-            if(focus_block == nullptr) {
-                break;
-            }
-            else {
+            if(focus_block != nullptr) {
                 Vector3 pos = focus_block->transform.position;
                 pos.x -= 0.5f;
                 pos.z -= 0.5f;
