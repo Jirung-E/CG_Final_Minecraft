@@ -23,7 +23,9 @@ Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_m
     color_location { 0 },
     shininess_location { 0 },
     reflectivity_location { 0 },
-    num_lights_location { 0 } {
+    num_lights_location { 0 },
+    render_distance_location { 0 },
+    fog_color_location { 0 } {
 
 }
 
@@ -62,7 +64,7 @@ void Renderer::renderObject(const Object* object) {
         }
     }
 
-    glUniform1f(render_distance_location, render_distance);
+    glUniform1f(render_distance_location, (float)render_distance);
     glUniform3f(fog_color_location, background_color.r, background_color.g, background_color.b);
 
     if(object->model != nullptr) {
@@ -72,7 +74,7 @@ void Renderer::renderObject(const Object* object) {
         glUniform4f(color_location, c.r, c.g, c.b, c.a);
         glUniform1f(shininess_location, object->material.shininess);
         glUniform1f(reflectivity_location, object->material.reflectivity);
-        glUniform1i(use_texture_location, object->model->texture_id.size());
+        glUniform1i(use_texture_location, (int)object->model->texture_id.size());
 
         pushFacesToBuffer(object);
         initBuffer();
