@@ -30,12 +30,16 @@ private:
     unsigned int shininess_location;
     unsigned int reflectivity_location;
     unsigned int num_lights_location;
+    unsigned int render_distance_location;
+    unsigned int fog_color_location;
 
 public:
     Camera* camera;
     Shader* shader;
     ColorRGB background_color;
     unsigned int icons_texture_id;
+    int render_distance;
+    //ColorRGB fog_color;
 
     enum Mode {
         Solid, Wire

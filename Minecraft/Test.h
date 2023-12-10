@@ -30,7 +30,8 @@ private:
     bool space_pressed;
 
     const float interaction_distance;
-    const int simulation_distance;
+    int simulation_distance;
+    int render_distance;
 
     enum Face {
         Left, Right, Top, Bottom, Front, Back
@@ -58,6 +59,7 @@ private:
     // --------------------------------------------------------------------------------------------- //
 
 private:
+    virtual void drawScene() override;
     virtual void keyboardEvent(unsigned char key) override;
     virtual void keyboardUpEvent(unsigned char key) override;
     virtual void mouseClickEvent(int button, int state, int x, int y) override;

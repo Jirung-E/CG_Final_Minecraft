@@ -20,7 +20,8 @@ view_mode { ViewMode::FirstPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
-simulation_distance { 2 }
+simulation_distance { 2 },
+render_distance { 3 }
 {
     hide_cursor = true;
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
@@ -28,6 +29,7 @@ simulation_distance { 2 }
     renderer.setShader(&shader);
     renderer.camera = &camera;
     renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
+    renderer.render_distance = render_distance * ChunkInfo::chunk_size;
     initWorld();
 }
 
@@ -49,34 +51,31 @@ void Test::initWorld() {
 void Test::initObjects() {
     objects_manager.deleteAll();
 
-    for(int x=-6; x<0; ++x) {
-        for(int z=1; z<7; ++z) {
-            generateBlock(GRASS, x, 2, z);
-        }
-    }
-    int count = 20;
+    int count = 64;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
-            generateBlock(DIRT, i, 1, k);
+            generateBlock(GRASS, i, 3, k);
+            generateBlock(DIRT, i, 2, k);
+            generateBlock(STONE, i, 1, k);
             generateBlock(STONE, i, 0, k);
             generateBlock(BEDROCK, i, -1, k);
         }
     }
     Material m { Material::basic };
     m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
-    generateBlock(IRON_BLOCK, 1, 2, 0);
-    generateBlock(IRON_BLOCK, 1, 3, 0);
-    generateBlock(IRON_BLOCK, 1, 4, 0);
-    generateBlock(IRON_BLOCK, 1, 5, 0);
-    generateBlock(IRON_BLOCK, 2, 5, 0);
-    generateBlock(IRON_BLOCK, 3, 5, 0);
-    generateBlock(IRON_BLOCK, 4, 5, 0);
-    generateBlock(IRON_BLOCK, 4, 4, 0);
-    generateBlock(IRON_BLOCK, 5, 4, 0);
-    generateBlock(IRON_BLOCK, 5, 3, 0);
-    generateBlock(IRON_BLOCK, 6, 3, 0);
-    generateBlock(IRON_BLOCK, 6, 2, 0);
-    generateBlock(IRON_BLOCK, 7, 2, 0);
+    generateBlock(IRON_BLOCK, 1, 2+2, 0);
+    generateBlock(IRON_BLOCK, 1, 3+2, 0);
+    generateBlock(IRON_BLOCK, 1, 4+2, 0);
+    generateBlock(IRON_BLOCK, 1, 5+2, 0);
+    generateBlock(IRON_BLOCK, 2, 5+2, 0);
+    generateBlock(IRON_BLOCK, 3, 5+2, 0);
+    generateBlock(IRON_BLOCK, 4, 5+2, 0);
+    generateBlock(IRON_BLOCK, 4, 4+2, 0);
+    generateBlock(IRON_BLOCK, 5, 4+2, 0);
+    generateBlock(IRON_BLOCK, 5, 3+2, 0);
+    generateBlock(IRON_BLOCK, 6, 3+2, 0);
+    generateBlock(IRON_BLOCK, 6, 2+2, 0);
+    generateBlock(IRON_BLOCK, 7, 2+2, 0);
 
     generatePlayerObject();
 
@@ -92,7 +91,7 @@ void Test::initObjects() {
 
 void Test::generatePlayerObject() {
     player = new Player { "player" };
-    player->transform.position = { 0, 3, 0 };
+    player->transform.position = { 0, 5, 0 };
     objects_manager.player = player;
     objects_manager.add("player", player);
 }
@@ -400,6 +399,26 @@ void Test::update() {
 }
 
 // --------------------------------------------------------------------------------------------- //
+
+void Test::drawScene() {
+    auto objs = objects_manager.getObjectsInRadius(player->transform.position, 1+render_distance);
+    for(auto object : objs) {
+        if(object->getComponent<Light>() != nullptr) {
+            renderer.pushLightObject(object);
+        }
+        else {
+            renderer.pushObject(object);
+        }
+    }
+    renderer.render();
+    renderer.renderCrosshair();
+    if(hide_cursor) {
+        glutSetCursor(GLUT_CURSOR_NONE);
+    }
+    else {
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    }
+}
 
 void Test::keyboardEvent(unsigned char key) {
     Game::keyboardEvent(key);

@@ -13,6 +13,7 @@ using namespace std;
 Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_mode { Solid }, shader { shader },
     vao { 0 }, vbo { 0 },
     icons_texture_id { 0 },
+    render_distance { 8 },
     background_color { 0.0f, 0.0f, 0.0f },
     view_location { 0 },
     proj_location { 0 },
@@ -49,12 +50,20 @@ void Renderer::renderObject(const Object* object) {
 
     Vector3 object_pos = transform_stack.top() * Vector4 { 0, 0, 0, 1 };
     Vector3 to_object = object_pos - camera->transform.position;
-    if(length2(to_object) > 5*5) {
+    float distance2 = length2(to_object);
+    if(distance2 > render_distance*render_distance) {
+        transform_stack.pop();
+        return;
+    }
+    else if(distance2 > 5*5) {
         if(dot(normalize(to_object), camera->forward()) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
             transform_stack.pop();
             return;
         }
     }
+
+    glUniform1f(render_distance_location, render_distance);
+    glUniform3f(fog_color_location, background_color.r, background_color.g, background_color.b);
 
     if(object->model != nullptr) {
         glUniformMatrix4fv(trans_location, 1, GL_FALSE, glm::value_ptr(transform_stack.top()));
@@ -222,6 +231,8 @@ void Renderer::setShader(Shader* shader) {
     shininess_location = glGetUniformLocation(shader->program_id, "material.shininess");
     reflectivity_location = glGetUniformLocation(shader->program_id, "material.reflectivity");
     num_lights_location = glGetUniformLocation(shader->program_id, "num_lights");
+    render_distance_location = glGetUniformLocation(shader->program_id, "render_distance");
+    fog_color_location = glGetUniformLocation(shader->program_id, "fog_color");
 }
 
 
