@@ -49,23 +49,25 @@ void main(void) {
 
     frag_color = vec4(0, 0, 0, 1);
 
+    float default_ambient = 0.1;
+
     for(int i=0; i<num_lights; ++i) {
         Light light = lights[i];
         float distance = length(light.position - frag_pos);
         float attenuation = 1.0 / (1.0 + light.c1 * distance + light.c2 * distance * distance);
+        frag_color += vec4(default_ambient, default_ambient, default_ambient, 1) * result;
         if(attenuation < 0.01) {
             continue;
         }
         vec3 light_color = light.color * light.intensity;
         light_color *= attenuation;
 
-        vec3 ambient = light.ambient * light_color * (1 - material.reflectivity*0.9);
+        vec3 ambient = light.ambient * light_color;
 
         vec3 normal = normalize(frag_normal);
         vec3 light_dir = normalize(light.position - frag_pos);
 
-        float diffuse_light = max(dot(normal, light_dir), 0.0);
-        diffuse_light = pow(diffuse_light, 1+material.reflectivity);
+        float diffuse_light = max(dot(normal, light_dir) * (1-material.reflectivity*0.5), 0.0);
         vec3 diffuse = diffuse_light * light_color;
 
         vec3 view_dir = normalize(cam_pos - frag_pos);

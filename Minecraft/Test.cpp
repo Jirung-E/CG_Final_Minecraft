@@ -80,20 +80,20 @@ void Test::initObjects() {
     generatePlayerObject();
 
     Box* light1 = new Box { "light1" };
-    light1->transform.position = { 0, 20, 0 };
+    light1->transform.position = { 0, 5, 0 };
     light1->material.base_color = ColorRGB { RGB_White };
     light1->addComponent<Light>();
-    light1->getComponent<Light>()->ambient = 1.0f;
-    objects_manager.add("light1", light1);
+    light1->getComponent<Light>()->ambient = 0.5f;
+    //objects_manager.add("light1", light1);
 
     Box* light2 = new Box { "light2" };
-    light2->transform.position = { 5, 5, 5 };
-    light2->material.base_color = ColorRGB { RGB_Red | ColorRGB { RGB_White, 0.5f }, 0.8f };
+    light2->transform.position = { 5, 2.5, 5 };
+    light2->material.base_color = ColorRGB { RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.5f } };
     light2->addComponent<Light>();
     Light* l2 = light2->getComponent<Light>();
-    l2->ambient = 0.5f;
-    l2->c1 = 0.01f;
-    l2->c2 = 0.01f;
+    l2->ambient = 1;
+    //l2->c1 = 0.1f;
+    l2->c2 = 0.1f;
     objects.add("light2", light2);
 }
 
@@ -110,11 +110,11 @@ void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
 
     Block* block = nullptr;
     switch(block_id) {
-    case AIR:
-        block = new Block { id };
-        break;
     case STONE:
         block = new Stone { id };
+        break;
+    case COBBLE_STONE:
+        block = new CobbleStone { id };
         break;
     case BRICK:
         block = new Brick { id };
@@ -127,6 +127,12 @@ void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
         break;
     case IRON_BLOCK:
         block = new IronBlock { id };
+        break;
+    case BEDROCK:
+        block = new Bedrock { id };
+        break;
+    case AIR: default:
+        block = new Block { id };
         break;
     }
     block->transform.position = { x+0.5f, y, z+0.5f };
@@ -198,7 +204,7 @@ void Test::update() {
     Vector3 ray_direction { mat * Vector4 { 0, 0, 1, 0 } };
     Vector3 ray_end = ray_origin + ray_direction * interaction_distance;
 
-    float interaction2 = pow(interaction_distance+2, 2);
+    float interaction2 = (float)pow(interaction_distance+2, 2);
     float min_distance = interaction_distance;
 
     focus_block = nullptr;
@@ -495,7 +501,7 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
                     pos.z -= 1;
                     break;
                 }
-                generateBlock(BRICK, pos.x, pos.y, pos.z);
+                generateBlock(BRICK, (int)pos.x, (int)pos.y, (int)pos.z);
             }
             break;
         }

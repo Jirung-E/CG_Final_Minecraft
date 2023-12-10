@@ -27,7 +27,7 @@ Game::~Game() {
 
 void Game::initialize() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(1280, 720);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(title.c_str());
 

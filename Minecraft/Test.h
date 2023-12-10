@@ -39,7 +39,7 @@ private:
     Entity* focus_entity;
 
     enum BlockID {
-        AIR, GRASS, DIRT, STONE, BRICK, IRON_BLOCK, BEDROCK
+        AIR, GRASS, DIRT, STONE, COBBLE_STONE, BRICK, IRON_BLOCK, BEDROCK
     };
 
 public:
