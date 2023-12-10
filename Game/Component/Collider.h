@@ -7,6 +7,7 @@
 class Collider : public ComponentImpl {
 public:
     bool is_colliding;
+    bool is_trigger;
 
 public:
     Collider(Object* object, const std::string& id);

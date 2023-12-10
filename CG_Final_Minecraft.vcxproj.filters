@@ -156,6 +156,9 @@
     <ClCompile Include="Minecraft\Blocks\IronBlock.cpp">
       <Filter>src\Minecraft\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="Minecraft\Blocks\Torch.cpp">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util\Util.h">
@@ -273,6 +276,9 @@
       <Filter>src\Minecraft\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Minecraft\Blocks\IronBlock.h">
+      <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Blocks\Torch.h">
       <Filter>src\Minecraft\Blocks</Filter>
     </ClInclude>
   </ItemGroup>

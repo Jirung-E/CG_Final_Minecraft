@@ -5,7 +5,7 @@ using namespace std;
 
 
 Collider::Collider(Object* object, const string& id) : ComponentImpl { object, id },
-    is_colliding { false } {
+    is_colliding { false }, is_trigger { false } {
 
 }
 

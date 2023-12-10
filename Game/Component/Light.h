@@ -6,6 +6,7 @@
 class Light : public ComponentImpl {
 public:
     Vector3 position;
+    ColorRGB color;
     float ambient;
     float c1;
     float c2;

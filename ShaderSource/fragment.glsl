@@ -47,15 +47,13 @@ void main(void) {
         return;
     }
 
-    frag_color = vec4(0, 0, 0, 1);
-
     float default_ambient = 0.1;
+    frag_color = vec4(default_ambient, default_ambient, default_ambient, 1) * result;
 
     for(int i=0; i<num_lights; ++i) {
         Light light = lights[i];
         float distance = length(light.position - frag_pos);
         float attenuation = 1.0 / (1.0 + light.c1 * distance + light.c2 * distance * distance);
-        frag_color += vec4(default_ambient, default_ambient, default_ambient, 1) * result;
         if(attenuation < 0.01) {
             continue;
         }
@@ -81,5 +79,14 @@ void main(void) {
             ad = normalize(ad) * 2;
         }
         frag_color += vec4(ad, 1) * result + vec4(specular, 1);
+        if(frag_color.r > result.r*2) {
+            frag_color.r = result.r*2;
+        }
+        if(frag_color.g > result.g*2) {
+            frag_color.g = result.g*2;
+        }
+        if(frag_color.b > result.b*2) {
+            frag_color.b = result.b*2;
+        }
     }
 }

@@ -7,3 +7,4 @@
 #include "Stone.h"
 #include "Bedrock.h"
 #include "IronBlock.h"
+#include "Torch.h"

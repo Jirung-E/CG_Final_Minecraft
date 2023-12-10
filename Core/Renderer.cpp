@@ -107,15 +107,14 @@ void Renderer::render() {
 
     for(int i=0; i<light_objects.size(); ++i) {
         Light* light = light_objects[i]->getComponent<Light>();
-        ColorRGB color = light_objects[i]->material.base_color;
         Vector3 pos = light_objects[i]->absoluteTransformMatrix() * Vector4 { light->position, 1.0f };
         string light_name = "lights[" + to_string(i) + "]";
         unsigned int lights_location = glGetUniformLocation(shader->program_id, (light_name+".position").c_str());
         glUniform3fv(lights_location, 1, glm::value_ptr(pos));
         lights_location = glGetUniformLocation(shader->program_id, (light_name+".color").c_str());
-        glUniform3f(lights_location, color.r, color.g, color.b);
+        glUniform3f(lights_location, light->color.r, light->color.g, light->color.b);
         lights_location = glGetUniformLocation(shader->program_id, (light_name+".intensity").c_str());
-        glUniform1f(lights_location, color.a);
+        glUniform1f(lights_location, light->color.a);
         lights_location = glGetUniformLocation(shader->program_id, (light_name+".ambient").c_str());
         glUniform1f(lights_location, light->ambient);
         lights_location = glGetUniformLocation(shader->program_id, (light_name+".c1").c_str());

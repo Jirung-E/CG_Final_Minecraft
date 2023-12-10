@@ -130,6 +130,9 @@ void ChunkBasedObjectManager::update(float dt, int radius) {
         if(block == nullptr) {
             continue;
         }
+        if(block->is_trigger) {
+            continue;
+        }
         // 방지하기 위해서는 블럭 먼저 업데이트, 그 뒤에 엔티티 업데이트
         // 하지만 블럭이 움직이지 않을거라 일단 이대로
         for(auto& entity : entities) {
