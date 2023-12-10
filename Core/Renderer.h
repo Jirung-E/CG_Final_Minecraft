@@ -21,6 +21,16 @@ private:
     std::vector<Object*> objects;
     std::vector<Object*> light_objects;
 
+    unsigned int view_location;
+    unsigned int proj_location;
+    unsigned int cam_pos_location;
+    unsigned int trans_location;
+    unsigned int use_texture_location;
+    unsigned int color_location;
+    unsigned int shininess_location;
+    unsigned int reflectivity_location;
+    unsigned int num_lights_location;
+
 public:
     Camera* camera;
     Shader* shader;

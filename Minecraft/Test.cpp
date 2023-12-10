@@ -54,7 +54,7 @@ void Test::initObjects() {
             generateBlock(GRASS, x, 2, z);
         }
     }
-    int count = 32;
+    int count = 20;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(DIRT, i, 1, k);
@@ -202,6 +202,7 @@ void Test::update() {
 
     float interaction2 = (float)pow(interaction_distance+2, 2);
     float min_distance = interaction_distance;
+    float cam_min_distance = camera_distance;
 
     focus_block = nullptr;
 
