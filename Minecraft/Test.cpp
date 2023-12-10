@@ -80,13 +80,14 @@ void Test::initObjects() {
 
     generatePlayerObject();
 
-    Box* light1 = new Box { "light1" };
+    Object* light1 = new Object { "light1" };
+    light1->model = new Model { Model::sphere };
     light1->transform.position = { 0, 20, 0 };
     light1->addComponent<Light>();
     Light* light = light1->getComponent<Light>();
     light->ambient = 0.5f;
     light->color = RGB_White;
-    //objects_manager.add("light1", light1);
+    objects_manager.add("light1", light1);
 }
 
 void Test::generatePlayerObject() {

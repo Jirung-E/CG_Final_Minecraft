@@ -125,3 +125,4 @@ void Model::load(const std::string& file_name, float size) {
 
 // Stocks
 const Model Model::box { "Resource/Models/Box.obj" };
+const Model Model::sphere { "Resource/Models/Sphere.obj" };

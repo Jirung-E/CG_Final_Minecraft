@@ -47,4 +47,5 @@ private:
 
 public:
     static const Model box;
+    static const Model sphere;
 };
