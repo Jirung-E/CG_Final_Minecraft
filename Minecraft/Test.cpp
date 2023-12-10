@@ -54,12 +54,12 @@ void Test::initObjects() {
             generateBlock(GRASS, x, 2, z);
         }
     }
-    int count = 20;
+    int count = 32;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             generateBlock(DIRT, i, 1, k);
-            //generateBlock(STONE, i, 0, k);
-            //generateBlock(BEDROCK, i, -1, k);
+            generateBlock(STONE, i, 0, k);
+            generateBlock(BEDROCK, i, -1, k);
         }
     }
     Material m { Material::basic };
@@ -154,8 +154,8 @@ void Test::rotateHead(float dx, float dy) {
 
 
 void Test::update() {
-    //Log::log("dt: %f", dt);
-    //Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    Log::log("dt: %f", dt);
+    Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
 
     objects_manager.update(dt, simulation_distance);
 

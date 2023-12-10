@@ -43,6 +43,13 @@ void Renderer::renderObject(const Object* object) {
 
     transform_stack.push(object->transform.matrix());
 
+    Vector3 object_pos = transform_stack.top() * Vector4 { 0, 0, 0, 1 };
+    Vector3 to_object = normalize(object_pos - camera->transform.position);
+    if(dot(to_object, camera->forward()) < cos(radians(camera->fovy))) {
+        transform_stack.pop();
+        return;
+    }
+
     if(object->model != nullptr) {
         unsigned int trans_location = glGetUniformLocation(shader->program_id, "model_transform");
         glUniformMatrix4fv(trans_location, 1, GL_FALSE, glm::value_ptr(transform_stack.top()));
