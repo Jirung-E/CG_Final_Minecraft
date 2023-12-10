@@ -21,11 +21,25 @@ private:
     std::vector<Object*> objects;
     std::vector<Object*> light_objects;
 
+    unsigned int view_location;
+    unsigned int proj_location;
+    unsigned int cam_pos_location;
+    unsigned int trans_location;
+    unsigned int use_texture_location;
+    unsigned int color_location;
+    unsigned int shininess_location;
+    unsigned int reflectivity_location;
+    unsigned int num_lights_location;
+    unsigned int render_distance_location;
+    unsigned int fog_color_location;
+
 public:
     Camera* camera;
     Shader* shader;
     ColorRGB background_color;
     unsigned int icons_texture_id;
+    int render_distance;
+    //ColorRGB fog_color;
 
     enum Mode {
         Solid, Wire

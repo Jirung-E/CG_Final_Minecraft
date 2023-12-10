@@ -28,6 +28,8 @@ uniform Light lights[MAX_LIGHTS];
 uniform Material material;
 uniform sampler2D out_texture;
 uniform bool use_texture;
+uniform float render_distance;
+uniform vec3 fog_color;
 
 void main(void) {
     vec3 material_color = material.color.rgb * material.color.a;
@@ -44,6 +46,11 @@ void main(void) {
 
     if(num_lights == 0) {
         frag_color = result;
+        float distance = length(frag_pos - cam_pos);
+        if(distance > render_distance-10) {
+            float t = (render_distance-distance) / 10;
+            frag_color = mix(frag_color, vec4(fog_color, 1), 1-t);
+        }
         return;
     }
 
@@ -88,5 +95,10 @@ void main(void) {
         if(frag_color.b > result.b*2) {
             frag_color.b = result.b*2;
         }
+    }
+    float distance = length(frag_pos - cam_pos);
+    if(distance > render_distance-10) {
+        float t = (render_distance-distance) / 10;
+        frag_color = mix(frag_color, vec4(fog_color, 1), 1-t);
     }
 }

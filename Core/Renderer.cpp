@@ -13,7 +13,17 @@ using namespace std;
 Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_mode { Solid }, shader { shader },
     vao { 0 }, vbo { 0 },
     icons_texture_id { 0 },
-    background_color { 0.0f, 0.0f, 0.0f } {
+    render_distance { 8 },
+    background_color { 0.0f, 0.0f, 0.0f },
+    view_location { 0 },
+    proj_location { 0 },
+    cam_pos_location { 0 },
+    trans_location { 0 },
+    use_texture_location { 0 },
+    color_location { 0 },
+    shininess_location { 0 },
+    reflectivity_location { 0 },
+    num_lights_location { 0 } {
 
 }
 
@@ -25,14 +35,9 @@ Renderer::Renderer() : Renderer { nullptr, nullptr } {
 void Renderer::renderStart() {
     glClearColor(background_color.r, background_color.g, background_color.b, 1);
 
-    unsigned int view_location = glGetUniformLocation(shader->program_id, "view_transform");
     glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(camera->viewMatrix()));
-
-    unsigned int proj_location = glGetUniformLocation(shader->program_id, "projection_transform");
     glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(camera->projectionMatrix()));
-
-    unsigned int cam_pos = glGetUniformLocation(shader->program_id, "cam_pos");
-    glUniform3fv(cam_pos, 1, glm::value_ptr(camera->transform.position));
+    glUniform3fv(cam_pos_location, 1, glm::value_ptr(camera->transform.position));
 }
 
 
@@ -43,19 +48,30 @@ void Renderer::renderObject(const Object* object) {
 
     transform_stack.push(object->transform.matrix());
 
+    Vector3 object_pos = transform_stack.top() * Vector4 { 0, 0, 0, 1 };
+    Vector3 to_object = object_pos - camera->transform.position;
+    float distance2 = length2(to_object);
+    if(distance2 > render_distance*render_distance) {
+        transform_stack.pop();
+        return;
+    }
+    else if(distance2 > 5*5) {
+        if(dot(normalize(to_object), camera->forward()) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
+            transform_stack.pop();
+            return;
+        }
+    }
+
+    glUniform1f(render_distance_location, render_distance);
+    glUniform3f(fog_color_location, background_color.r, background_color.g, background_color.b);
+
     if(object->model != nullptr) {
-        unsigned int trans_location = glGetUniformLocation(shader->program_id, "model_transform");
         glUniformMatrix4fv(trans_location, 1, GL_FALSE, glm::value_ptr(transform_stack.top()));
 
-        unsigned int color_location = glGetUniformLocation(shader->program_id, "material.color");
         const ColorRGB& c = object->material.base_color;
         glUniform4f(color_location, c.r, c.g, c.b, c.a);
-        unsigned int shininess_location = glGetUniformLocation(shader->program_id, "material.shininess");
         glUniform1f(shininess_location, object->material.shininess);
-        unsigned int reflectivity_location = glGetUniformLocation(shader->program_id, "material.reflectivity");
         glUniform1f(reflectivity_location, object->material.reflectivity);
-
-        unsigned int use_texture_location = glGetUniformLocation(shader->program_id, "use_texture");
         glUniform1i(use_texture_location, object->model->texture_id.size());
 
         pushFacesToBuffer(object);
@@ -97,12 +113,10 @@ void Renderer::pushLightObject(Object* object) {
 void Renderer::render() {
     renderStart();
     
-    unsigned int num_lights_location = glGetUniformLocation(shader->program_id, "num_lights");
     glUniform1i(num_lights_location, 0);
 	for(auto& e : light_objects) {
 		renderObject(e);
 	}
-
     glUniform1i(num_lights_location, (int)light_objects.size());
 
     for(int i=0; i<light_objects.size(); ++i) {
@@ -163,22 +177,11 @@ void Renderer::renderCrosshair() {
     };
     crosshair->material = Material::base;
 
-    unsigned int view_location = glGetUniformLocation(shader->program_id, "view_transform");
     glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(Matrix4 { 1.0f }));
-
-    unsigned int proj_location = glGetUniformLocation(shader->program_id, "projection_transform");
     glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(Matrix4 { 1.0f }));
-
-    unsigned int cam_pos = glGetUniformLocation(shader->program_id, "cam_pos");
-    glUniform3fv(cam_pos, 1, glm::value_ptr(Matrix4 { 1.0f }));
-
-    unsigned int trans_location = glGetUniformLocation(shader->program_id, "model_transform");
+    glUniform3fv(cam_pos_location, 1, glm::value_ptr(Matrix4 { 1.0f }));
     glUniformMatrix4fv(trans_location, 1, GL_FALSE, glm::value_ptr(crosshair->transform.matrix()));
-
-    unsigned int num_lights_location = glGetUniformLocation(shader->program_id, "num_lights");
     glUniform1i(num_lights_location, 0);
-
-    unsigned int use_texture_location = glGetUniformLocation(shader->program_id, "use_texture");
     glUniform1i(use_texture_location, icons_texture_id);
 
     pushFacesToBuffer(crosshair);
@@ -218,6 +221,18 @@ void Renderer::clearBuffer() {
 void Renderer::setShader(Shader* shader) {
     this->shader = shader;
     glUseProgram(shader->program_id);
+
+    view_location = glGetUniformLocation(shader->program_id, "view_transform");
+    proj_location = glGetUniformLocation(shader->program_id, "projection_transform");
+    cam_pos_location = glGetUniformLocation(shader->program_id, "cam_pos");
+    trans_location = glGetUniformLocation(shader->program_id, "model_transform");
+    use_texture_location = glGetUniformLocation(shader->program_id, "use_texture");
+    color_location = glGetUniformLocation(shader->program_id, "material.color");
+    shininess_location = glGetUniformLocation(shader->program_id, "material.shininess");
+    reflectivity_location = glGetUniformLocation(shader->program_id, "material.reflectivity");
+    num_lights_location = glGetUniformLocation(shader->program_id, "num_lights");
+    render_distance_location = glGetUniformLocation(shader->program_id, "render_distance");
+    fog_color_location = glGetUniformLocation(shader->program_id, "fog_color");
 }
 
 
