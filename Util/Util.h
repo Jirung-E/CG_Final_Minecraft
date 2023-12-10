@@ -9,6 +9,9 @@
 void sleep(float seconds);
 
 
+void setCursorPosition(int x, int y);
+
+
 enum Direction {
     None = 0b0000,
     Left = 0b0001,

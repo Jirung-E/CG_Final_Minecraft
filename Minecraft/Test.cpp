@@ -6,6 +6,7 @@
 #include "../Math/Line.h"
 #include "Blocks/Blocks.h"
 
+#include <thread>
 #include <gl/freeglut.h>
 
 using namespace std;
@@ -97,36 +98,44 @@ void Test::generatePlayerObject() {
 }
 
 void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
-    static int count = 1;
-    string id = "block_" + to_string(count++);
+    string id = to_string(x) + ":" + to_string(y) + ":" + to_string(z);
 
     Block* block = nullptr;
     switch(block_id) {
     case STONE:
+        id = "stone " + id;
         block = new Stone { id };
         break;
     case COBBLE_STONE:
+        id = "cobblestone " + id;
         block = new CobbleStone { id };
         break;
     case BRICK:
+        id = "brick " + id;
         block = new Brick { id };
         break;
     case DIRT:
+        id = "dirt " + id;
         block = new Dirt { id };
         break;
     case GRASS:
+        id = "grass " + id;
         block = new Grass { id };
         break;
     case IRON_BLOCK:
+        id = "iron_block " + id;
         block = new IronBlock { id };
         break;
     case BEDROCK:
+        id = "bedrock " + id;
         block = new Bedrock { id };
         break;
     case TORCH:
+        id = "torch " + id;
         block = new Torch { id };
         break;
     case AIR: default:
+        id = "air " + id;
         block = new Block { id };
         break;
     }
@@ -153,9 +162,6 @@ void Test::rotateHead(float dx, float dy) {
 
 
 void Test::update() {
-    Log::log("dt: %f", dt);
-    //Log::log("player: %f %f %f", player->transform.position.x, player->transform.position.y, player->transform.position.z);
-
     objects_manager.update(dt, simulation_distance);
 
     if(space_pressed) {
@@ -401,6 +407,9 @@ void Test::update() {
 // --------------------------------------------------------------------------------------------- //
 
 void Test::drawScene() {
+    if(focus_block != nullptr) {
+        focus_block->material.base_color = RGB_LightGray;
+    }
     auto objs = objects_manager.getObjectsInRadius(player->transform.position, 1+render_distance);
     for(auto object : objs) {
         if(object->getComponent<Light>() != nullptr) {
@@ -417,6 +426,9 @@ void Test::drawScene() {
     }
     else {
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    }
+    if(focus_block != nullptr) {
+        focus_block->material.base_color = RGB_White;
     }
 }
 
@@ -538,4 +550,32 @@ void Test::mouseDragEvent(const Vector2& delta) {
     Game::mouseDragEvent(delta);
 
     mouseMotionEvent(delta);
+}
+
+
+
+void Test::run() {
+    thread debug_info { [&]() {
+        while(true) {
+            sleep(0.1f);
+            showDebugInfo();
+        }
+    } };
+
+    Game::run();
+
+    debug_info.join();
+}
+
+void Test::showDebugInfo() const {
+    setCursorPosition(0, 0);
+    Log::log("FPS: %d                             ", int(1.0f / dt));
+    Log::log("dt: %f                              ", dt);
+    Log::log("player: %6.2f %6.2f %6.2f           ", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    string face_str[] = { "Left", "Right", "Top", "Bottom", "Front", "Back" };
+    Log::log("focus_block: %s                     ", focus_block == nullptr ? "null" : (focus_block->id + " ("+face_str[focus_face]+")").c_str());
+    Log::log("focus_entity: %s                    ", focus_entity == nullptr ? "null" : focus_entity->id.c_str());
+    Log::log("simulation_distance: %d             ", simulation_distance);
+    Log::log("render_distance: %d                 ", render_distance);
+    Log::log("view_mode: %d                       ", view_mode);
 }

@@ -15,7 +15,12 @@ void sleep(float seconds) {
 }
 
 
-Range<float>::Range(float start, float end, float step): start { start }, end { end }, step { step } {
+void setCursorPosition(int x, int y) {
+    printf("\033[%d;%df", y, x);
+}
+
+
+Range<float>::Range(float start, float end, float step) : start { start }, end { end }, step { step } {
 
 }
 
@@ -51,9 +56,11 @@ Float1::Float1(float value) {
 Float1& Float1::operator=(float value) {
     if(value > 1.0f) {
         this->value = 1.0f;
-    } else if(value < 0.0f) {
+    }
+    else if(value < 0.0f) {
         this->value = 0.0f;
-    } else {
+    }
+    else {
         this->value = value;
     }
     return *this;
@@ -80,28 +87,28 @@ Float1::operator float() const {
 }
 
 
-ColorRGB::ColorRGB(float r, float g, float b, float a):
+ColorRGB::ColorRGB(float r, float g, float b, float a) :
     r { Float1 { r } }, g { Float1 { g } }, b { Float1 { b } }, a { Float1 { a } } {
 
 }
 
-ColorRGB::ColorRGB(int r, int g, int b, int a):
+ColorRGB::ColorRGB(int r, int g, int b, int a) :
     r { Float1 { r / 255.0f } }, g { Float1 { g / 255.0f } }, b { Float1 { b / 255.0f } }, a { Float1 { a / 255.0f } } {
 
 
 }
 
-ColorRGB::ColorRGB(const ColorRGB& color, float a):
+ColorRGB::ColorRGB(const ColorRGB& color, float a) :
     ColorRGB { color.r, color.g, color.b, a } {
 
 }
 
-ColorRGB::ColorRGB(const ColorRGB& color, int a):
+ColorRGB::ColorRGB(const ColorRGB& color, int a) :
     ColorRGB { color.r, color.g, color.b, Float1 { a / 255.0f } } {
 
 }
 
-ColorRGB::ColorRGB(): ColorRGB { 0, 0, 0 } {
+ColorRGB::ColorRGB() : ColorRGB { 0, 0, 0 } {
 
 }
 
@@ -138,13 +145,13 @@ bool ColorRGB::operator==(const ColorRGB& other) const {
 }
 
 
-ColorHSV::ColorHSV(float h, float s, float v, float a):
+ColorHSV::ColorHSV(float h, float s, float v, float a) :
     h { Float1 { h } }, s { Float1 { s } }, v { Float1 { v } }, a { Float1 { a } } {
 
 }
 
 // h: 0~360
-ColorHSV::ColorHSV(int h, float s, float v, float a): ColorHSV { float((h >= 0 ? h : h+360) % 360) / 360.0f, s, v, a } {
+ColorHSV::ColorHSV(int h, float s, float v, float a) : ColorHSV { float((h >= 0 ? h : h+360) % 360) / 360.0f, s, v, a } {
 
 }
 
@@ -160,15 +167,20 @@ ColorRGB convertHSVToRGB(const ColorHSV& hsv) {
     float m = hsv.v - c;
     if(0 <= angle && angle < 60) {
         return ColorRGB(c + m, x + m, m, hsv.a);
-    } else if(60 <= angle && angle < 120) {
+    }
+    else if(60 <= angle && angle < 120) {
         return ColorRGB(x+m, c+m, m, hsv.a);
-    } else if(120 <= angle && angle < 180) {
+    }
+    else if(120 <= angle && angle < 180) {
         return ColorRGB(m, c+m, x+m, hsv.a);
-    } else if(180 <= angle && angle < 240) {
+    }
+    else if(180 <= angle && angle < 240) {
         return ColorRGB(m, x+m, c+m, hsv.a);
-    } else if(240 <= angle && angle < 300) {
+    }
+    else if(240 <= angle && angle < 300) {
         return ColorRGB(x+m, m, c+m, hsv.a);
-    } else if(300 <= angle && angle <= 360) {
+    }
+    else if(300 <= angle && angle <= 360) {
         return ColorRGB(c+m, m, x+m, hsv.a);
     }
 
@@ -223,7 +235,7 @@ void Log::print(const char* format, ...) {
 }
 
 void Log::print(const std::string& text) {
-	printf(text.c_str());
+    printf(text.c_str());
 }
 
 void Log::println(const char* format, ...) {

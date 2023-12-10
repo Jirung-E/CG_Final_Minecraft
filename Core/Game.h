@@ -39,7 +39,7 @@ private:
 
 public:
     static void init(int argc, char** argv);
-    void run();
+    virtual void run();
 
     virtual void drawScene();
     virtual void reshape(int w, int h);

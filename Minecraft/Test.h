@@ -65,4 +65,9 @@ private:
     virtual void mouseClickEvent(int button, int state, int x, int y) override;
     virtual void mouseMotionEvent(const Vector2& delta) override;
     virtual void mouseDragEvent(const Vector2& delta) override;
+
+public:
+    virtual void run() override;
+private:
+    void showDebugInfo() const;
 };
