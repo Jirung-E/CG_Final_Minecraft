@@ -57,7 +57,7 @@ void Renderer::renderObject(const Object* object) {
         transform_stack.pop();
         return;
     }
-    else if(distance2 > 5*5) {
+    else if(distance2 > 3*3) {
         if(dot(normalize(to_object), camera->forward()) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
             transform_stack.pop();
             return;
@@ -198,24 +198,10 @@ void Renderer::renderCrosshair() {
 
 
 void Renderer::initBuffer() {
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)sizeof(Vector3));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)(2*sizeof(Vector3)));
-    glEnableVertexAttribArray(2);
 }
 
 void Renderer::clearBuffer() {
-    glDeleteBuffers(2, &vbo);
-    glDeleteVertexArrays(1, &vao);
     vertices.clear();
 }
 
@@ -223,6 +209,19 @@ void Renderer::clearBuffer() {
 void Renderer::setShader(Shader* shader) {
     this->shader = shader;
     glUseProgram(shader->program_id);
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), 0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)sizeof(Vector3));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2*sizeof(Vector3)+sizeof(Vector2), (void*)(2*sizeof(Vector3)));
+    glEnableVertexAttribArray(2);
 
     view_location = glGetUniformLocation(shader->program_id, "view_transform");
     proj_location = glGetUniformLocation(shader->program_id, "projection_transform");

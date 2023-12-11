@@ -22,7 +22,7 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 3 }
+render_distance { 4 }
 {
     hide_cursor = true;
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
