@@ -47,8 +47,8 @@ void main(void) {
     if(num_lights == 0) {
         frag_color = result;
         float distance = length(frag_pos - cam_pos);
-        if(distance > render_distance-10) {
-            float t = (render_distance-distance) / 10;
+        if(distance > render_distance-1) {
+            float t = (render_distance-distance) / 1;
             frag_color = mix(frag_color, vec4(fog_color, 1), 1-t);
         }
         return;

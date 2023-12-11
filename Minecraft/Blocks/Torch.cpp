@@ -17,7 +17,7 @@ Torch::Torch(const string& id) : Block { id } {
 
     addComponent<Light>();
     Light* light = getComponent<Light>();
-    light->color = { RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.5f }, 0.5f };
+    light->color = { RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.5f } };
     light->position.y = 0.5f;
     light->ambient = 0.5f;
     //light->c1 = 0.1f;

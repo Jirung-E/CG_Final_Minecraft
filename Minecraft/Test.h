@@ -32,6 +32,8 @@ private:
     const float interaction_distance;
     int simulation_distance;
     int render_distance;
+    
+    unsigned int torch_count;
 
     enum Face {
         Left, Right, Top, Bottom, Front, Back

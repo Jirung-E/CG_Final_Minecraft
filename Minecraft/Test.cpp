@@ -22,14 +22,15 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 4 }
+render_distance { 3 }
 {
     hide_cursor = true;
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     events_handler.link();
     renderer.setShader(&shader);
     renderer.camera = &camera;
-    renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
+    //renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
+    renderer.background_color = RGB_Black;
     renderer.render_distance = render_distance * ChunkInfo::chunk_size;
     initWorld();
 }
@@ -46,6 +47,8 @@ void Test::initWorld() {
     focus_face = Face::Back;
     focus_entity = nullptr;
 
+    torch_count = 0;
+
     initObjects();
 }
 
@@ -55,6 +58,10 @@ void Test::initObjects() {
     int count = 64;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
+            if(random<int>({ 0, 1000 }) == 0) {
+                generateBlock(TORCH, i, 4, k);
+                ++torch_count;
+            }
             generateBlock(GRASS, i, 3, k);
             generateBlock(DIRT, i, 2, k);
             generateBlock(STONE, i, 1, k);
@@ -80,14 +87,14 @@ void Test::initObjects() {
 
     generatePlayerObject();
 
-    Object* light1 = new Object { "light1" };
-    light1->model = new Model { Model::sphere };
-    light1->transform.position = { 0, 20, 0 };
-    light1->addComponent<Light>();
-    Light* light = light1->getComponent<Light>();
-    light->ambient = 0.5f;
-    light->color = RGB_White;
-    objects_manager.add("light1", light1);
+    //Object* light1 = new Object { "light1" };
+    //light1->model = new Model { Model::sphere };
+    //light1->transform.position = { 0, 20, 0 };
+    //light1->addComponent<Light>();
+    //Light* light = light1->getComponent<Light>();
+    //light->ambient = 0.5f;
+    //light->color = RGB_White;
+    //objects_manager.add("light1", light1);
 }
 
 void Test::generatePlayerObject() {
@@ -163,6 +170,15 @@ void Test::rotateHead(float dx, float dy) {
 
 void Test::update() {
     objects_manager.update(dt, simulation_distance);
+
+    if(player->transform.position.y < -20) {
+        initWorld();
+        return;
+    }
+    if(torch_count <= 0) {
+        initWorld();
+        return;
+    }
 
     if(space_pressed) {
         player->jump();
@@ -485,6 +501,12 @@ void Test::keyboardUpEvent(unsigned char key) {
     case ' ':
         space_pressed = false;
         break;
+    case '+':
+        player->move_speed = 20;
+        break;
+    case '=':
+        player->move_speed = 4;
+        break;
     }
 
 }
@@ -500,6 +522,12 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
         switch(button) {
         case GLUT_LEFT_BUTTON:
             if(focus_block != nullptr) {
+                if(focus_block->id.find("bedrock") != string::npos) {
+                    break;
+                }
+                if(focus_block->id.find("torch") != string::npos) {
+                    --torch_count;
+                }
                 objects_manager.remove(focus_block->id);
                 focus_block = nullptr;
             }
@@ -553,7 +581,6 @@ void Test::mouseDragEvent(const Vector2& delta) {
 }
 
 
-
 void Test::run() {
     thread debug_info { [&]() {
         while(true) {
@@ -572,10 +599,12 @@ void Test::showDebugInfo() const {
     Log::log("FPS: %d                             ", int(1.0f / dt));
     Log::log("dt: %f                              ", dt);
     Log::log("player: %6.2f %6.2f %6.2f           ", player->transform.position.x, player->transform.position.y, player->transform.position.z);
+    Log::log("player move speed: %f               ", player->move_speed);
     string face_str[] = { "Left", "Right", "Top", "Bottom", "Front", "Back" };
     Log::log("focus_block: %s                     ", focus_block == nullptr ? "null" : (focus_block->id + " ("+face_str[focus_face]+")").c_str());
     Log::log("focus_entity: %s                    ", focus_entity == nullptr ? "null" : focus_entity->id.c_str());
     Log::log("simulation_distance: %d             ", simulation_distance);
     Log::log("render_distance: %d                 ", render_distance);
     Log::log("view_mode: %d                       ", view_mode);
+    Log::log("torch_count: %d                     ", torch_count);
 }
