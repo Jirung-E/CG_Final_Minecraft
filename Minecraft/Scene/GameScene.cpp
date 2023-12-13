@@ -26,14 +26,16 @@ simulation_distance { 2 },
 render_distance { 3 }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
+    renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF } | ColorRGB { RGB_Red, 0.1f } | ColorRGB { RGB_Black, 0.7f };
     //renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
-    renderer.background_color = RGB_Black;
+    //renderer.background_color = RGB_Black;
     renderer.render_distance = render_distance * ChunkInfo::chunk_size;
     initWorld();
 }
 
 GameScene::~GameScene() {
     objects_manager.deleteAll();
+    delete sun;
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -57,12 +59,13 @@ void GameScene::initWorld() {
 
 void GameScene::initObjects() {
     objects_manager.deleteAll();
+    delete sun;
 
     int count = 64;
     for(int i=-count; i<count; ++i) {
         for(int k=-count; k<count; ++k) {
             if(random<int>({ 0, 1000 }) == 0) {
-                generateBlock(TORCH, i, 4, k);
+                generateBlock(SOUL_TORCH, i, 4, k);
                 ++torch_count;
             }
             generateBlock(GRASS, i, 3, k);
@@ -90,14 +93,16 @@ void GameScene::initObjects() {
 
     generatePlayerObject();
 
-    //Object* light1 = new Object { "light1" };
-    //light1->model = new Model { Model::sphere };
-    //light1->transform.position = { 0, 20, 0 };
-    //light1->addComponent<Light>();
-    //Light* light = light1->getComponent<Light>();
-    //light->ambient = 0.5f;
-    //light->color = RGB_White;
-    //objects_manager.add("light1", light1);
+    sun = new Object { "sun" };
+    sun->model = new Model { Model::box };
+    sun->model->texture_id.push_back(Texture::get("Resource/Textures/sun.png").getID());
+    sun->transform.position = { 0, 4, 20 };
+    sun->transform.scale = { 4, 4, 4 };
+    sun->transform.lookAt({ 0, 1, 0 });
+    sun->addComponent<Light>();
+    Light* light = sun->getComponent<Light>();
+    light->ambient = 0.4f;
+    light->color = RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.7f };
 }
 
 void GameScene::generatePlayerObject() {
@@ -143,6 +148,10 @@ void GameScene::generateBlock(const BlockID& block_id, int x, int y, int z) {
     case TORCH:
         id = "torch " + id;
         block = new Torch { id };
+        break;
+    case SOUL_TORCH:
+        id = "soul_torch " + id;
+        block = new SoulTorch { id };
         break;
     case AIR: default:
         id = "air " + id;
@@ -216,6 +225,8 @@ void GameScene::exit() {
 
 void GameScene::update() {
     objects_manager.update(game->dt, simulation_distance);
+
+    sun->transform.position = player->transform.position + Vector3 { 0, 4, 20 };
 
     if(player->transform.position.y < -20) {
         exit();
@@ -481,6 +492,7 @@ void GameScene::drawScene() {
             renderer.pushObject(object);
         }
     }
+    renderer.pushLightObject(sun);
     renderer.render();
     renderer.renderCrosshair();
 
@@ -585,7 +597,7 @@ void GameScene::mouseClickEvent(int button, int state, int x, int y) {
                 if(focus_block->id.find("bedrock") != string::npos) {
                     break;
                 }
-                if(focus_block->id.find("torch") != string::npos) {
+                if(focus_block->id.find("soul_torch") != string::npos) {
                     --torch_count;
                 }
                 objects_manager.remove(focus_block->id);

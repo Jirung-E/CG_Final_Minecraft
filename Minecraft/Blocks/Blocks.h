@@ -8,3 +8,4 @@
 #include "Bedrock.h"
 #include "IronBlock.h"
 #include "Torch.h"
+#include "SoulTorch.h"

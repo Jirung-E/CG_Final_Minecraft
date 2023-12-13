@@ -26,6 +26,7 @@ private:
 
     ObjectManager objects;
     ChunkBasedObjectManager objects_manager;
+    Object* sun;
 
     std::thread debug_info_thread;
     bool debug_info_thread_running;
@@ -58,7 +59,7 @@ private:
     Entity* focus_entity;
 
     enum BlockID {
-        AIR, GRASS, DIRT, STONE, COBBLE_STONE, BRICK, IRON_BLOCK, BEDROCK, TORCH
+        AIR, GRASS, DIRT, STONE, COBBLE_STONE, BRICK, IRON_BLOCK, BEDROCK, TORCH, SOUL_TORCH
     };
 
     BlockID selected_block;

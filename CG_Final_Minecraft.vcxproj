@@ -165,6 +165,7 @@
     <ClCompile Include="Minecraft\Blocks\Dirt.cpp" />
     <ClCompile Include="Minecraft\Blocks\Grass.cpp" />
     <ClCompile Include="Minecraft\Blocks\IronBlock.cpp" />
+    <ClCompile Include="Minecraft\Blocks\SoulTorch.cpp" />
     <ClCompile Include="Minecraft\Blocks\Stone.cpp" />
     <ClCompile Include="Minecraft\Blocks\Torch.cpp" />
     <ClCompile Include="Minecraft\ChunkBasedObjectManager.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Minecraft\Blocks\Dirt.h" />
     <ClInclude Include="Minecraft\Blocks\Grass.h" />
     <ClInclude Include="Minecraft\Blocks\IronBlock.h" />
+    <ClInclude Include="Minecraft\Blocks\SoulTorch.h" />
     <ClInclude Include="Minecraft\Blocks\Stone.h" />
     <ClInclude Include="Minecraft\Blocks\Torch.h" />
     <ClInclude Include="Minecraft\ChunkBasedObjectManager.h" />
