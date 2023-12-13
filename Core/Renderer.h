@@ -34,6 +34,7 @@ private:
     unsigned int fog_color_location;
 
 public:
+    Object* center_object;
     Camera* camera;
     Shader* shader;
     ColorRGB background_color;

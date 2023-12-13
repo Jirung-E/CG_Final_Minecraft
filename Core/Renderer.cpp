@@ -11,6 +11,7 @@ using namespace std;
 
 
 Renderer::Renderer(Camera* camera, Shader* shader) : camera { camera }, render_mode { Solid }, shader { shader },
+    center_object { nullptr },
     vao { 0 }, vbo { 0 },
     icons_texture_id { 0 },
     render_distance { 8 },
@@ -51,14 +52,24 @@ void Renderer::renderObject(const Object* object) {
     transform_stack.push(object->transform.matrix());
 
     Vector3 object_pos = transform_stack.top() * Vector4 { 0, 0, 0, 1 };
-    Vector3 to_object = object_pos - camera->transform.position;
+    Vector3 to_object;
+    Vector3 direction;
+    if(center_object == nullptr) {
+        to_object = object_pos - camera->transform.position;
+        direction = camera->forward();
+    }
+    else {
+        auto mat = center_object->absoluteTransformMatrix();
+        to_object = object_pos - Vector3 { mat * Vector4 { 0, 0, 0, 1 } };
+        direction = Vector3 { mat * Vector4 { 0, 0, 1, 0 } };
+    }
     float distance2 = length2(to_object);
     if(distance2 > render_distance*render_distance) {
         transform_stack.pop();
         return;
     }
     else if(distance2 > 5*5) {
-        if(dot(normalize(to_object), camera->forward()) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
+        if(dot(normalize(to_object), direction) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
             transform_stack.pop();
             return;
         }

@@ -23,7 +23,7 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 3 }
+render_distance { 4 }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF } | ColorRGB { RGB_Red, 0.1f } | ColorRGB { RGB_Black, 0.7f };
@@ -104,7 +104,7 @@ void GameScene::initObjects() {
     sun->addComponent<Light>();
     Light* light = sun->getComponent<Light>();
     light->ambient = 0.4f;
-    light->color = RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.7f };
+    light->color = { RGB_Red | ColorRGB { RGB_Yellow, 0.5f } | ColorRGB { RGB_White, 0.7f }, 0.5f };
 }
 
 void GameScene::generatePlayerObject() {
@@ -534,20 +534,24 @@ void GameScene::keyboardEvent(unsigned char key) {
         space_pressed = true;
         break;
     case '\t':
-        view_mode = (ViewMode)((view_mode + 1) % ViewMode::COUNT);
-        if(view_mode == ViewMode::FirstPerson) {
-            if(!fixed_view_mode) {
+        if(!fixed_view_mode) {
+            view_mode = (ViewMode)((view_mode + 1) % ViewMode::COUNT);
+            if(view_mode == ViewMode::FirstPerson) {
                 player->render = false;
             }
-        }
-        else {
-            player->render = true;
+            else {
+                player->render = true;
+            }
         }
         break;
     case 'f': case 'F': 
         fixed_view_mode = !fixed_view_mode;
         if(fixed_view_mode) {
+            renderer.center_object = player->head;
             player->render = true;
+        }
+        else {
+            renderer.center_object = nullptr;
         }
         break;
     case '1':
