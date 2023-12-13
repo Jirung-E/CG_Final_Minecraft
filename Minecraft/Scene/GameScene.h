@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "SceneManager.h"
 #include "../ChunkBasedObjectManager.h"
 #include "../../Core/Game.h"
 #include "../../Core/Shader.h"
@@ -8,7 +9,6 @@
 #include "../../Core/ObjectManager.h"
 #include "../../Objects/Player.h"
 #include "../../Objects/Block.h"
-#include "SceneManager.h"
 
 #include <thread>
 
@@ -65,6 +65,7 @@ private:
 
 public:
     GameScene(Game* game);
+    virtual ~GameScene();
 
 private:
     void initWorld();

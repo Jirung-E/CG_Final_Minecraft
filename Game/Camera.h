@@ -7,7 +7,8 @@ class Camera {
 public:
     Transform transform;
 
-    float fovy;
+    float height;   // ortho
+    float fovy;     // degree
     float aspect;
     float near_clip;
     float far_clip;

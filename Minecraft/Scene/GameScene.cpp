@@ -13,6 +13,7 @@ using namespace Math;
 
 
 GameScene::GameScene(Game* game) : Scene { game },
+scene_manager { nullptr },
 shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
 objects_manager { objects },
 running { true },
@@ -29,6 +30,10 @@ render_distance { 3 }
     renderer.background_color = RGB_Black;
     renderer.render_distance = render_distance * ChunkInfo::chunk_size;
     initWorld();
+}
+
+GameScene::~GameScene() {
+    objects_manager.deleteAll();
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -170,8 +175,10 @@ void GameScene::start() {
     game->hide_cursor = true;
     game->fix_cursor_when_drag = true;
     game->fix_cursor_when_motion = true;
+
     renderer.setShader(&shader);
     renderer.camera = &camera;
+
     int w = glutGet(GLUT_WINDOW_WIDTH);
     int h = glutGet(GLUT_WINDOW_HEIGHT);
     reshape(w, h);
@@ -187,6 +194,9 @@ void GameScene::start() {
 }
 
 void GameScene::exit() {
+    focus_block = nullptr;
+    focus_entity = nullptr;
+
     debug_info_thread_running = false;
     Log::print_log = false;
 
@@ -194,10 +204,9 @@ void GameScene::exit() {
     game->fix_cursor_when_drag = false;
     game->fix_cursor_when_motion = false;
 
-
     while(running) {
-        setCursorPosition(0, 0);
-        Log::print("waiting for debug_info_thread to finish...");
+        //setCursorPosition(0, 0);
+        //Log::print("waiting for debug_info_thread to finish...");
     }
 
     if(scene_manager != nullptr) {
@@ -209,11 +218,11 @@ void GameScene::update() {
     objects_manager.update(game->dt, simulation_distance);
 
     if(player->transform.position.y < -20) {
-        initWorld();
+        exit();
         return;
     }
     if(torch_count <= 0) {
-        initWorld();
+        exit();
         return;
     }
 

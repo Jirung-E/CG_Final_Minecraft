@@ -36,11 +36,12 @@ void main(void) {
     vec4 result = vec4(material_color, 1);
 
     if(use_texture) {
-        result = texture(out_texture, frag_texcoord);
+        vec4 tex_color = texture(out_texture, frag_texcoord);
+        result = tex_color;
         result.rgb *= material_color;
     }
 
-    if(result == vec4(0, 0, 0, 1)) {
+    if(result.a == 0) {
         discard;
     }
 

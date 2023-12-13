@@ -39,13 +39,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="ShaderSource\fragment.glsl">
       <Filter>ShaderSource</Filter>
     </None>
     <None Include="ShaderSource\vertex.glsl">
       <Filter>ShaderSource</Filter>
     </None>
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

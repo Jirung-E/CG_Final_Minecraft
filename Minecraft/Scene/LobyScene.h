@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Scene.h"
-#include "../../Core/EventsHandler.h"
 #include "SceneManager.h"
+#include "../../Core/EventsHandler.h"
+#include "../../Core/Shader.h"
+#include "../../Core/Renderer.h"
+#include "../../Game/Camera.h"
 
 
 class LobyScene : public Scene {
@@ -11,9 +14,16 @@ public:
 
 private:
     Shader shader;
+    Renderer renderer;
+    Camera camera;
+    unsigned int background_texture;
+    unsigned int title_texture;
+    Object* background;
+    Object* title;
 
 public:
     LobyScene(Game* game);
+    virtual ~LobyScene();
 
 public:
     virtual void start() override;

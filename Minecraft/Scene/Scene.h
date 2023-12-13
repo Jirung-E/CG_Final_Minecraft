@@ -11,7 +11,7 @@ public:
 
 public:
     Scene(Game* game);
-    ~Scene();
+    virtual ~Scene();
 
 public:
     virtual void start() abstract;

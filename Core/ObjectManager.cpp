@@ -26,6 +26,10 @@ void ObjectManager::deleteAll() {
     clear();
 }
 
+size_t ObjectManager::size() const {
+    return objects.size();
+}
+
 
 void ObjectManager::update(float dt) {
     for(auto& e : objects) {
