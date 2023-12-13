@@ -23,7 +23,7 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 4 }
+render_distance { 3 }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF } | ColorRGB { RGB_Red, 0.1f } | ColorRGB { RGB_Black, 0.7f };
@@ -571,6 +571,14 @@ void GameScene::keyboardEvent(unsigned char key) {
         break;
     case '=':
         player->move_speed = 4;
+        break;
+    case '[':
+        render_distance = std::max(1, render_distance-1);
+        renderer.render_distance = render_distance * ChunkInfo::chunk_size;
+        break;
+    case ']':
+        render_distance = std::min(10, render_distance+1);
+        renderer.render_distance = render_distance * ChunkInfo::chunk_size;
         break;
     }
 }
