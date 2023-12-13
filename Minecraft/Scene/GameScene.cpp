@@ -1,10 +1,9 @@
-#include "Test.h"
+#include "GameScene.h"
 
-#include "ChunkBasedObjectManager.h"
-#include "../Game/Component/Light.h"
-#include "../Game/Texture.h"
-#include "../Math/Line.h"
-#include "Blocks/Blocks.h"
+#include "../../Game/Component/Light.h"
+#include "../../Game/Texture.h"
+#include "../../Math/Line.h"
+#include "../Blocks/Blocks.h"
 
 #include <thread>
 #include <gl/freeglut.h>
@@ -13,10 +12,12 @@ using namespace std;
 using namespace Math;
 
 
-Test::Test() : Game { "Test" },
-events_handler { EventsHandler::getInstance(this) },
+GameScene::GameScene(Game* game) : Scene { game },
+scene_manager { nullptr },
 shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
 objects_manager { objects },
+running { true },
+debug_info_thread_running { true },
 view_mode { ViewMode::FirstPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
@@ -24,20 +25,20 @@ interaction_distance { 4.0f },
 simulation_distance { 2 },
 render_distance { 3 }
 {
-    hide_cursor = true;
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
-    events_handler.link();
-    renderer.setShader(&shader);
-    renderer.camera = &camera;
     //renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF };
     renderer.background_color = RGB_Black;
     renderer.render_distance = render_distance * ChunkInfo::chunk_size;
     initWorld();
 }
 
+GameScene::~GameScene() {
+    objects_manager.deleteAll();
+}
+
 // --------------------------------------------------------------------------------------------- //
 
-void Test::initWorld() {
+void GameScene::initWorld() {
     camera.transform.position = { 0.0f, 0.0f, 4.0f };
     camera.lookAt({ 0, 0, 0 });
 
@@ -49,10 +50,12 @@ void Test::initWorld() {
 
     torch_count = 0;
 
+    selected_block = BRICK;
+
     initObjects();
 }
 
-void Test::initObjects() {
+void GameScene::initObjects() {
     objects_manager.deleteAll();
 
     int count = 64;
@@ -97,14 +100,14 @@ void Test::initObjects() {
     //objects_manager.add("light1", light1);
 }
 
-void Test::generatePlayerObject() {
+void GameScene::generatePlayerObject() {
     player = new Player { "player" };
     player->transform.position = { 0, 5, 0 };
     objects_manager.player = player;
     objects_manager.add("player", player);
 }
 
-void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
+void GameScene::generateBlock(const BlockID& block_id, int x, int y, int z) {
     string id = to_string(x) + ":" + to_string(y) + ":" + to_string(z);
 
     Block* block = nullptr;
@@ -152,7 +155,7 @@ void Test::generateBlock(const BlockID& block_id, int x, int y, int z) {
 }
 
 
-void Test::rotateHead(float dx, float dy) {
+void GameScene::rotateHead(float dx, float dy) {
     player->transform.rotateY(-dx);
 
     Vector3 direction = player->head->transform.forward();
@@ -168,15 +171,58 @@ void Test::rotateHead(float dx, float dy) {
 }
 
 
-void Test::update() {
-    objects_manager.update(dt, simulation_distance);
+void GameScene::start() {
+    game->hide_cursor = true;
+    game->fix_cursor_when_drag = true;
+    game->fix_cursor_when_motion = true;
+
+    renderer.setShader(&shader);
+    renderer.camera = &camera;
+
+    int w = glutGet(GLUT_WINDOW_WIDTH);
+    int h = glutGet(GLUT_WINDOW_HEIGHT);
+    reshape(w, h);
+
+    debug_info_thread = thread { [&]() {
+        while(debug_info_thread_running) {
+            sleep(0.1f);
+            showDebugInfo();
+        }
+        running = false;
+    } };
+    debug_info_thread.detach();
+}
+
+void GameScene::exit() {
+    focus_block = nullptr;
+    focus_entity = nullptr;
+
+    debug_info_thread_running = false;
+    Log::print_log = false;
+
+    game->hide_cursor = false;
+    game->fix_cursor_when_drag = false;
+    game->fix_cursor_when_motion = false;
+
+    while(running) {
+        //setCursorPosition(0, 0);
+        //Log::print("waiting for debug_info_thread to finish...");
+    }
+
+    if(scene_manager != nullptr) {
+        scene_manager->popScene();
+    }
+}
+
+void GameScene::update() {
+    objects_manager.update(game->dt, simulation_distance);
 
     if(player->transform.position.y < -20) {
-        initWorld();
+        exit();
         return;
     }
     if(torch_count <= 0) {
-        initWorld();
+        exit();
         return;
     }
 
@@ -422,7 +468,7 @@ void Test::update() {
 
 // --------------------------------------------------------------------------------------------- //
 
-void Test::drawScene() {
+void GameScene::drawScene() {
     if(focus_block != nullptr) {
         focus_block->material.base_color = RGB_LightGray;
     }
@@ -437,21 +483,23 @@ void Test::drawScene() {
     }
     renderer.render();
     renderer.renderCrosshair();
-    if(hide_cursor) {
-        glutSetCursor(GLUT_CURSOR_NONE);
-    }
-    else {
-        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-    }
+
     if(focus_block != nullptr) {
         focus_block->material.base_color = RGB_White;
     }
 }
 
-void Test::keyboardEvent(unsigned char key) {
-    Game::keyboardEvent(key);
+void GameScene::reshape(int w, int h) {
+    camera.aspect = (float)w / h;
+}
+
+void GameScene::keyboardEvent(unsigned char key) {
+    //Game::keyboardEvent(key);
 
     switch(key) {
+    case 27:
+        exit();
+        break;
     case 'i': case 'I':
         initWorld();
         break;
@@ -479,12 +527,22 @@ void Test::keyboardEvent(unsigned char key) {
             player->render = true;
         }
         break;
+    case '1':
+        selected_block = BRICK;
+        break;
+    case '2':
+        selected_block = COBBLE_STONE;
+        break;
+    case '3':
+        selected_block = IRON_BLOCK;
+        break;
+    case '4':
+        selected_block = TORCH;
+        break;
     }
 }
 
-void Test::keyboardUpEvent(unsigned char key) {
-    Game::keyboardUpEvent(key);
-
+void GameScene::keyboardUpEvent(unsigned char key) {
     switch(key) {
     case 'w': case 'W':
         player->move_direction.y -= 1;
@@ -508,15 +566,17 @@ void Test::keyboardUpEvent(unsigned char key) {
         player->move_speed = 4;
         break;
     }
-
 }
 
-void Test::mouseClickEvent(int button, int state, int x, int y) {
-    Game::mouseClickEvent(button, state, x, y);
+void GameScene::specialKeyEvent(int key) {
+    switch(key) {
+    case GLUT_KEY_F3:
+        Log::print_log = !Log::print_log;
+        break;
+    }
+}
 
-
-
-
+void GameScene::mouseClickEvent(int button, int state, int x, int y) {
     switch(state) {
     case GLUT_DOWN:
         switch(button) {
@@ -557,7 +617,7 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
                     pos.z -= 1;
                     break;
                 }
-                generateBlock(TORCH, (int)pos.x, (int)pos.y, (int)pos.z);
+                generateBlock(selected_block, (int)pos.x, (int)pos.y, (int)pos.z);
             }
             break;
         }
@@ -565,39 +625,22 @@ void Test::mouseClickEvent(int button, int state, int x, int y) {
     }
 }
 
-void Test::mouseMotionEvent(const Vector2& delta) {
-    Game::mouseMotionEvent(delta);
-
+void GameScene::mouseMotionEvent(const Vector2& delta) {
     // 1pixel -> 1degree
-    Vector2 d = delta * sensitivity;
+    Vector2 d = delta * game->sensitivity;
     d = radians(d);
     rotateHead(d.x, d.y);
 }
 
-void Test::mouseDragEvent(const Vector2& delta) {
-    Game::mouseDragEvent(delta);
-
+void GameScene::mouseDragEvent(const Vector2& delta) {
     mouseMotionEvent(delta);
 }
 
 
-void Test::run() {
-    thread debug_info { [&]() {
-        while(true) {
-            sleep(0.1f);
-            showDebugInfo();
-        }
-    } };
-
-    Game::run();
-
-    debug_info.join();
-}
-
-void Test::showDebugInfo() const {
+void GameScene::showDebugInfo() const {
     setCursorPosition(0, 0);
-    Log::log("FPS: %d                             ", int(1.0f / dt));
-    Log::log("dt: %f                              ", dt);
+    Log::log("FPS: %d                             ", int(1.0f / game->dt));
+    Log::log("dt: %f                              ", game->dt);
     Log::log("player: %6.2f %6.2f %6.2f           ", player->transform.position.x, player->transform.position.y, player->transform.position.z);
     Log::log("player move speed: %f               ", player->move_speed);
     string face_str[] = { "Left", "Right", "Top", "Bottom", "Front", "Back" };
@@ -607,4 +650,18 @@ void Test::showDebugInfo() const {
     Log::log("render_distance: %d                 ", render_distance);
     Log::log("view_mode: %d                       ", view_mode);
     Log::log("torch_count: %d                     ", torch_count);
+    switch(selected_block) {
+    case BRICK:
+        Log::log("selected_block: BRICK               ");
+        break;
+    case COBBLE_STONE:
+        Log::log("selected_block: COBBLE_STONE        ");
+        break;
+    case IRON_BLOCK:
+        Log::log("selected_block: IRON_BLOCK          ");
+        break;
+    case TORCH:
+        Log::log("selected_block: TORCH               ");
+        break;
+    }
 }

@@ -18,6 +18,7 @@ public:
     Object* get(const std::string& name) const;
     void clear();
     void deleteAll();
+    size_t size() const;
 
     void update(float dt);
 

@@ -3,7 +3,7 @@
 #include <gl/freeglut.h>
 
 
-EventsHandler::EventsHandler(Game* game) : game { game }, 
+EventsHandler::EventsHandler() : game { nullptr }, 
     mouse_click_point { nullptr }, 
     mouse_prev_point { nullptr }, 
     mouse_delta { 0, 0 }, timer_value { 1 } {
@@ -11,13 +11,14 @@ EventsHandler::EventsHandler(Game* game) : game { game },
 }
 
 
-EventsHandler& EventsHandler::getInstance(Game* game) {
-    static EventsHandler instance { game };
+EventsHandler& EventsHandler::getInstance() {
+    static EventsHandler instance { };
     return instance;
 }
 
 
-void EventsHandler::link() {
+void EventsHandler::link(Game* game) {
+    this->game = game;
     glutDisplayFunc(drawScene);
     glutReshapeFunc(reshape);
     glutTimerFunc(timer_value, timer, timer_value);
@@ -31,7 +32,7 @@ void EventsHandler::link() {
 
 
 void EventsHandler::drawScene() {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -41,7 +42,7 @@ void EventsHandler::drawScene() {
 }
 
 void EventsHandler::reshape(int w, int h) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     handler.game->reshape(w, h);
 
@@ -49,7 +50,7 @@ void EventsHandler::reshape(int w, int h) {
 }
 
 void EventsHandler::timer(int value) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     handler.game->timer(value);
 
@@ -57,25 +58,25 @@ void EventsHandler::timer(int value) {
 }
 
 void EventsHandler::keyboardEvent(unsigned char key, int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     handler.game->keyboardEvent(key);
 }
 
 void EventsHandler::keyboardUpEvent(unsigned char key, int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     handler.game->keyboardUpEvent(key);
 }
 
 void EventsHandler::specialKeyEvent(int key, int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     handler.game->specialKeyEvent(key);
 }
 
 void EventsHandler::mouseClickEvent(int button, int state, int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     switch(state) {
     case GLUT_DOWN:
@@ -91,33 +92,41 @@ void EventsHandler::mouseClickEvent(int button, int state, int x, int y) {
 }
 
 void EventsHandler::mouseMotionEvent(int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     if(handler.mouse_prev_point != nullptr) {
         handler.mouse_delta = Vector2(x, y) - *handler.mouse_prev_point;
         handler.game->mouseMotionEvent(handler.mouse_delta);
     }
 
-    int w = glutGet(GLUT_WINDOW_WIDTH);
-    int h = glutGet(GLUT_WINDOW_HEIGHT);
-    glutWarpPointer(w/2, h/2);
-
     delete handler.mouse_prev_point;
-    handler.mouse_prev_point = new Vector2 { w/2, h/2 };
+    if(handler.game->fix_cursor_when_motion) {
+        int w = glutGet(GLUT_WINDOW_WIDTH);
+        int h = glutGet(GLUT_WINDOW_HEIGHT);
+        glutWarpPointer(w/2, h/2);
+        handler.mouse_prev_point = new Vector2 { w/2, h/2 };
+    }
+    else {
+        handler.mouse_prev_point = new Vector2 { x, y };
+    }
 }
 
 void EventsHandler::mouseDragEvent(int x, int y) {
-    EventsHandler& handler = getInstance(nullptr);
+    EventsHandler& handler = getInstance();
 
     if(handler.mouse_click_point != nullptr) {
         handler.mouse_delta = Vector2(x, y) - *handler.mouse_click_point;
         handler.game->mouseDragEvent(handler.mouse_delta);
     }
 
-    int w = glutGet(GLUT_WINDOW_WIDTH);
-    int h = glutGet(GLUT_WINDOW_HEIGHT);
-    glutWarpPointer(w/2, h/2);
-
     delete handler.mouse_prev_point;
-    handler.mouse_prev_point = new Vector2 { w/2, h/2 };
+    if(handler.game->fix_cursor_when_drag) {
+        int w = glutGet(GLUT_WINDOW_WIDTH);
+        int h = glutGet(GLUT_WINDOW_HEIGHT);
+        glutWarpPointer(w/2, h/2);
+        handler.mouse_prev_point = new Vector2 { w/2, h/2 };
+    }
+    else {
+        handler.mouse_prev_point = new Vector2 { x, y };
+    }
 }

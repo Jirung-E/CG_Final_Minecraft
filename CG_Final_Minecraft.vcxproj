@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -168,7 +168,11 @@
     <ClCompile Include="Minecraft\Blocks\Stone.cpp" />
     <ClCompile Include="Minecraft\Blocks\Torch.cpp" />
     <ClCompile Include="Minecraft\ChunkBasedObjectManager.cpp" />
-    <ClCompile Include="Minecraft\Test.cpp" />
+    <ClCompile Include="Minecraft\GameManager.cpp" />
+    <ClCompile Include="Minecraft\Scene\GameScene.cpp" />
+    <ClCompile Include="Minecraft\Scene\LobyScene.cpp" />
+    <ClCompile Include="Minecraft\Scene\Scene.cpp" />
+    <ClCompile Include="Minecraft\Scene\SceneManager.cpp" />
     <ClCompile Include="Objects\Block.cpp" />
     <ClCompile Include="Objects\Box.cpp" />
     <ClCompile Include="Objects\Player.cpp" />
@@ -209,7 +213,11 @@
     <ClInclude Include="Minecraft\Blocks\Stone.h" />
     <ClInclude Include="Minecraft\Blocks\Torch.h" />
     <ClInclude Include="Minecraft\ChunkBasedObjectManager.h" />
-    <ClInclude Include="Minecraft\Test.h" />
+    <ClInclude Include="Minecraft\GameManager.h" />
+    <ClInclude Include="Minecraft\Scene\GameScene.h" />
+    <ClInclude Include="Minecraft\Scene\LobyScene.h" />
+    <ClInclude Include="Minecraft\Scene\Scene.h" />
+    <ClInclude Include="Minecraft\Scene\SceneManager.h" />
     <ClInclude Include="Objects\Block.h" />
     <ClInclude Include="Objects\Box.h" />
     <ClInclude Include="Objects\Player.h" />

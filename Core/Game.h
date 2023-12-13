@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ObjectManager.h"
 #include "Renderer.h"
 #include "../Game/Camera.h"
 
@@ -11,20 +10,15 @@ class Game abstract {
 public:
     const std::string title;
 
-private:
-    std::chrono::system_clock::time_point prev_update_time;
-
-protected:
-    Renderer renderer;
-    ObjectManager objects;
-
-    Camera camera;
-
     float sensitivity;
     bool fix_cursor_when_motion;
     bool fix_cursor_when_drag;
     bool hide_cursor;
 
+private:
+    std::chrono::system_clock::time_point prev_update_time;
+
+public:
     float dt;
 
 protected:
@@ -53,6 +47,6 @@ public:
 
     // --------------------------------------------------------------------------------------------- //
 
-protected:
-    virtual void update();
+public:
+    virtual void update() abstract;
 };
