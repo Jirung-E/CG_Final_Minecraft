@@ -4,6 +4,8 @@
 #include "../../Game/Texture.h"
 #include "../../Math/Line.h"
 #include "../Blocks/Blocks.h"
+//#define STB_IMAGE_IMPLEMENTATION
+#include "../../Util/stb_image.h"
 
 #include <thread>
 #include <gl/freeglut.h>
@@ -16,8 +18,6 @@ GameScene::GameScene(Game* game) : Scene { game },
 scene_manager { nullptr },
 shader { "ShaderSource/vertex.glsl", "ShaderSource/fragment.glsl" },
 objects_manager { objects },
-running { true },
-debug_info_thread_running { true },
 view_mode { ViewMode::FirstPerson },
 vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
@@ -56,27 +56,48 @@ void GameScene::initWorld() {
 
     fixed_view_mode = false;
 
+    player = nullptr;
     initObjects();
+
+    debug_info_thread_running = true;
+    running = true;
 }
 
 void GameScene::initObjects() {
     objects_manager.deleteAll();
     delete sun;
 
-    int count = 64;
-    for(int i=-count; i<count; ++i) {
-        for(int k=-count; k<count; ++k) {
-            if(random<int>({ 0, 1000 }) == 0) {
-                generateBlock(SOUL_TORCH, i, 4, k);
+    int width;
+    int height;
+    int number_of_channels;
+    //stbi_set_flip_vertically_on_load(true);
+    unsigned char* data = stbi_load("Resource/Map/heightmap.png", &width, &height, &number_of_channels, 1);
+    Range<int> height_range { 8, 25 };
+    Range<int> torch_gen_rate { 0, 1000 };
+
+    int w = width / 2;
+    int h = height / 2;
+    for(int i=-h; i<h; ++i) {
+        for(int k=-w; k<w; ++k) {
+            int max_height = data[(i+h)*(k+w)];
+            max_height = max_height * (height_range.end - height_range.start) / 255 + height_range.start;
+
+            if(random(torch_gen_rate) == 0) {
+                generateBlock(SOUL_TORCH, i, max_height+1, k);
                 ++torch_count;
             }
-            generateBlock(GRASS, i, 3, k);
-            generateBlock(DIRT, i, 2, k);
-            generateBlock(STONE, i, 1, k);
-            generateBlock(STONE, i, 0, k);
+            generateBlock(GRASS, i, max_height, k);
+            for(int d=max_height-4; d<max_height; ++d) {
+                generateBlock(DIRT, i, d, k);
+            }
+            for(int s=0; s<max_height-4; ++s) {
+                generateBlock(STONE, i, s, k);
+            }
             generateBlock(BEDROCK, i, -1, k);
         }
     }
+    stbi_image_free(data);
+
     Material m { Material::basic };
     m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
     generateBlock(IRON_BLOCK, 1, 2+2, 0);
@@ -109,7 +130,7 @@ void GameScene::initObjects() {
 
 void GameScene::generatePlayerObject() {
     player = new Player { "player" };
-    player->transform.position = { 0, 5, 0 };
+    player->transform.position = { 0, 50, 0 };
     objects_manager.player = player;
     objects_manager.add("player", player);
 }
@@ -205,9 +226,6 @@ void GameScene::start() {
 }
 
 void GameScene::exit() {
-    focus_block = nullptr;
-    focus_entity = nullptr;
-
     debug_info_thread_running = false;
     Log::print_log = false;
 
@@ -220,6 +238,10 @@ void GameScene::exit() {
         //Log::print("waiting for debug_info_thread to finish...");
     }
 
+    focus_block = nullptr;
+    focus_entity = nullptr;
+    player = nullptr;
+
     if(scene_manager != nullptr) {
         scene_manager->popScene();
     }
@@ -227,8 +249,6 @@ void GameScene::exit() {
 
 void GameScene::update() {
     objects_manager.update(game->dt, simulation_distance);
-
-    sun->transform.position = camera.transform.position + Vector3 { 0, 4, 20 };
 
     if(player->transform.position.y < -20) {
         exit();
@@ -273,6 +293,8 @@ void GameScene::update() {
             break;
         }
     }
+
+    sun->transform.position = camera.transform.position + Vector3 { 0, 4, 20 };
 
     // hit test
     auto mat = player->head->absoluteTransformMatrix();
@@ -674,6 +696,9 @@ void GameScene::mouseDragEvent(const Vector2& delta) {
 
 void GameScene::showDebugInfo() const {
     setCursorPosition(0, 0);
+    if(player == nullptr) {
+        return;
+    }
     Log::log("FPS: %d                             ", int(1.0f / game->dt));
     Log::log("dt: %f                              ", game->dt);
     Log::log("player: %6.2f %6.2f %6.2f           ", player->transform.position.x, player->transform.position.y, player->transform.position.z);
