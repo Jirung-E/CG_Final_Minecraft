@@ -54,6 +54,8 @@ void GameScene::initWorld() {
 
     selected_block = BRICK;
 
+    fixed_view_mode = false;
+
     initObjects();
 }
 
@@ -226,7 +228,7 @@ void GameScene::exit() {
 void GameScene::update() {
     objects_manager.update(game->dt, simulation_distance);
 
-    sun->transform.position = player->transform.position + Vector3 { 0, 4, 20 };
+    sun->transform.position = camera.transform.position + Vector3 { 0, 4, 20 };
 
     if(player->transform.position.y < -20) {
         exit();
@@ -241,35 +243,36 @@ void GameScene::update() {
         player->jump();
     }
 
-    auto head = player->head;
-    switch(view_mode) {
-        case FirstPerson: {
-            Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 0, 0, 1 } };
-            cam_pos.y += 0.2f;
-            camera.transform.position = cam_pos;
-            Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
-            camera.lookAt(cam_pos + cam_rot);
-            player->render = false;
+    if(!fixed_view_mode) {
+        auto head = player->head;
+        switch(view_mode) {
+            case FirstPerson: {
+                Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 0, 0, 1 } };
+                cam_pos.y += 0.2f;
+                camera.transform.position = cam_pos;
+                Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
+                camera.lookAt(cam_pos + cam_rot);
+                player->render = false;
+            }
+            break;
+            case SecondPerson: {
+                Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 1.8f/8, camera_distance, 1 } };
+                camera.transform.position = cam_pos;
+                Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
+                camera.lookAt(cam_pos - cam_rot);
+                player->render = true;
+            }
+            break;
+            case ThirdPerson: {
+                Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 1.8f/8, -camera_distance, 1 } };
+                camera.transform.position = cam_pos;
+                Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
+                camera.lookAt(cam_pos + cam_rot);
+                player->render = true;
+            }
+            break;
         }
-        break;
-        case SecondPerson: {
-            Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 1.8f/8, camera_distance, 1 } };
-            camera.transform.position = cam_pos;
-            Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
-            camera.lookAt(cam_pos - cam_rot);
-            player->render = true;
-        }
-        break;
-        case ThirdPerson: {
-            Vector3 cam_pos { head->absoluteTransformMatrix() * Vector4 { 0, 1.8f/8, -camera_distance, 1 } };
-            camera.transform.position = cam_pos;
-            Vector3 cam_rot { head->absoluteTransformMatrix() * Vector4 { 0, 0, 1, 0 } };
-            camera.lookAt(cam_pos + cam_rot);
-            player->render = true;
-        }
-        break;
     }
-
 
     // hit test
     auto mat = player->head->absoluteTransformMatrix();
@@ -533,9 +536,17 @@ void GameScene::keyboardEvent(unsigned char key) {
     case '\t':
         view_mode = (ViewMode)((view_mode + 1) % ViewMode::COUNT);
         if(view_mode == ViewMode::FirstPerson) {
-            player->render = false;
+            if(!fixed_view_mode) {
+                player->render = false;
+            }
         }
         else {
+            player->render = true;
+        }
+        break;
+    case 'f': case 'F': 
+        fixed_view_mode = !fixed_view_mode;
+        if(fixed_view_mode) {
             player->render = true;
         }
         break;

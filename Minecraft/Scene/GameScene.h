@@ -37,6 +37,7 @@ private:
         SecondPerson,
         COUNT
     } view_mode;
+    bool fixed_view_mode;
 
     const float camera_distance;
     Vector3 camera_direction;
