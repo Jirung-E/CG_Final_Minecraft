@@ -551,6 +551,12 @@ void GameScene::keyboardEvent(unsigned char key) {
     case '4':
         selected_block = TORCH;
         break;
+    case '+':
+        player->move_speed = 20;
+        break;
+    case '=':
+        player->move_speed = 4;
+        break;
     }
 }
 
@@ -570,12 +576,6 @@ void GameScene::keyboardUpEvent(unsigned char key) {
         break;
     case ' ':
         space_pressed = false;
-        break;
-    case '+':
-        player->move_speed = 20;
-        break;
-    case '=':
-        player->move_speed = 4;
         break;
     }
 }
