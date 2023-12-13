@@ -20,7 +20,6 @@ Game::Game(const std::string& title) : title { title },
 }
 
 Game::~Game() {
-    objects.deleteAll();
     glutLeaveMainLoop();
 }
 
@@ -34,7 +33,7 @@ void Game::initialize() {
     glewExperimental = GL_TRUE;
     if(glewInit() != GLEW_OK) {
         Log::errorLog("Unable to initialize GLEW");
-        exit(EXIT_FAILURE);
+        ::exit(EXIT_FAILURE);
     }
     else {
         Log::log("GLEW Initialized");
@@ -64,44 +63,32 @@ void Game::run() {
 // Events ----------------------------------------------------------------------------------------------- //
 
 void Game::drawScene() {
-    for(auto object : objects.objects) {
-        if(object.second->getComponent<Light>() != nullptr) {
-            renderer.pushLightObject(object.second);
-		}
-        else {
-            renderer.pushObject(object.second);
-        }
-    }
-    renderer.render();
-    renderer.renderCrosshair();
-    if(hide_cursor) {
-        glutSetCursor(GLUT_CURSOR_NONE);
-    }
-    else {
-        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-    }
+
 }
 
 void Game::reshape(int w, int h) {
     glViewport(0, 0, w, h);
-    camera.aspect = (float)w / h;
 }
 
 void Game::timer(int value) {
     auto now = system_clock::now();
     dt = duration_cast<milliseconds>(now - prev_update_time).count() / 1000.0f;
     prev_update_time = now;
+
     update();
+
+    if(hide_cursor) {
+        glutSetCursor(GLUT_CURSOR_NONE);
+    }
+    else {
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    }
 
     glutPostRedisplay();
 }
 
 void Game::keyboardEvent(unsigned char key) {
-    switch(key) {
-    case 27:
-        exit(EXIT_SUCCESS);
-        break;
-    }
+
 }
 
 void Game::keyboardUpEvent(unsigned char key) {
@@ -109,11 +96,7 @@ void Game::keyboardUpEvent(unsigned char key) {
 }
 
 void Game::specialKeyEvent(int key) {
-    switch(key) {
-    case GLUT_KEY_F3:
-        Log::print_log = !Log::print_log;
-        break;
-    }
+
 }
 
 void Game::mouseClickEvent(int button, int state, int x, int y) {
@@ -126,10 +109,4 @@ void Game::mouseMotionEvent(const Vector2& delta) {
 
 void Game::mouseDragEvent(const Vector2& delta) {
 
-}
-
-// ----------------------------------------------------------------------------------------------------- //
-
-void Game::update() {
-    objects.update(dt);
 }

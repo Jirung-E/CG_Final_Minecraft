@@ -1,18 +1,34 @@
 #pragma once
 
-#include "ChunkBasedObjectManager.h"
-#include "../Core/Game.h"
-#include "../Core/Shader.h"
-#include "../Core/EventsHandler.h"
-#include "../Objects/Player.h"
-#include "../Objects/Block.h"
+#include "Scene.h"
+#include "../ChunkBasedObjectManager.h"
+#include "../../Core/Game.h"
+#include "../../Core/Shader.h"
+#include "../../Core/EventsHandler.h"
+#include "../../Core/ObjectManager.h"
+#include "../../Objects/Player.h"
+#include "../../Objects/Block.h"
+#include "SceneManager.h"
+
+#include <thread>
 
 
-class Test : public Game {   // singleton
+class GameScene : public Scene {
+public:
+    SceneManager* scene_manager;
+
 private:
-    EventsHandler& events_handler;
+    bool running;
+
     Shader shader;
+    Renderer renderer;
+    Camera camera;
+
+    ObjectManager objects;
     ChunkBasedObjectManager objects_manager;
+
+    std::thread debug_info_thread;
+    bool debug_info_thread_running;
 
     enum ViewMode {
         FirstPerson,
@@ -45,8 +61,10 @@ private:
         AIR, GRASS, DIRT, STONE, COBBLE_STONE, BRICK, IRON_BLOCK, BEDROCK, TORCH
     };
 
+    BlockID selected_block;
+
 public:
-    Test();
+    GameScene(Game* game);
 
 private:
     void initWorld();
@@ -56,20 +74,23 @@ private:
 
     void rotateHead(float dx, float dy);
 
+public:
+    virtual void start() override;
     virtual void update() override;
+    virtual void exit() override;
 
     // --------------------------------------------------------------------------------------------- //
 
 private:
     virtual void drawScene() override;
+    virtual void reshape(int w, int h) override;
     virtual void keyboardEvent(unsigned char key) override;
     virtual void keyboardUpEvent(unsigned char key) override;
+    virtual void specialKeyEvent(int key) override;
     virtual void mouseClickEvent(int button, int state, int x, int y) override;
     virtual void mouseMotionEvent(const Vector2& delta) override;
     virtual void mouseDragEvent(const Vector2& delta) override;
 
-public:
-    virtual void run() override;
 private:
     void showDebugInfo() const;
 };

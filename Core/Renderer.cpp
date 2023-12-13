@@ -57,7 +57,7 @@ void Renderer::renderObject(const Object* object) {
         transform_stack.pop();
         return;
     }
-    else if(distance2 > 3*3) {
+    else if(distance2 > 5*5) {
         if(dot(normalize(to_object), camera->forward()) < cos(radians(camera->fovy)/* * camera->aspect*/)) {
             transform_stack.pop();
             return;

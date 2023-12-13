@@ -34,6 +34,9 @@
     <Filter Include="src\Minecraft\Blocks">
       <UniqueIdentifier>{e6bdf169-df30-4333-99e5-adfc2f8d7219}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Minecraft\Scene">
+      <UniqueIdentifier>{baf623a2-efd7-4f23-b139-a6384d961c1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderSource\fragment.glsl">
@@ -117,9 +120,6 @@
     <ClCompile Include="Shader\Material.cpp">
       <Filter>src\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Minecraft\Test.cpp">
-      <Filter>src\Minecraft</Filter>
-    </ClCompile>
     <ClCompile Include="Objects\Block.cpp">
       <Filter>src\Objects</Filter>
     </ClCompile>
@@ -158,6 +158,21 @@
     </ClCompile>
     <ClCompile Include="Minecraft\Blocks\Torch.cpp">
       <Filter>src\Minecraft\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\GameManager.cpp">
+      <Filter>src\Minecraft</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Scene\GameScene.cpp">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Scene\LobyScene.cpp">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Scene\Scene.cpp">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Minecraft\Scene\SceneManager.cpp">
+      <Filter>src\Minecraft\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,9 +245,6 @@
     <ClInclude Include="Shader\Material.h">
       <Filter>src\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Minecraft\Test.h">
-      <Filter>src\Minecraft</Filter>
-    </ClInclude>
     <ClInclude Include="Math\MathDefines.h">
       <Filter>src\Math</Filter>
     </ClInclude>
@@ -280,6 +292,21 @@
     </ClInclude>
     <ClInclude Include="Minecraft\Blocks\Torch.h">
       <Filter>src\Minecraft\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\GameManager.h">
+      <Filter>src\Minecraft</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Scene\GameScene.h">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Scene\LobyScene.h">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Scene\Scene.h">
+      <Filter>src\Minecraft\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Minecraft\Scene\SceneManager.h">
+      <Filter>src\Minecraft\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

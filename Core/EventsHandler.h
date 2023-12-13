@@ -4,7 +4,7 @@
 
 
 class EventsHandler {       // Singleton
-private:
+protected:
     Game* game;
 
     Vector2* mouse_click_point;
@@ -14,14 +14,14 @@ public:
     Vector2 mouse_delta;
     int timer_value;
 
-private:
-    EventsHandler(Game* game);
+protected:
+    EventsHandler();
     EventsHandler(const EventsHandler&) = delete;
     EventsHandler& operator=(const EventsHandler&) = delete;
 
 public:
-    static EventsHandler& getInstance(Game* game);
-    void link();
+    static EventsHandler& getInstance();
+    void link(Game* game);
 
 public:
     static void drawScene();
