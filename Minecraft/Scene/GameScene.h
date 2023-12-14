@@ -27,6 +27,7 @@ private:
     ObjectManager objects;
     ChunkBasedObjectManager objects_manager;
     Object* sun;
+    Vector3 sun_pos;
 
     std::thread debug_info_thread;
     bool debug_info_thread_running;

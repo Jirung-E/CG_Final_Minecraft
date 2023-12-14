@@ -23,7 +23,8 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 3 }
+render_distance { 3 },
+sun_pos { 20, 4, 0 }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF } | ColorRGB { RGB_Red, 0.1f } | ColorRGB { RGB_Black, 0.7f };
@@ -70,30 +71,30 @@ void GameScene::initObjects() {
     int width;
     int height;
     int number_of_channels;
-    //stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load("Resource/Map/heightmap.png", &width, &height, &number_of_channels, 1);
+    stbi_set_flip_vertically_on_load(false);
+    unsigned char* data = stbi_load("Resource/Map/map4.png", &width, &height, &number_of_channels, 1);
     Range<int> height_range { 8, 25 };
+    int height_range_size = height_range.end - height_range.start;
     Range<int> torch_gen_rate { 0, 1000 };
 
     int w = width / 2;
     int h = height / 2;
     for(int i=-h; i<h; ++i) {
         for(int k=-w; k<w; ++k) {
-            int max_height = data[(i+h)*(k+w)];
-            max_height = max_height * (height_range.end - height_range.start) / 255 + height_range.start;
+            int max_height = data[(i+h)*width + (k+w)] * height_range_size / 255 + height_range.start;
 
             if(random(torch_gen_rate) == 0) {
-                generateBlock(SOUL_TORCH, i, max_height+1, k);
+                generateBlock(SOUL_TORCH, k, max_height+1, i);
                 ++torch_count;
             }
-            generateBlock(GRASS, i, max_height, k);
+            generateBlock(GRASS, k, max_height, i);
             for(int d=max_height-4; d<max_height; ++d) {
-                generateBlock(DIRT, i, d, k);
+                generateBlock(DIRT, k, d, i);
             }
             for(int s=0; s<max_height-4; ++s) {
-                generateBlock(STONE, i, s, k);
+                generateBlock(STONE, k, s, i);
             }
-            generateBlock(BEDROCK, i, -1, k);
+            generateBlock(BEDROCK, k, -1, i);
         }
     }
     stbi_image_free(data);
@@ -119,7 +120,7 @@ void GameScene::initObjects() {
     sun = new Object { "sun" };
     sun->model = new Model { Model::box };
     sun->model->texture_id.push_back(Texture::get("Resource/Textures/sun.png").getID());
-    sun->transform.position = { 0, 4, 20 };
+    sun->transform.position = sun_pos;
     sun->transform.scale = { 4, 4, 4 };
     sun->transform.lookAt({ 0, 1, 0 });
     sun->addComponent<Light>();
@@ -294,7 +295,7 @@ void GameScene::update() {
         }
     }
 
-    sun->transform.position = camera.transform.position + Vector3 { 0, 4, 20 };
+    sun->transform.position = camera.transform.position + sun_pos;
 
     // hit test
     auto mat = player->head->absoluteTransformMatrix();
