@@ -127,22 +127,6 @@ void GameScene::initObjects() {
         stbi_image_free(data);
     }
 
-    Material m { Material::basic };
-    m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
-    generateBlock(IRON_BLOCK, 1, 2+2, 0);
-    generateBlock(IRON_BLOCK, 1, 3+2, 0);
-    generateBlock(IRON_BLOCK, 1, 4+2, 0);
-    generateBlock(IRON_BLOCK, 1, 5+2, 0);
-    generateBlock(IRON_BLOCK, 2, 5+2, 0);
-    generateBlock(IRON_BLOCK, 3, 5+2, 0);
-    generateBlock(IRON_BLOCK, 4, 5+2, 0);
-    generateBlock(IRON_BLOCK, 4, 4+2, 0);
-    generateBlock(IRON_BLOCK, 5, 4+2, 0);
-    generateBlock(IRON_BLOCK, 5, 3+2, 0);
-    generateBlock(IRON_BLOCK, 6, 3+2, 0);
-    generateBlock(IRON_BLOCK, 6, 2+2, 0);
-    generateBlock(IRON_BLOCK, 7, 2+2, 0);
-
     generatePlayerObject();
 
     sun = new Object { "sun" };
