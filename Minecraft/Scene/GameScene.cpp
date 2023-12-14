@@ -24,7 +24,8 @@ camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
 render_distance { 3 },
-sun_pos { 20, 4, 0 }
+sun_pos { 20, 4, 0 },
+make_flat_world { false }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
     renderer.background_color = ColorRGB { 0x82, 0xB2, 0xFF } | ColorRGB { RGB_Red, 0.1f } | ColorRGB { RGB_Black, 0.7f };
@@ -68,38 +69,63 @@ void GameScene::initObjects() {
     objects_manager.deleteAll();
     delete sun;
 
-    int width;
-    int height;
-    int number_of_channels;
-    stbi_set_flip_vertically_on_load(false);
-    string path = "Resource/Map/map" + to_string(random<int>({ 1, 4 })) + ".png";
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &number_of_channels, 1);
-    Range<int> height_range { 8, 25 };
-    int height_range_size = height_range.end - height_range.start;
     Range<int> torch_gen_rate { 0, 1000 };
+    if(make_flat_world) {
+        int size = 32;
+        for(int i=-size; i<size; ++i) {
+            for(int k=-size; k<size; ++k) {
+                int max_height = 6;
 
-    int w = width / 2;
-    int h = height / 2;
-    for(int i=-h; i<h; ++i) {
-        for(int k=-w; k<w; ++k) {
-            int max_height = data[(i+h)*width + (k+w)] * height_range_size / 255 + height_range.start;
-            //int max_height = 6;
-
-            if(random(torch_gen_rate) == 0) {
-                generateBlock(SOUL_TORCH, k, max_height+1, i);
-                ++torch_count;
+                if(random(torch_gen_rate) == 0) {
+                    generateBlock(SOUL_TORCH, k, max_height+1, i);
+                    ++torch_count;
+                }
+                generateBlock(GRASS, k, max_height, i);
+                for(int d=max_height-4; d<max_height; ++d) {
+                    generateBlock(DIRT, k, d, i);
+                }
+                for(int s=0; s<max_height-4; ++s) {
+                    generateBlock(STONE, k, s, i);
+                }
+                generateBlock(BEDROCK, k, -1, i);
             }
-            generateBlock(GRASS, k, max_height, i);
-            for(int d=max_height-4; d<max_height; ++d) {
-                generateBlock(DIRT, k, d, i);
-            }
-            for(int s=0; s<max_height-4; ++s) {
-                generateBlock(STONE, k, s, i);
-            }
-            generateBlock(BEDROCK, k, -1, i);
         }
+
+        make_flat_world = false;
     }
-    stbi_image_free(data);
+    else {
+        int width;
+        int height;
+        int number_of_channels;
+        stbi_set_flip_vertically_on_load(false);
+        string path = "Resource/Map/map" + to_string(random<int>({ 1, 4 })) + ".png";
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &number_of_channels, 1);
+        Range<int> height_range { 8, 25 };
+        int height_range_size = height_range.end - height_range.start;
+
+        int w = width / 2;
+        int h = height / 2;
+        for(int i=-h; i<h; ++i) {
+            for(int k=-w; k<w; ++k) {
+                int max_height = data[(i+h)*width + (k+w)] * height_range_size / 255 + height_range.start;
+                //int max_height = 6;
+
+                if(random(torch_gen_rate) == 0) {
+                    generateBlock(SOUL_TORCH, k, max_height+1, i);
+                    ++torch_count;
+                }
+                generateBlock(GRASS, k, max_height, i);
+                for(int d=max_height-4; d<max_height; ++d) {
+                    generateBlock(DIRT, k, d, i);
+                }
+                for(int s=0; s<max_height-4; ++s) {
+                    generateBlock(STONE, k, s, i);
+                }
+                generateBlock(BEDROCK, k, -1, i);
+            }
+        }
+        stbi_image_free(data);
+    }
 
     Material m { Material::basic };
     m.base_color = convertHSVToRGB({ random<int>({ 120, 240 }), 0.5f, 1.0f });
@@ -539,6 +565,10 @@ void GameScene::keyboardEvent(unsigned char key) {
     switch(key) {
     case 27:
         exit();
+        break;
+    case '0':
+        make_flat_world = true;
+        initWorld();
         break;
     case 'i': case 'I':
         initWorld();

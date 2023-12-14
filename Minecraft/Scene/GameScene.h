@@ -66,6 +66,8 @@ private:
 
     BlockID selected_block;
 
+    bool make_flat_world;
+
 public:
     GameScene(Game* game);
     virtual ~GameScene();
