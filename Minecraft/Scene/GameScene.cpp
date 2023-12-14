@@ -72,7 +72,8 @@ void GameScene::initObjects() {
     int height;
     int number_of_channels;
     stbi_set_flip_vertically_on_load(false);
-    unsigned char* data = stbi_load("Resource/Map/map4.png", &width, &height, &number_of_channels, 1);
+    string path = "Resource/Map/map" + to_string(random<int>({ 1, 4 })) + ".png";
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &number_of_channels, 1);
     Range<int> height_range { 8, 25 };
     int height_range_size = height_range.end - height_range.start;
     Range<int> torch_gen_rate { 0, 1000 };
