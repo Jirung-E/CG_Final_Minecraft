@@ -32,7 +32,8 @@ bool ChunkInfo::operator!=(const ChunkInfo& other) const {
 // ---------------------------------------------------------------------------- //
 
 
-ChunkBasedObjectManager::ChunkBasedObjectManager(ObjectManager& objects) : objects { objects }, player { nullptr } {
+ChunkBasedObjectManager::ChunkBasedObjectManager(ObjectManager& objects): 
+    objects { objects }, player { nullptr }, player_prev_chunk { 0, 0, 0 } {
 
 }
 
@@ -75,7 +76,16 @@ unordered_set<Object*> ChunkBasedObjectManager::getObjectsInChunk(int chunk_x, i
 }
 
 unordered_set<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3& position, int radius) {
-    unordered_set<Object*> result;
+    if(player_prev_chunk == ChunkInfo { player->transform.position }) {
+        return objects_in_radius;
+    }
+    
+    player_prev_chunk = ChunkInfo { player->transform.position };
+
+    objects_in_radius.clear();
+    blocks.clear();
+    entities.clear();
+
     ChunkInfo center_chunk { position };
     for(int x=center_chunk.x-radius; x<=center_chunk.x+radius; ++x) {
         int dx = abs(x - center_chunk.x);
@@ -87,7 +97,7 @@ unordered_set<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3
                     continue;
                 }
                 for(auto& e : getObjectsInChunk(x, y, z)) {
-                    result.insert(e);
+                    objects_in_radius.insert(e);
                     if(Block* block = dynamic_cast<Block*>(e)) {        // TODO: 최적화 필요 - 호출될때마다 dynamic_cast를 하면 비효율적
                         blocks.insert(block);
                     }
@@ -98,17 +108,14 @@ unordered_set<Object*> ChunkBasedObjectManager::getObjectsInRadius(const Vector3
             }
         }
     }
-    return result;
+    return objects_in_radius;
 }
 
 
 void ChunkBasedObjectManager::update(float dt, int radius) {
-    blocks.clear();
-    entities.clear();
-
-    auto objs = getObjectsInRadius(player->transform.position, radius);
+	getObjectsInRadius(player->transform.position, radius);
     
-    for(auto& e : objs) {
+    for(auto& e : objects_in_radius) {
         ChunkInfo chunk { e->transform.position };
 
 		e->update(dt);

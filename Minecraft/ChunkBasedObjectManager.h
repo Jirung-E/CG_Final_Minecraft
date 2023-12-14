@@ -36,8 +36,12 @@ class ChunkBasedObjectManager {
 public:
     ObjectManager& objects;
     Player* player;
+    ChunkInfo player_prev_chunk;
     std::unordered_set<Block*> blocks;     // 범위 안의 블럭 리스트
     std::unordered_set<Entity*> entities;  // 범위 안의 엔티티 리스트
+    std::unordered_set<Object*> objects_in_radius;  // 범위 안의 오브젝트 리스트
+    std::unordered_set<ChunkInfo> chunks_in_radius; // 범위 안의 청크 리스트
+    //int loaded_radius;
 
 protected:
     std::unordered_map<ChunkInfo, std::unordered_set<Object*>> chunk_info;

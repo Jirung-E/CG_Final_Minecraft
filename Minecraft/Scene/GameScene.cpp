@@ -23,7 +23,7 @@ vertical_sensitivity { 0.8f },
 camera_distance { 4.0f },
 interaction_distance { 4.0f },
 simulation_distance { 2 },
-render_distance { 3 },
+render_distance { 2 },
 sun_pos { 20, 4, 0 }
 {
     renderer.icons_texture_id = Texture::get("Resource/Textures/icons.png").getID();
@@ -133,7 +133,8 @@ void GameScene::initObjects() {
 
 void GameScene::generatePlayerObject() {
     player = new Player { "player" };
-    player->transform.position = { 0, 50, 0 };
+    player->transform.position = { 0, 20, 0 };
+    player->physics->gravity.y = 0;
     objects_manager.player = player;
     objects_manager.add("player", player);
 }
