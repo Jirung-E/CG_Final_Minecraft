@@ -83,6 +83,7 @@ void GameScene::initObjects() {
     for(int i=-h; i<h; ++i) {
         for(int k=-w; k<w; ++k) {
             int max_height = data[(i+h)*width + (k+w)] * height_range_size / 255 + height_range.start;
+            //int max_height = 6;
 
             if(random(torch_gen_rate) == 0) {
                 generateBlock(SOUL_TORCH, k, max_height+1, i);
